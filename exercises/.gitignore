@@ -1,0 +1,7 @@
+*.pdf
+*/*.pdf
+*/*.tex
+*/*.log
+*/figure/unnamed-*.pdf
+*/figure/unnamed-chunk*
+

@@ -1,0 +1,27 @@
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb
+*.synctex.gz
+*.DS_Store
+*.Rproj
+*.Rhistory
+.Rproj.user
+.Rproj.user/
+cache/
+docs/
+tut_*.pdf
+tut_*.tex
+# vim swap files
+*.swp
+# used for atom editor
+.latexcfg
+# Xournal files
+*.xoj
+# Files created by code demo
+NAMESPACE
