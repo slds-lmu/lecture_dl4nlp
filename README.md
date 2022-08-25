@@ -1,8 +1,9 @@
-## How to create a new website repository?
+## How to set this up?
 
-1. Create a new repository with the name `lecture_xyz` and select `slds-lmu/lecture_template` as template repository.
-2. Start editing everything to suite your needs. For important (editing) workflows see the `README` files in the directories `slides`, `exercises`, and `code-demos`.
-3. __Note:__ When creating new subchapters, it is important to copy the `Makefile` from one of the existing subchapters into the new one! Otherwise, the automatic rendering will not work.
+1. `git clone https://github.com/slds-lmu/lecture_dl4nlp.git`
+2. `cd lecture_dl4nlp`
+3. `git clone https://github.com/slds-lmu/latex-math.git`
+4. __Note:__ When creating new subchapters, it is important to copy the `Makefile` from one of the existing subchapters into the new one! Otherwise, the automatic rendering will not work.
 
 ## How to get started with your new lecture repository?
 
