@@ -245,5 +245,212 @@ $$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Parallelized attention}
+
+\vfill
+
+\begin{itemize}
+\item We want to apply our attention recipe to every query vector $\vec q_j$
+\item We could simply loop over all time steps $1 \leq j \leq J_x$ and calculate each $\vec o_j$ independently.
+\item Then stack all $\vec o_j$ into an output matrix $\vec O \in \mathbb{R}^{J_x \times d_v}$
+\item But a loop does not use the GPU's capacity for parallelization
+\item So it might be unnecessarily slow
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized attention}
+
+\vfill
+
+\begin{itemize}
+\item Do some inputs (e.g., $\vec q_j$) depend on previous outputs (e.g., $\vec o_{j-1}$)? If not, we can parallelize the loop into a single function:
+$$\vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta)$$
+\item Attention in Transformers is usually parallelizable, unless we are doing autoregressive inference (more on that later).
+\item By the way: The Bahdanau model is not parallelizable in this way, because $s_i$ (a.k.a. the query of the $i+1$'st step) depends on $c_i$ (a.k.a. the attention output of the $i$'th step), see last lecture:
+\begin{center}
+\includegraphics[width=.9\textwidth]{figure/bahdanau3}
+\end{center}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 1}: The parallel application of the scaled dot product to all query-key pairs can be written as:
+$$\vec {E} = \frac{ \vec {Q} \vec {K}^T}{\sqrt{d_k}}; \quad \vec E \in \mathbb{R}^{J_x \times J_x}$$
+$$ \begin{matrix} \downarrow \\ queries \\ \downarrow \\ \end{matrix} \overset{\rightarrow keys \rightarrow}{
+\begin{bmatrix}
+e_{1,1} & \ldots & e_{1,J_x} \\
+\vdots & \ddots & \vdots \\
+e_{J_x,1} & \ldots & e_{J_x,J_x} \\
+\end{bmatrix}} = \frac{1}{\sqrt{d_k}}
+\begin{bmatrix} 
+- & \vec q_1  & -  \\
+& \vdots & \\
+-  & \vec q_{J_x}  &  -  \\
+\end{bmatrix}  
+\begin{bmatrix} 
+\lvert &  & \lvert  \\
+\vec k_1 & \ldots & \vec k_{J_x} \\
+\lvert &  & \lvert  \\
+\end{bmatrix}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized scaled dot product attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 2}: Softmax with normalization over the second axis (key axis): 
+$$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+\item Let's call this new normalized matrix $\vec A \in (0,1)^{J_x \times J_x}$
+\item The rows of $\vec A$, denoted $\vec \alpha_j$, are probability distributions (one $\vec \alpha_j$ per $\vec q_j$)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized scaled dot product attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 3}: Weighted sum
+$$\vec {O} = \vec {A} \vec {V}; \vec O \in \mathbb{R}^{J_x \times d_v}$$
+
+$$
+\begin{matrix} \downarrow \\ queries \\ \downarrow \end{matrix}
+	\overset{\rightarrow d_v \text{(value dims)} \rightarrow}{
+\begin{bmatrix}
+o_{1,1} & \ldots & o_{1,d_v} \\
+\vdots & \ddots & \vdots \\
+o_{J_x,1} & \ldots & o_{J_x,d_v} \\
+\end{bmatrix}} =
+\begin{bmatrix} 
+- & \boldsymbol \alpha_1  & -  \\
+& \vdots & \\
+-  & \boldsymbol \alpha_{J_x}  &  -  \\
+\end{bmatrix}  
+\begin{bmatrix} 
+\lvert &  & \lvert  \\
+\vec {v}_{:,1} & \ldots & \vec {v}_{:,d_v} \\
+\lvert &  & \lvert  \\
+\end{bmatrix}
+$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{... as a one-liner}
+
+\vfill
+
+\large
+$$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta) = \mathrm{softmax}\Big(\frac{(\vec X\vec W^{(q)} ) (\vec X\vec W^{(k)} )^T}{\sqrt{d_k}}\Big)(\vec X\vec W^{(v)} ) $$
+\begin{itemize}
+\item GPUs like matrix multiplications\\$\rightarrow$ usually a lot faster than RNN!
+\item But: The memory requirements of $\vec E$ and $\vec A$ are $\mathcal{O}(J_x^2)$
+\item A length up to about 500 is usually ok on a medium-sized GPU (and most sentences are shorter than that anyway).
+\item But when we consider inputs that span several sentences (e.g., paragraphs or whole documents), we need tricks to reduce memory. These are beyond the scope of this lecture.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Layer Attention}
+
+\vfill
+
+\begin{itemize}
+\item Sequential application of several attention layers, with separate parameters $\{\theta^{(1)} \ldots \theta^{(N)}\}$ 
+\item In Transformer: sequential application of Transformer blocks
+\item There are some additional position-wise layers inside the Transformer block, i.e., $\vec O^{(n)}$ undergoes some additional transformations before becoming the input to the next Transformer block $n+1$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Head Attention}
+
+\vfill
+
+\begin{itemize}
+\item Application of several attention layers (``heads'') in parallel
+\item $M$ sets of parameters $\{\theta^{(1)}, \ldots, \theta^{(M)}\}$, with $\theta^{(m)} = \{\vec {W}^{(m,q)}, \vec {W}^{(m,k)}, \vec {W}^{(m,v)}\}$
+\item For every head, compute in parallel:
+$$ \vec O^{(m)} = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta^{(m)}) $$
+\item Concatenate all $\vec {O}^{(m)}$ along their last axis; then down-project the concatenation with an additional parameter matrix $\vec W^{(o)} \in \mathbb{R}^{Md_v \times d_v}$:
+$$ \vec O = [\vec O^{(1)}; \ldots;  \vec O^{(M)}] \vec W^{(o)}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Head Attention}
+
+\vfill
+
+\begin{itemize}
+\item Conceptually, multi-head attention is to single-head attention like a filter bank is to a single filter (Lecture on CNNs)
+\item Division of labor: different heads model different kinds of inter-word relationships
+\end{itemize}
+\begin{center}
+\includegraphics[width=.9\textwidth]{figure/heads}
+
+{\tiny Clark et al. (2018): What Does BERT Look At? An Analysis of BERT’s Attention}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{}
+
+\vfill
+
+
+
+\vfill
+
+\end{vbframe}

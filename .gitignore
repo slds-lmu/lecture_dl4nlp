@@ -7,6 +7,8 @@
 *.snm
 *.toc
 *.vrb
+*.bbl
+*.blg
 *.synctex.gz
 *.DS_Store
 *.Rproj
