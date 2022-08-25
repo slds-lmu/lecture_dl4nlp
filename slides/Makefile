@@ -6,7 +6,7 @@ FCHANGED=$(shell git diff --name-only origin/main)
 all:
 	@echo "Specify target 'changes' to just render edited subdirs or 'all' to render all pdfs."
 
-changes:
+all:
 	@echo "Hello from the $(shell git rev-parse --abbrev-ref HEAD) branch"
 	@echo "The changed files are: $(FCHANGED)"
 	@for i in $(CHAPTER); do\
