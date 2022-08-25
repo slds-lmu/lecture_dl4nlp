@@ -2,228 +2,246 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/ml-basics-supervised-classif-task.png}
-\newcommand{\learninggoals}{
-\item Know definition and examples of supervised tasks
-\item Understand the difference between regression and classification}
+\newcommand{\blu}[1]{\textcolor{blue}{#1}}
+\newcommand{\org}[1]{\textcolor{orange}{#1}}
+\newcommand{\ques}{\textbf{\textcolor{red}{Question:  }}}
+\newcommand{\questionssofar}{\begin{frame}\frametitle{Any questions?}\end{frame}}
 
-\title{Introduction to Machine Learning}
+\newcommand\warning{%
+ \makebox[1.4em][c]{%
+ \makebox[0pt][c]{\raisebox{.1em}{\scriptsize!}}%
+ \makebox[0pt][c]{\color{red}\normalsize$\bigtriangleup$}}}%
+
+\newcommand{\titlefigure}{figure/transformer.png}
+\newcommand{\learninggoals}{
+\item Understand BPE
+\item Understand the Transformer Encoder + Decoder
+\item Understand how they are connected
+\item Understand the limitations for long sequences}
+
+\title{Transformer}
 % \author{Bernd Bischl, Christoph Molnar, Daniel Schalk, Fabian Scheipl}
-\institute{\href{https://compstat-lmu.github.io/lecture_i2ml/}{compstat-lmu.github.io/lecture\_i2ml}}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-
-
-\lecturechapter{ML-Basics: Supervised Tasks}
-\lecture{Introduction to Machine Learning}
+\lecturechapter{The Encoder}
+\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tasks: Regression vs Classification}
+\begin{vbframe}{The Transformer architecture}
 
-\begin{itemize}
-    \item Supervised tasks are data situations where learning the functional
-        relationship between inputs (features) and output (target) is
-        useful.
-    
-    \item The two most basic tasks are 
-        regression and classification, depending on whether the 
-        target is numerical or categorical.
-\end{itemize}  
-
-\lz
-
-\begin{columns}    
-\begin{column}{0.5\textwidth} 
-\textbf{Regression}: Our observed labels come from $\Yspace \in \mathbb{R}$.
-
-  \begin{center}
-    \includegraphics[width=\textwidth]{figure/ml-basics-supervised-regression-task.png} 
-  \end{center}
-\end{column}    
-
-\begin{column}{0.5\textwidth} 
-\textbf{Classification}: Observations are categorized: $y \in \Yspace = \{C_1,...,C_g\}$.
-  
-  \begin{center}
-    \includegraphics[width=\textwidth]{figure/ml-basics-supervised-classif-task.png} 
-  \end{center}
-\end{column}    
-\end{columns}    
-  
-\end{vbframe}
-
-\begin{vbframe}{Predict vs. Explain}
-We can distinguish two main reasons to learn this relationship:
-
-
-\begin{itemize}
-    \item \textbf{Learning to predict}. In such a case we potentially do not care how
-        our model is structured or whether we can understand it.\\
-        Example: predicting how a stock price will develop. \\
-        Simply being able to use the predictor on new data is of direct benefit to us.
-
-    \item \textbf{Learning to explain}. Here, our model is only a means to 
-        a better understanding of the inherent relationship in the data.\\
-        Example: understanding which risk factors influence the probability to 
-        get a certain disease.
-        We might not use the learned model on new observations, but rather 
-        discuss its implications, in a scientific or social context.
-
-\end{itemize}  
-
-While ML was traditionally more interested in the former, classical statistics
-addressed the latter. In many tasks nowadays both are relevant -- to different degrees.
-
-\end{vbframe}
-  
-  
-% \end{itemize}  
-
-% \framebreak
-
-% \begin{itemize}
-
-  % \item The set-up in supervised learning will typically look like this:
-  % 
-  % \begin{itemize}
-  % 
-  %   \item We restrict our options to a certain class of functions,
-  %   
-  %   \item choose some metric to evaluate model candidates,
-  %   
-  %   \item and try to find the best candidate in an efficient way.
-  %   
-  % \end{itemize} 
-  % 
-  % \item This procedure is carried out by an algorithm called \textbf{learner} or
-  % \textbf{inducer}.
-  
-
-
-\begin{vbframe}{Regression example: House Prices}
-
-%\begin{enumerate}
-
-  %\item 
-  Predict the price for a house in a certain area
-    
-    
-    \begin{center}
-    %https://docs.google.com/presentation/d/1m86-HK5-iCWbWpc_ssm2sZBQ8yxexIfjKcQXDU6DWss/edit?usp=sharing page 1
-    \includegraphics[width=0.5\textwidth]{figure_man/ml-basics-supervised-task-houses-data.png} 
-    
-    \lz
-    
-    %https://unsplash.com/photos/sPpe2D7VbpM
-    \includegraphics[width=0.3\textwidth]{figure_man/ml-basics-supervised-task-houses-pic.jpg} 
-    
-    \end{center}
-
-    Probably \textit{learn to explain}. We might want to understand what influences 
-    a house price most. But maybe we are also looking for underpriced houses and
-    the predictor is of direct use, too.
-    
-%\end{enumerate}
-
-\end{vbframe}
-
-%------------------
-
-\begin{vbframe}{Regression example: Length-of-stay}
-  
-  Predict days a patient has to stay in hospital at time of admission
-       
-    
-    \begin{center}
-    %https://docs.google.com/presentation/d/1m86-HK5-iCWbWpc_ssm2sZBQ8yxexIfjKcQXDU6DWss/edit?usp=sharing page 2
-    \includegraphics[width=0.6\textwidth]{figure_man/ml-basics-supervised-task-hosp-data.png} 
-    
-    \lz
-    
-    %https://unsplash.com/photos/ZCO_5Y29s8k
-    \includegraphics[width=0.3\textwidth]{figure_man/ml-basics-supervised-task-hosp-pic.jpg} 
-    
-    \end{center}
-    
-    Can be \textit{learn to explain}, but \textit{learn to predict} would help
-    a hospital's planning immensely. 
-  
-  
-%\end{enumerate}
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Classification example: Risk category}
-
-  Predict one of five risk categories for a life insurance customer to determine the insurance premium 
 \begin{center}
+\begin{tikzpicture}[->, >=stealth, thick, font=\scriptsize]
+\node (transformer) at (0,0) {\includegraphics[width=.4\textwidth]{figure/transformer.png}};
+\node (enc) [left=2mm of transformer, rotate=90] {encoder};
+\node (dec) [right=2mm of transformer, rotate=270] {decoder};
+\node (x) [above left=1cm of transformer.south west] {$X$ (source)};
+\node (y) [above right=1cm of transformer.south east] {$Y$ (target)};
+\draw (x) -- ([yshift=5mm, xshift=1cm] transformer.south west);
+\draw (y) -- ([yshift=5mm, xshift=-1cm] transformer.south east);
+\node (nll) [draw, circle] at ([yshift=-5mm] transformer.north east) {NLL};
+\draw [bend right=55] (y.north east) to (nll);
+\draw ([xshift=-1cm, yshift=-5mm] transformer.north east) to (nll);
+\node at (-3, 2) [align=left] {(For simpler problems (e.g., \\ classification, tagging), \\ you would simply use \\ the encoder.)};
+\end{tikzpicture}
+\end{center}
+{\tiny Figure from Vaswani et al. 2017: Attention is all you need}
 
-   %https://docs.google.com/presentation/d/1m86-HK5-iCWbWpc_ssm2sZBQ8yxexIfjKcQXDU6DWss/edit?usp=sharing page 3
-    \includegraphics[width=0.5\textwidth]{figure_man/ml-basics-supervised-task-insurance-data.png} 
+\end{vbframe}
 
-\lz
+% ------------------------------------------------------------------------------
 
-% FIGURE SOURCE: https://docs.google.com/presentation/d/1WLPubv9vxLL-JIlHAtsvTBBG5pbF4xgRGW_prkOAEnE/edit?usp=sharing Page 3
-  \includegraphics[width = 0.2\textwidth]{figure_man/classif_ex_placeholder.jpg} 
+\begin{vbframe}{Attention in the Transformer}
+
+\vfill
+
+\begin{itemize}
+\item We can use attention on many different ``things'', including: 
+\begin{itemize}
+\item The pixels of images
+\item The nodes of knowledge graphs
+\item The words of a vocabulary
+\end{itemize}
+\item Here, we focus on scenarios where the query, key and value vectors represent tokens (e.g., words, characters, etc.) in sequences (e.g., sentences, paragraphs, etc.).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Attention in the Transformer}
+
+\vfill
+
+\textbf{Cross-attention:}
+\begin{itemize}
+\item Let $X = (x_1 \ldots x_{J_x}), Y = (y_1 \ldots y_{J_y})$ be two sequences (e.g., source and target in a sequence-to-sequence problem)
+\item The query vectors represent tokens in $Y$ and the key/value vectors represent tokens in $X$ (``$Y$ attends to $X$'')
+\end{itemize}
+\textbf{Self-attention:}
+\begin{itemize}
+\item There is only one sequence $X = (x_1 \ldots x_J)$
+\item The query, key and value vectors represent tokens in $X$ (``$X$ attends to itself'')
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Self-Attention formalized}
+
+\vfill
+
+\begin{itemize}
+\item Let $\vec X \in \mathbb{R}^{J_x \times d_x}$ be a representation of $X$ (e.g., stacked word embeddings, or the outputs of a previous layer)
+\item Let $\theta = \{\vec W^{(q)} \in \mathbb{R}^{d_x \times d_q}, \vec W^{(k)} \in \mathbb{R}^{d_x \times d_k}, \vec W^{(v)} \in \mathbb{R}^{d_x \times d_v}\}$ be trainable weight matrices
+\item We transform $\vec X$ into a matrix of query vectors:
+$$ \vec Q = \vec X \vec W^{(q)} $$
+\item And we transform $\vec X$ into matrices of key and value vectors:
+$$ \vec K = \vec X \vec W^{(k)} ; \qquad \vec V =  \vec X \vec W^{(v)}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+	\item Our model consists of a self-attention layer on top of a simple word embedding lookup layer. (For simplicity, we only consider one head, but this applies to multi-head attention as well.)
+	\item Let $\blu{X^{(1)}}$, $\org{X^{(2)}}$ be two sentences of the same length $J$, which contain the same words in a different order
+	\item Example: \blu{``john loves mary''} vs. \org{``mary loves john''}
+\end{itemize}
+\begin{center}
+	\includegraphics[width=.6\textwidth]{figure/mary_loves_john}
 \end{center}
 
-Probably \textit{learn to predict}, but the company might be required to explain
-its predictions to its customers.
+\vfill
 
 \end{vbframe}
 
-%%%%%%%%%%hierhin
+% ------------------------------------------------------------------------------
 
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item Definition of $\vec o_j$:
+$$\vec o_j = \sum_{j'=1}^J \alpha_{j,j'} \vec v_{j'}$$
+\item Since addition is commutative, and the permutation is bijective, it is sufficient to show that:
+$$\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{\alpha^{(1)}_{j,j'} \vec v^{(1)}_{j'}} = \org{\alpha^{(2)}_{g_j,g_{j'}} \vec v^{(2)}_{g_{j'}}}$$
+\item Step 1: Let's show that $\forall_{j} \blu{\vec v^{(1)}_{j}} = \org{\vec v^{(2)}_{g_{j}}}$
+\item Definition of $\vec v_j$:
+$$\vec v_j = \vec W^{(v)T} \vec x_j$$
+\item Then:
+$$\blu{\vec x^{(1)}_{j}} = \org{\vec x^{(2)}_{g_{j}}} \implies \vec W^{(v)T} \blu{\vec x^{(1)}_{j}} = \vec W^{(v)T} \org{\vec x^{(2)}_{g_{j}}} \implies \blu{\vec v^{(1)}_j} = \org{\vec v^{(2)}_{g_j}}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-% \begin{vbframe}{Supervised Learning}
-% 
-% \begin{itemize}
-% 
-%   \item \textbf{Supervised} learning means we make use of \emph{labeled}
-%   data, i.e., observations for which we already know the target outcome.
-%   
-%   \item We try to construct $f$ automatically from an example set of such 
-%   labeled objects.
-%   
-%   \item Using the thus learned model, we can make \textbf{predictions} based on
-%   the features of our data.
-% 
-%   \item Knowing the \enquote{truth} allows us to test how well we have grasped 
-%   the nature of the underlying mapping by comparing our predictions to the 
-%   actually observed values.
-%   
-% \end{itemize} 
-% 
-% \end{vbframe}
+\begin{vbframe}{Can self-attention model word order?}
 
+\vfill
 
+\begin{itemize}
+\item Step 2: Let's show that $\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{\alpha^{(1)}_{j, j'}} = \org{\alpha^{(2)}_{g_j, g_{j'}}}$
+\item Definition of $\alpha_{j,j'}$:
+$$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^J \mathrm{exp}(e_{j,j''})}$$
+\item Since the sum in the denominator is commutative, and the permutation is bijective, it is sufficient to show that
+$$\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{e^{(1)}_{j,j'}} = \org{e^{(2)}_{g_j, g_{j'}}}$$
+\end{itemize}
 
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Can self-attention model word order?}
 
-% -----------------------------------------------------------------------------
+\vfill
+
+\begin{itemize}
+\item Definition of $e_{j,j'}$:
+$$e_{j,j'} = \frac{1}{\sqrt{d_k}} \vec q_{j}^T \vec k_{j'} = \frac{1}{\sqrt{d_k}} (\vec W^{(q)T} \vec x_{j})^T (\vec W^{(k)T} \vec x_{j'})$$
+\item Then:
+$$
+\begin{aligned}
+& \blu{\vec x^{(1)}_j} = \org{\vec x^{(2)}_{g_j}} \land \blu{\vec x^{(1)}_{j'}} = \org{\vec x^{(2)}_{g_{j'}}} \\
+\implies{} & \vec W^{(q)T} \blu{\vec x^{(1)}_j} = \vec W^{(q)T} \org{\vec x^{(2)}_{g_j}} \land \vec W^{(k)T} \blu{\vec x^{(1)}_{j'}} = \vec W^{(k)T} \org{\vec x^{(2)}_{g_{j'}}} \\
+\implies{} & \blu{\vec q^{(1)}_j} = \org{\vec q^{(2)}_{g_j}} \land \blu{\vec k^{(1)}_{j'}} = \org{\vec k^{(2)}_{g_{j'}}} \\
+\implies{} & \blu{\vec q^{(1)T}_j \vec k^{(1)}_{j'}} = \org{\vec q^{(2)T}_{g_j} \vec k^{(2)}_{g_{j'}}} \\
+\implies{} & \frac{1}{\sqrt{d_k}} \blu{\vec q^{(1)T}_j \vec k^{(1)}_{j'}} =  \frac{1}{\sqrt{d_k}}  \org{\vec q^{(2)T}_{g_j} \vec k^{(2)}_{g_{j'}}} \\
+\implies & \blu{e^{(1)}_{j,j'}} = \org{e^{(2)}_{g_j, g_{j'}}}
+\end{aligned}
+$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-% \begin{vbframe}{Summary}
-% 
-% \medskip
-% 
-% \textbf{Supervised machine learning} is concerned with learning a function 
-% that predicts a certain \textbf{target} from an object's \textbf{features} 
-% from a set of examples for which both the features and the target are known.\\
-% The function to be learned is restricted to come from a certain class of 
-% functions and its precise shape is defined in terms of a set of 
-% \textbf{parameters}.
-% 
-% \end{vbframe}
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item So, $\forall_j \blu{\vec o^{(1)}_j} = \org{\vec o^{(2)}_{g_j}}$
+\item In other words: The representation of \blu{mary} is identical to that of \org{mary}, and the representation of \blu{john} is identical to that of \org{john}
+\item \ques Can the other layers in the Transformer architecture (feed-forward net, layer normalization) help with the problem?
+\begin{itemize}
+\item No, because they are apply the same function to all positions.
+\end{itemize}
+\item \ques Would it help to apply more self-attention layers?
+\begin{itemize}
+\item No. Since the representations of identical words are still identical in $\vec O$, the next self-attention layer will have the same problem.
+\end{itemize}
+\item So... does that mean the Transformer is unusable?
+\item Luckily not. We just need to ensure that input embeddings of identical words at different positions are not identical. 
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Position embeddings}
+
+\vfill
+
+\begin{itemize}
+\item Add to every input word embedding a position embedding $\vec {p} \in \mathbb{R}^d$:
+\item Input embedding of word ``mary'' in position $j$: $\vec {x}_j = \vec {w}_{\mathcal{I}(\text{mary})} + \mathbf{p}_j$
+$$\vec {w}_{\mathcal{I}(\text{mary})} + \vec {p}_j \neq \vec{w}_{\mathcal{I}(\text{mary})} + \vec {p}_{j'} \text{ if } j \neq j'$$
+\item Option 1 (Vaswani et al., 2017): Sinusoidal position embeddings (deterministic): 
+$$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \text{ if } i \text{ is even} \\ \mathrm{cos}\big(\frac{j}{10000^\frac{i-1}{d}}\big) & \text{ if } i \text{ is odd}  \end{cases}$$
+\item Option 2 (Devlin et al., 2018):\\Trainable position embeddings: $\vec {P} \in \mathbb{R}^{J^\mathrm{max} \times d}$
+\begin{itemize}
+\item Disadvantage:\\Cannot deal with sentences that are longer than $J^\mathrm{max}$
+\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
