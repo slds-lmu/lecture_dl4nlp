@@ -2,12 +2,7 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand\warning{%
- \makebox[1.4em][c]{%
- \makebox[0pt][c]{\raisebox{.1em}{\scriptsize!}}%
- \makebox[0pt][c]{\color{red}\normalsize$\bigtriangleup$}}}%
-
-\newcommand{\titlefigure}{figure/transformer.png}
+\newcommand{\titlefigure}{figure/transformer_sq.png}
 \newcommand{\learninggoals}{
 \item Understand BPE
 \item Understand the Transformer Encoder + Decoder
@@ -25,7 +20,23 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer for MT}
+\begin{vbframe}{WMT 2014 EN-to-DE and EN-to-FR}
+
+\vfill
+
+\textbf{Parallel training data:}
+
+\includegraphics[width=.9\textwidth]{figure/wmt14}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{The BLEU Score}
+
+describe BLEU for context
 
 \end{vbframe}
 
@@ -33,11 +44,20 @@
 
 \begin{vbframe}{Transformer for MT}
 
-\end{vbframe}
+\vfill
 
-% ------------------------------------------------------------------------------
+The Transformer .. 
 
-\begin{vbframe}{Transformer for MT}
+\begin{itemize}
+	\item .. outperforms the previous SOTA models
+	\item .. at a lower number of required training FLOPs
+\end{itemize}
+
+\vspace{.3cm}
+
+\includegraphics[width=.9\textwidth]{figure/trafo-wmt}
+
+\vfill
 
 \end{vbframe}
 
