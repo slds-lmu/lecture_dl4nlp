@@ -12,6 +12,16 @@
 }
 \makeatother
 
+\newcommand{\blu}[1]{\textcolor{blue}{#1}}
+\newcommand{\org}[1]{\textcolor{orange}{#1}}
+\newcommand{\ques}{\textbf{\textcolor{red}{Question:  }}}
+\newcommand{\questionssofar}{\begin{frame}\frametitle{Any questions?}\end{frame}}
+
+\newcommand\warning{%
+ \makebox[1.4em][c]{%
+ \makebox[0pt][c]{\raisebox{.1em}{\scriptsize!}}%
+ \makebox[0pt][c]{\color{red}\normalsize$\bigtriangleup$}}}%
+
 \definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
 \newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
 \newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
@@ -87,7 +97,7 @@
 \usepackage{amsmath}
 \usepackage{pifont}
 
-\usetikzlibrary{shapes,arrows,automata,positioning,calc,chains,trees, shadows}
+\usetikzlibrary{shapes.multipart,shapes,arrows,automata,positioning,calc,chains,trees, shadows}
 \tikzset{
   %Define standard arrow tip
   >=stealth',
@@ -106,6 +116,8 @@
     shorten <=2pt,
     shorten >=2pt,}
 }
+
+\tikzstyle{vec}=[draw, rectangle, fill = white, minimum width=5mm, minimum height=1cm, inner sep = 2pt]
 
 \usepackage{subfig}
 
