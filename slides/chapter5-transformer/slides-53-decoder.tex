@@ -269,6 +269,39 @@ $$ \mu = \frac{1}{d} \sum_{i=1}^d h_{i}; \qquad \sigma = \sqrt{\frac{1}{d} \sum_
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Encoder-Decoder Attention}
+
+\vfill
+
+\textbf{Open question: How do we connect encoder and decoder?}\\
+
+\vspace{.3cm}
+	
+Construction of one decoder block:
+
+\vspace{.3cm}
+	
+	\begin{enumerate}
+		\item Masked (Multi-Head) Attention layer (only target sequence)
+		\item "Ordinary" (Multi-Head) Attention layer
+			\begin{itemize}
+				\item Queries from the previous decoder layer
+				\item Keys, Values from the encoder output
+			\end{itemize}
+		\item Feed-Forward layer (w/ residual connections \& layer norm)
+	\end{enumerate}
+	
+\vspace{.3cm}
+	
+$\to$ Allows the decoder to attend to \textit{all} tokens from the input sequences\\
+(cf. Bahdanau et al. (2014) for RNNs)
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{The Transformer architecture}
 
 \begin{center}
