@@ -2,12 +2,7 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand\warning{%
- \makebox[1.4em][c]{%
- \makebox[0pt][c]{\raisebox{.1em}{\scriptsize!}}%
- \makebox[0pt][c]{\color{red}\normalsize$\bigtriangleup$}}}%
-
-\newcommand{\titlefigure}{figure/transformer.png}
+\newcommand{\titlefigure}{figure/transformer_sq.png}
 \newcommand{\learninggoals}{
 \item Understand BPE
 \item Understand the Transformer Encoder + Decoder
@@ -20,36 +15,139 @@
 \date{}
 
 \begin{document}
-\lecturechapter{Transformer XL}
+\lecturechapter{Transformer-XL}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer XL}
+\begin{vbframe}{Limitation of the Transformer}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 6.5cm]{figure/n_squared.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1706.03762.pdf}{\footnotesize Vaswani et al. (2017)}
+\end{figure}
+
+\textbf{Advantage:}
+
+\begin{itemize}
+	\item Every token can \textit{directly} attend to each other token
+	\item Cf. RNN: At worst $n$ sequential operations (last to first token)
+\end{itemize}
+
+\textbf{Severe Limitation:}
+
+\begin{itemize}
+	\item Every token attends to each other token (incl. itself)\\
+				$\to$ We need to calculate $n^2$ attention weights
+	\item Computational complexity of Transformer scales quadratically with the sequence length\\
+				$\to$ Longer sequences are disproportionally expensive
+\end{itemize}
+
+\vfill
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer XL}
+\begin{vbframe}{Transformer-XL}
+
+\vfill
+
+\textbf{Key facts:}
+
+\begin{itemize}
+	\item Objective: Autoregressive Language Modeling task
+	\item Transformer decoder model
+	\item Addresses long sequences
+	\item Assumption: \textit{No} infinite memory \& compute; limited resources
+	\item (Possible) Solution Vanilla Transformer:
+		\begin{itemize}
+			\item Split corpus into shorter segments
+			\item Limited contextual information
+		\end{itemize}
+	\item Solution Transformer-XL:
+		\begin{itemize}
+			\item Segment-level recurrence mechanism
+			\item Able to model longer-term dependencies
+		\end{itemize}
+\end{itemize}
+
+\vfill
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer XL}
+\begin{vbframe}{Transformer-XL}
+
+\begin{figure}
+\centering
+\includegraphics[width = 11.5cm]{figure/vanilla-trafo-seq4.png}\\ 
+\footnotesize{Source:} \href{https://aclanthology.org/P19-1285.pdf}{\footnotesize Dai et al. (2019)}
+\end{figure}
+
+\begin{itemize}
+		\item Contextual information limited to segments
+		\item Does not respect semantic or syntactic boundaries
+\end{itemize}
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer XL}
+\begin{vbframe}{Transformer-XL}
+
+\begin{figure}
+\centering
+\includegraphics[width = 11.5cm]{figure/trafo-xl-seq4.png}\\ 
+\footnotesize{Source:} \href{https://aclanthology.org/P19-1285.pdf}{\footnotesize Dai et al. (2019)}
+\end{figure}
+
+\begin{itemize}
+		\item Caches hidden states from the previous segment
+		\item Contextual information flows across segments
+\end{itemize}
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer XL}
+\begin{vbframe}{Segment recurrence}
+
+\begin{itemize}
+		\item Let $s_\tau = [x_{\tau,1}, \hdots, x_{\tau,L}]$ and $s_{\tau+1} = [x_{\tau+1,1}, \hdots, x_{\tau+1,L}]$ be two consecutive segments of length $L$.
+		\item Let $h_\tau^n \in \mathds{R}^{L\times d}$ denote the $n$-th layer hidden states for $s_\tau$.
+		\item Using segment recurrence, the $n$-th layer hidden states for the following segment $s_{\tau+1}$ are computed as follows:
+\end{itemize}
+
+$$\tilde{h}_{\tau+1}^{n-1} = Concat[SG(h_{\tau}^{n-1}), h_{\tau+1}^{n-1}]$$
+
+$$q_{\tau+1}^{n} = h_{\tau+1}^{n-1}W^\text{T}_q; \quad k_{\tau+1}^{n} = \tilde{h}_{\tau+1}^{n-1}W^\text{T}_k; \quad v_{\tau+1}^{n} = \tilde{h}_{\tau+1}^{n-1}W^\text{T}_v$$
+
+$$h_{\tau+1}^{n} = Trafo(q_{\tau+1}^{n}, k_{\tau+1}^{n}, v_{\tau+1}^{n}),$$
+
+\begin{itemize}
+		\item[] where $SG(\cdot)$ stands for "`stop-gradient"'.
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Relative positional encodings}
+
+\vfill
+
+\textbf{Problem:}
+
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\vfill
 
 \end{vbframe}
 
