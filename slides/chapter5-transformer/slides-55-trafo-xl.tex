@@ -5,6 +5,7 @@
 
 \def\rmA{{\mathbf{A}}}
 \def\rmE{{\mathbf{E}}}
+\def\rmR{{\mathbf{R}}}
 \def\rmU{{\mathbf{U}}}
 \def\rmW{{\mathbf{W}}}
 
@@ -157,6 +158,7 @@ $$h_{\tau+1}^{n} = Trafo(q_{\tau+1}^{n}, k_{\tau+1}^{n}, v_{\tau+1}^{n}),$$
 
 \begin{itemize}
 	\item Inject information about the relative distance between a query vector and the respective key vectors directly into the Attention mechanism
+	\item \textit{Comment:} Using relative PEs utterly necessary here, but also applicable independently of the segment recurrence
 \end{itemize}
 
 \begin{align*}
@@ -186,10 +188,12 @@ $$h_{\tau+1}^{n} = Trafo(q_{\tau+1}^{n}, k_{\tau+1}^{n}, v_{\tau+1}^{n}),$$
 \textbf{Solution:}
 
 \begin{itemize}
-	\item Replace all absolute PEs with relative ones (also fixed $+$ sinusoidal)\\
-				$\to$ $\rmR_{i-j}$ instead of $\rmU_{j}$
+	\item Replace all absolute PEs with relative ones (fixed $+$ sinusoidal)\\
+				$\to$ $\rmR_{i-j}$ instead of $\rmU_{j}$ in (b) and (d)
 	\item Replace all positional query vectors with single trainable embeddings\\
-				$\to$ $u$ and $v$ instead of $\rmU_{i}^\top \rmW_q^\top$
+				$\to$ $u$ and $v$ instead of $\rmU_{i}^\top \rmW_q^\top$ in (c) and (d)
+	\item Use separate weight matrices for linearly projecting $\rmE$\\
+				$\to$ $\rmW_{k,E}$ and $\rmW_{k,R}$ instead of $\rmW_{k}$
 \end{itemize}
 
 \vfill
