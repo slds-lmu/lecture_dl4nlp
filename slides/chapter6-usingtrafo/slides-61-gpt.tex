@@ -1,0 +1,143 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item Understand inner workings of BPE
+\item Being able to compare BPE to other tokenization approaches}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT (Radford et al., 2018)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{GPT \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\beamergotobutton{Radford et al., 2018}}}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 12cm]{figure/gpt}\\ 
+		\footnotesize{Source:} \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\footnotesize \it Radford et al., 2018}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Architectural details}
+
+\vfill
+
+	\begin{itemize}
+		\item Transformer \textit{decoder} as backbone of the architecture
+			\begin{itemize}
+				\item 12-layer-decoder with masked self-attention mechanism
+				\item Hidden dimension $H = 768$, $A = 12$ Attention heads
+				\item BPE vocabulary w/ 40k merges
+				\item Learned positional embeddings (as opposed to fixed, sinusoidal ones in the original Transformer)
+			\end{itemize}
+	\end{itemize}
+
+\begin{align*}
+	h_0 &= U W_e + W_p \\
+	h_l &= Trafo(h_{l-1}) \\
+	P(u) &= softmax(h_n W_e^\top)
+\end{align*}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Pre-Training GPT}
+
+\vfill
+
+\begin{itemize}
+		\item Standard LM objective
+		\item Use the BooksCorpus (> 7k unpublished books from various genres) \\
+					$\to$ contains long texts and thus allows learning long range dependencies
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-Tuning GPT}
+
+\vfill
+			
+\begin{itemize}
+		\item Linear output layer with softmax activation on top
+		\item Auxiliary language modeling objective during fine-tuning\\
+					$\rightarrow$ Improves generalization\\
+					$\rightarrow$ Accelerates convegence
+		\item Task-specific input transformations
+					\begin{itemize}
+						\item \textit{Entailment:} \\ Concatenation of premise ($p$) \& hypothesis ($h$): $[p; \$; h]$
+						\item \textit{Similarity:} Use both orderings and concatenate resulting representations: $[s_1; \$; s_2]$ and $[s_2; \$; s_1]$
+						\item \textit{Q\&A and Commensense Reasoning:} \\ Concatenate context ($z$), question ($q$) and each possible answer ($a_k$): $[z; q; \$, a_k]$
+					\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{SOTA results}
+
+\vfill
+
+	\textbf{Performance on different benchmarks:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/gpt-sota.png}\\ 
+		\footnotesize{Source:} \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\footnotesize Radford et al. (2018)}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{...}
+
+\vfill
+
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{...}
+
+\vfill
+
+
+
+\vfill
+
+\end{vbframe}
+
+\endlecture
+\end{document}
