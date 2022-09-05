@@ -3,7 +3,6 @@
 1. `git clone https://github.com/slds-lmu/lecture_dl4nlp.git`
 2. `cd lecture_dl4nlp`
 3. `git clone https://github.com/slds-lmu/latex-math.git`
-4. __Note:__ When creating new subchapters, it is important to copy the `Makefile` from one of the existing subchapters into the new one! Otherwise, the automatic rendering will not work.
 
 ## How to get started with your new lecture repository?
 
