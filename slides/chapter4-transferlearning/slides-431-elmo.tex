@@ -4,7 +4,8 @@
 
 \newcommand{\titlefigure}{figure/elmo.jpg}
 \newcommand{\learninggoals}{
-\item tbd}
+\item Understand the contextualization of word embeddings
+\item Get the intuition of feature-based Transfer Learning}
 
 \title{Transfer Learning}
 % \author{}
@@ -14,6 +15,85 @@
 \begin{document}
 \lecturechapter{ELMo (Peters et al., 2018)}
 \lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Recap: Word vectors}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/linear-relationships.png}\\ 
+		\footnotesize{Source:} \href{https://developers.google.com/machine-learning/crash-course/embeddings/translating-to-a-lower-dimensional-space}{\footnotesize \it google}
+	\end{figure}
+
+	\begin{itemize}
+		\item Information is encoded in (pre-)trained word embeddings
+		\item Embeddings are used for tasks external to the training corpus
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Feature-based Transfer Learning}
+
+\vfill
+
+\textbf{Using word2vec:}
+	
+	\begin{enumerate}
+		\item Self-supervised pre-training of word2vec ..
+			\begin{itemize}
+				\item Using a large, unannotated corpus
+				\item Objective: CBOW or Skip-gram
+			\end{itemize}
+		.. and extract the stored knowledge (i.e. embedding)\\
+		\item \textit{Alternative:} Download embeddings from the web,
+		e.g. \url{https://code.google.com/archive/p/word2vec/}
+		\item Perform a (supervised) task using the embeddings,
+		e.g. Sentiment classification using an LSTM network
+	\end{enumerate}
+	
+\textit{The stored knowledge from the pre-trained model is extracted as is
+and is not further adapted to the actual domain/task of interest!}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contextuality}
+
+\vfill
+
+\textbf{1st Generation of neural embeddings are "context-free":}
+
+	\begin{itemize}
+		\item Breakthrough paper by Mikolov et al, 2013 (Word2Vec)
+		\item Followed by Pennington et al, 2014 (GloVe)
+		\item Extension of Word2Vec by Bojanowski et al, 2016 (FastText)
+	\end{itemize}
+	
+	\textbf{Why "Context-free"?}
+	
+	\begin{itemize}
+		\item Models learn \textit{one single} embedding for each word
+		\item Why could this possibly be problematic?
+			\begin{itemize}
+				\item "The \textit{default} setting of the function is xyz."
+				\item "The probability of \textit{default} is rather high."
+			\end{itemize}
+		\item Would be nice to have different embeddings for these two occurrences
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -158,24 +238,40 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Fine-tuning approach}
+\begin{vbframe}{Performance}
+
+\vfill
+			
+	\begin{figure}
+		\centering
+		\includegraphics[width = 12cm]{figure/elmo-sota.png}\\ 
+		\footnotesize{Source:} \href{https://aclanthology.org/N18-1202.pdf}{\footnotesize \it Peters et al. (2018)}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Summary}
 
 \vfill
 
 	\begin{itemize}
-		\item Pre-trained on a general domain corpus
-		\item Embeddings are contextualized (as opposed to word2vec)
-		\item Embeddings are not adapted to target domain/task (similar to word2vec)
-		\item Sequential nature of LSTMs:
-			\begin{itemize}
-				\item Not fully parallelizable (compared to Transformers, see next chapter)
-				\item Fails to capture long-range dependency during contextualization
-			\end{itemize}
+		\item Embeddings are (bidirectionally!) contextualized \\
+					(as opposed to word2vec)
+		\item Embeddings are \textit{not} adapted to target domain/task \\
+					(similar as for word2vec)
+		\item Additional weights are learned for each downstream task \\
+					(i.e. besides the embeddings, no shared knowledge across tasks)
 	\end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
 
 \endlecture
 \end{document}

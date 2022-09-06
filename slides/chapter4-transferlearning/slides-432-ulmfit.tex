@@ -17,28 +17,32 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Contextuality}
+\begin{vbframe}{Fine-tuning approach}
 
 \vfill
 
-\textbf{1st Generation of neural embeddings are "context-free":}
+\textbf{Shortcomings of ELMo:}
 
 	\begin{itemize}
-		\item Breakthrough paper by Mikolov et al, 2013 (Word2Vec)
-		\item Followed by Pennington et al, 2014 (GloVe)
-		\item Extension of Word2Vec by Bojanowski et al, 2016 (FastText)
-	\end{itemize}
-	
-	\textbf{Why "Context-free"?}
-	
-	\begin{itemize}
-		\item Models learn \textit{one single} embedding for each word
-		\item Why could this possibly be problematic?
+		\item No adaption of the Embeddings to target domain/task
 			\begin{itemize}
-				\item "The \textit{default} setting of the function is xyz."
-				\item "The probability of \textit{default} is rather high."
+				\item Source \& target domain/task might be pretty different
+				\item No good representations for domain-/task-specific words
 			\end{itemize}
-		\item Would be nice to have different embeddings for these two occurrences
+		\item Sequential nature of LSTMs:
+			\begin{itemize}
+				\item Not fully parallelizable (compared to Transformers, see next chapter)
+				\item Fails to capture long-range dependency during contextualization
+			\end{itemize}
+	\end{itemize}
+
+	\vspace{.3cm}
+	
+	\textbf{Alleviations/Alternatives:}
+
+	\begin{itemize}
+		\item ULMFiT \href{https://www.aclweb.org/anthology/P18-1031.pdf}{\beamergotobutton{Howard and Ruder, 2018}} is a uni-directional LSTM which is fine-tuned as a whole model on data from the target domain/task.
+		\item GPT \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\beamergotobutton{Radford et al., 2018}} is a Transformer (decoder) which is fine-tuned as a whole model on data from the target domain/task.
 	\end{itemize}
 	
 \vfill
