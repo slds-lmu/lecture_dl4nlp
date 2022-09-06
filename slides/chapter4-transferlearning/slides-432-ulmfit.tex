@@ -1,0 +1,105 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/ulmfit_sq.png}
+\newcommand{\learninggoals}{
+\item tbd}
+
+\title{Transfer Learning}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{ULMFiT (Howard \& Ruder, 2018)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contextuality}
+
+\vfill
+
+\textbf{1st Generation of neural embeddings are "context-free":}
+
+	\begin{itemize}
+		\item Breakthrough paper by Mikolov et al, 2013 (Word2Vec)
+		\item Followed by Pennington et al, 2014 (GloVe)
+		\item Extension of Word2Vec by Bojanowski et al, 2016 (FastText)
+	\end{itemize}
+	
+	\textbf{Why "Context-free"?}
+	
+	\begin{itemize}
+		\item Models learn \textit{one single} embedding for each word
+		\item Why could this possibly be problematic?
+			\begin{itemize}
+				\item "The \textit{default} setting of the function is xyz."
+				\item "The probability of \textit{default} is rather high."
+			\end{itemize}
+		\item Would be nice to have different embeddings for these two occurrences
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ULMFiT \href{https://www.aclweb.org/anthology/P18-1031.pdf}{\beamergotobutton{Howard and Ruder, 2018}}}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/ulmfit-overview-new}\\ 
+		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Architectural Details}
+
+\vfill
+
+	\begin{itemize}
+		\item AWD-LSTMs \href{https://arxiv.org/pdf/1708.02182.pdf}{\beamergotobutton{Merity et al., 2017}} as backbone of the architecture
+			\begin{itemize}
+				\item DropConnect \href{http://proceedings.mlr.press/v28/wan13.pdf}{\beamergotobutton{Wan et al., 2013}}
+				\item Averaged stochastic gradient descent (ASGD) for optimiziation
+			\end{itemize}
+		\item Embedding layer + three LSTM layers + Softmax Layer
+		\item \textbf{LM fine-tuning:}
+			\begin{itemize}
+				\item Discriminative fine-tuning 
+			\end{itemize}
+		\item \textbf{Classifier fine-tuning:}
+			\begin{itemize}
+				\item Concat Pooling
+				\item Gradual unfreezing
+			\end{itemize}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{...}
+
+\vfill
+
+
+
+\vfill
+
+\end{vbframe}
+
+\endlecture
+\end{document}
