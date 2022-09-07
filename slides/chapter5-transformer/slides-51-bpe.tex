@@ -2,11 +2,6 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand\warning{%
- \makebox[1.4em][c]{%
- \makebox[0pt][c]{\raisebox{.1em}{\scriptsize!}}%
- \makebox[0pt][c]{\color{red}\normalsize$\bigtriangleup$}}}%
-
 \newcommand{\titlefigure}{figure/transformer_sq.png}
 \newcommand{\learninggoals}{
 \item Understand inner workings of BPE
@@ -53,13 +48,19 @@
 \textbf{Open-vocabulary neural machine translation \href{https://www.aclweb.org/anthology/P16-1162.pdf}{\beamergotobutton{Sennrich et al. (2016)}}}
 	
 	\begin{itemize}
-		\item Translation as an open-vocabulary problem
+		\item Instead of looking at bytes, look at characters
+		\item Motivation: Translation as an open-vocabulary problem
 		\item Word-level NMT models:
 			\begin{itemize}
 				\item Handling out-of-vocabulary word by using back-off dictionaries
 				\item Unable to translate or generate previously unseen words
 			\end{itemize}
-		\item Subword-level models alleviate this problem
+		\item Using BPE effectively \textit{solves} this problem, except for ..
+			\begin{itemize}
+				\item .. the occurence of unknown characters
+				\item .. when all occurences in the training set were merged into "larger" symbols
+							(Example: \textit{"safeguar"} and \textit{"safeguard"})
+			\end{itemize}
 	\end{itemize}
 
 \vfill
@@ -81,7 +82,8 @@
 			\begin{enumerate}
 				\item Initialize the the vocabulary with all characters plus end-of-word token
 				\item Count occurrences and find the most frequent character pair,\\
-							e.g. "A" and "B" (\warning Word boundaries are \textbf{not} crossed)
+							e.g. "A" and "B" (\warning Word boundaries are \textbf{not} crossed) \\
+							\textit{[Side effect: Can be run on a dictionary w/ frequency counts]}
 				\item Replace it with the new token "AB"
 			\end{enumerate}
 		\item Only one hyperparameter: Vocabulary size\\
@@ -95,16 +97,109 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{BytePair encoding (BPE)}
+\begin{vbframe}{Example -- Setup \href{https://www.aclweb.org/anthology/P16-1162.pdf}{\beamergotobutton{Sennrich et al. (2016)}}}
 
-test
+\begin{lstlisting}[language=Python]
+import re, collections
+
+def get_stats(vocab):
+  pairs = collections.defaultdict(int)
+  for word, freq in vocab.items():
+    symbols = word.split()
+    for i in range(len(symbols)-1):
+      pairs[symbols[i],symbols[i+1]] += freq
+  return pairs
+	
+def merge_vocab(pair, v_in):
+  v_out = {}
+  bigram = re.escape(' '.join(pair))
+  p = re.compile(r'(?<!\S)' + bigram + r'(?!\S)')
+  for word in v_in:
+    w_out = p.sub(''.join(pair), word)
+    v_out[w_out] = v_in[word]
+  return v_out
+\end{lstlisting}
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{BytePair encoding (BPE)}
+\begin{vbframe}{Example -- Merging \href{https://www.aclweb.org/anthology/P16-1162.pdf}{\beamergotobutton{Sennrich et al. (2016)}}}
 
+\vspace{-.5cm}
+
+\begin{lstlisting}[language=Python]
+vocab = {'l o w </w>' : 5, 'l o w e r </w>' : 2, 
+				 'n e w e s t </w>':6, 'w i d e s t </w>':3}
+
+pairs = get_stats(vocab)
+\end{lstlisting}
+
+\vspace{-.75cm}
+
+\begin{lstlisting}[language=Python]
+>>> print(pairs)
+defaultdict(<class 'int'>, {
+						('l', 'o'): 7, ('o', 'w'): 7, ('w', '</w>'): 5, 
+						('w', 'e'): 8, ('e', 'r'): 2, ('r', '</w>'): 2, 
+						('n', 'e'): 6, ('e', 'w'): 6, ('e', 's'): 9, 
+						('s', 't'): 9, ('t', '</w>'): 9, ('w', 'i'): 3, 
+						('i', 'd'): 3, ('d', 'e'): 3
+})
+\end{lstlisting}
+
+\vspace{-.5cm}
+
+\begin{lstlisting}[language=Python]
+best = max(pairs, key=pairs.get)
+vocab = merge_vocab(best, vocab)
+\end{lstlisting}
+
+\vspace{-.75cm}
+
+\begin{lstlisting}[language=Python]
+>>> print(best)
+('e', 's')
+>>> print(vocab)
+{'l o w </w>': 5, 'l o w e r </w>': 2, 
+ 'n e w es t </w>': 6, 'w i d es t </w>': 3}
+\end{lstlisting}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example -- Merging \href{https://www.aclweb.org/anthology/P16-1162.pdf}{\beamergotobutton{Sennrich et al. (2016)}}}
+
+\vspace{-.5cm}
+
+\begin{lstlisting}[language=Python]
+vocab = {'l o w </w>' : 5, 'l o w e r </w>' : 2, 
+				 'n e w e s t </w>':6, 'w i d e s t </w>':3}
+
+num_merges = 10
+
+for i in range(num_merges):
+  pairs = get_stats(vocab)
+  best = max(pairs, key=pairs.get)
+  vocab = merge_vocab(best, vocab)
+  print(best)
+\end{lstlisting}
+
+\vspace{-.5cm}
+
+\begin{lstlisting}[language=Python]
+('e', 's')
+('es', 't')
+('est', '</w>')
+('l', 'o')
+('lo', 'w')
+('n', 'e')
+('ne', 'w')
+('new', 'est</w>')
+('low', '</w>')
+('w', 'i')
+\end{lstlisting}
 
 \end{vbframe}
 
