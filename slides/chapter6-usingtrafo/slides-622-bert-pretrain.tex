@@ -1,0 +1,167 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bert.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the two pre-training tasks
+\item Learn how samples are constructed
+\item Understand the pre-training process}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT -- Pre-training}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Masked Language Modeling (MLM)}
+
+\vfill
+
+\textbf{First remark:}
+
+\begin{itemize}
+	\item It has nothing to do with Masked Self-Attenion\\ 
+				$\rightarrow$ Masked Self-Attention is an architectural detail in the decoder of the Transformer, i.e. used by e.g. GPT
+	\item Masked Self-Attention as a way to prevent causality issues in a Transformer decoder
+	\item MLM is a self-supervised \textit{modeling objective} introduced to couple Self-Attention and (deep) bidirectionality without violating causality
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Masked Language Modeling (MLM) ctd.}
+
+\begin{itemize}
+\item \textbf{Training objective:} $$\text{Given a sentence, predict \texttt{[MASK]}ed tokens}$$
+\item \textbf{Generation of samples:} $$\text{Randomly replace* a fraction of the words by \texttt{[MASK]}}$$
+  \scriptsize *Sample 15\% of the tokens; replace 80\% of them by \texttt{[MASK]}, 10\% by a random token \& leave 10\% unchanged
+\item \normalsize \textbf{Input:}\\\mbox{}\\
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}\\\mbox{}
+\item \normalsize \textbf{Targets:} $$(fox,\; lazy)$$
+\end{itemize}
+\end{frame}
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Masked Language Modeling (MLM) ctd.}
+
+\vfill
+
+\textbf{Discrepancy between pre-training \& fine-tuning:}
+
+\begin{itemize}
+	\item \texttt{[MASK]}-token as central part of pre-training procedure
+	\item \texttt{[MASK]}-token does not occur during fine-tuning
+	\item \textbf{Modified pre-training task:}\\
+				Predict 15\% of the tokens of which only 80\% have been replaced by \texttt{[MASK]}
+				\begin{itemize}
+					\item 80\% of the selected tokens:\\
+								\texttt{The quick brown fox $\rightarrow$ The quick brown [MASK]}
+					\item 10\% of the selected tokens:\\
+								\texttt{The quick brown fox $\rightarrow$ The quick brown went}
+					\item 10\% of the selected tokens:\\
+								\texttt{The quick brown fox $\rightarrow$ The quick brown fox}
+			\end{itemize}
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Masked Language Modeling (MLM) ctd.}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/bert-mlm.png}\\ 
+		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Next Sentence Prediction (NSP)}
+
+\begin{itemize}
+\item \textbf{Training objective:} $$\text{Given two sentences, predict whether $s_2$ follows $s_1$}$$
+\item \textbf{Generation of samples:} $$\text{Randomly sample* negative examples (cf. word2vec)}$$
+  \scriptsize *50\% of the time the second sentence is the actual next sentence, 50\% of the time it is a randomly sampled sentence
+\item \normalsize \textbf{Full Input:}\\\mbox{}\\
+			\footnotesize
+\begin{center}
+\begin{tabular}{|cccccccc|}
+\hline
+\cellcolor{blue!15}\texttt{[CLS]} & The & \cellcolor{blue!65}\texttt{[MASK]} & is & quick & . & \cellcolor{blue!15}\texttt{[SEP]} &\\\hline\hline It & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . & \cellcolor{blue!15}\texttt{[SEP]} \\
+\hline
+\end{tabular}\\\mbox{}
+\end{center}
+\item \normalsize \texttt{[CLS]} token as sequence representation for classification
+\item \texttt{[SEP]} token for separation of the two input sequences
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Next Sentence Prediction (NSP) ctd.}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/bert-nsp.png}\\ 
+		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pre-Training BERT}
+
+\textbf{Ingredients:}
+
+\begin{itemize}
+	\item Massive lexical resources (BooksCorpus $+$ Eng. Wikipedia)\\
+				$\rightarrow$ 13 GB in total
+	\item Train for approximately* 40 epochs
+	\item 4 (16) \href{https://cloud.google.com/tpu/}{Cloud TPUs} for 4 days for the BASE (LARGE) variant
+	\item Loss function: $$Loss_{BERT} = Loss_{MLM} + Loss_{NSP}$$
+\end{itemize}
+				\vspace{.3cm}
+				{\scriptsize *1.000.000 steps on batches of 256 sequences with a sequence length of 512 tokens}
+\begin{itemize}
+	\item For their experiments:
+		\begin{itemize}
+			\item Pre-train w/ sequence length 128 for 90\% of the steps
+			\item Pre-train w/ sequence length 512 for 10\% of the steps \\
+						\textit{(Reason: Learn positional embeddings for all positions)}
+		\end{itemize}
+\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
