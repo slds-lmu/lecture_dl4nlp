@@ -1,0 +1,131 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bert.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the use of the transformer encoder in this model
+\item Understand the iarchitectural components}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT (Devlin et al., 2018)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Key facts on BERT \href{https://arxiv.org/pdf/1810.04805.pdf}{\beamergotobutton{Devlin et al. (2018)}}}
+
+\vfill
+
+\textit{\textbf{B}idirectional \textbf{E}ncoder \textbf{R}epresentations from \textbf{T}ransformers:}
+\begin{itemize}
+		\item Bidirectionally contextual model
+		\item Introduces new self-supervised objective(s)
+		\item Completely replaces recurrent architectures by Self-Attention\\$+$ simultaneously able to include bidirectionality
+\end{itemize}
+
+	\begin{itemize}
+		\item Transformer \textit{encoder} as backbone of the architecture
+			\begin{itemize}
+				\item 12 (24) Transformer encoder blocks
+				\item Embedding size of $E = 768$ (1024)
+				\item Hidden layer size $H = E$
+				\item $A = H/64 = 12$ (16) attention heads
+				\item Feed-forward size is set to $4H$
+			\end{itemize}
+			$\rightarrow$ 110M (340M) parameters in total for $BERT_{Base}$ ($BERT_{Large}$)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Core of BERT -- The Transformer Encoder}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 3cm]{figure/bert-top.png}\\ 
+		\includegraphics[width = 2.8cm]{figure/bert-bottom.png}\\ 
+	\footnotesize{Source:} \href{https://arxiv.org/pdf/1706.03762.pdf}{Vaswani et al. (2017)}
+\end{figure}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{A remark on "Causality"}
+
+\vfill
+
+\textbf{Causality is an issue!}
+	
+\begin{itemize}
+	\item Goal: Learn contextual representations for words/tokens
+	\item \textit{Self-Supervision:} Input and target sequence are the same\\
+				$\rightarrow$ We modify the input to create a meaningful task 
+	\item Unconstrained Self-Attention makes using the LM objective infeasible
+	\item Bidirectionality at a lower layer would allow a word to see itself at later hidden layers\\
+				$\rightarrow$ The model would be allowed to cheat!\\
+				$\rightarrow$ This would not lead to meaningful internal representations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ELMo vs. GPT vs. BERT}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/comparison-bert.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{Devlin et al. (2018)}
+\end{figure}
+
+\textbf{Major architectural differences:}
+
+\begin{itemize}
+\item ELMo uses two separate unidirectional models to achieve bidirectionality 
+  $\rightarrow$ Only "\textit{shallow}" bidirectionality
+\item GPT is not bidirectional, thus no issues concerning causality
+\item BERT combines the best of both worlds: $$Self\text{-}Attention + (Deep)\;Bidirectionality$$
+\end{itemize} 
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{input embeddings}
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 10cm]{figure/bert-input.png}\\ 
+	\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{Devlin et al. (2018)}
+\end{figure}
+
+\begin{itemize}
+	\item Two concatenated sentences as input
+	\item WordPiece tokenization (Wu et al., 2016) for the inputs\\
+			$\rightarrow$ Vocabulary of 30.000 tokens
+	\item Learned segment $+$ position embeddings
+	\item Special \texttt{[CLS]} and \texttt{[SEP]} tokens
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
