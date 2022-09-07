@@ -1,0 +1,106 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bert.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the fine-tuning procedure
+\item Learn the differences between token- and sequence classification}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT -- Fine-tuning}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Fine-Tuning BERT}
+	\begin{figure}
+	\centering
+		\includegraphics[width = 11cm]{figure/bert-finetune.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\end{figure}
+\end{frame}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Fine-Tuning BERT}
+
+\vspace{1.5cm}
+
+	\begin{figure}
+	\centering
+		\includegraphics[width = 11cm]{figure/bert-sota.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\end{figure}
+\begin{itemize}
+	\item Performance of BERT on the \href{https://gluebenchmark.com/}{\beamergotobutton{GLUE Benchmark}}
+	\item Beats all of the previous state-of-the-art models
+	\item In the meantime: Other models better than BERT
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Fine-tuning details}
+
+\vfill
+
+\begin{itemize}
+	\item Relatively cheap compared to pre-training:
+		\begin{itemize}
+			\item $<$ 1 hour on a single Cloud TPU
+			\item "a few hours" on a GPU
+		\end{itemize}
+	\item Recommendations for hyperparameters:
+		\begin{itemize}
+			\item \textbf{Batch Size:} 16, 32
+			\item \textbf{Adam learning rate:} 5e-5, 3e-5, 2e-5
+			\item \textbf{\#epochs:} 2, 3, 4
+			\item \textbf{Dropout probability:} 0,1
+		\end{itemize}
+	\item Data sets w/ > 100k labeled examples rather insensitive to hyperparameters
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Feature Extraction from BERT}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/bert-featextr.png}\\ 
+		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Feature Extraction from BERT}
+
+	\begin{figure}
+	\centering
+		\includegraphics[width = 7.5cm]{figure/bert-featextr-results.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\end{figure}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
