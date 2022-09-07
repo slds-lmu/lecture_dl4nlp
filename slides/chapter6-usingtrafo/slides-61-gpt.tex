@@ -4,8 +4,8 @@
 
 \newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
-\item Understand inner workings of BPE
-\item Being able to compare BPE to other tokenization approaches}
+\item Understand the use of the transformer decoder in this model
+\item Understand the input modifications and how this is useful}
 
 \title{Using the Transformer}
 % \author{}
@@ -18,7 +18,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\beamergotobutton{Radford et al., 2018}}}
+\begin{vbframe}{GPT \href{https://openai.com/blog/language-unsupervised/}{\beamergotobutton{Radford et al., 2018}}}
 
 \vfill
 
@@ -50,7 +50,7 @@
 
 \begin{align*}
 	h_0 &= U W_e + W_p \\
-	h_l &= Trafo(h_{l-1}) \\
+	h_l &= Trafo(h_{l-1}) \forall l \in [1,n]\\
 	P(u) &= softmax(h_n W_e^\top)
 \end{align*}
 
@@ -66,8 +66,18 @@
 
 \begin{itemize}
 		\item Standard LM objective
-		\item Use the BooksCorpus (> 7k unpublished books from various genres) \\
-					$\to$ contains long texts and thus allows learning long range dependencies
+
+\begin{align*}
+	L_1(\{u_1, \hdots, u_n\}) = \sum_i \log(P(u_i | u_{i-k}, \hdots, u_{i-1}; \Theta))
+\end{align*}
+					
+					where $\{u_1, \hdots, u_n\}$ is an \textit{unlabeled} sequence of tokens
+
+		\item \textit{Resource:} BooksCorpus 
+			\begin{itemize}
+				\item > 7k unpublished books from various genres
+				\item contains long texts and thus allows learning long range dependencies
+			\end{itemize}
 \end{itemize}
 
 \vfill
@@ -91,6 +101,33 @@
 						\item \textit{Similarity:} Use both orderings and concatenate resulting representations: $[s_1; \$; s_2]$ and $[s_2; \$; s_1]$
 						\item \textit{Q\&A and Commensense Reasoning:} \\ Concatenate context ($z$), question ($q$) and each possible answer ($a_k$): $[z; q; \$, a_k]$
 					\end{itemize}
+		\item Fine-tuning is rather quick, 3 epochs were sufficient
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-Tuning GPT}
+
+\vfill
+
+\begin{itemize}
+		\item Additional objective:
+					\begin{align*}
+						L_2(\{x^1, \hdots, x^m\}) = \sum_{x,y} \log(P(y | x^1, \hdots, x^m))
+					\end{align*}		
+					where 
+				\begin{itemize}
+					\item $P(y | x^1, \hdots, x^m) = softmax(h_l^m W_y)$ and 
+					\item $\{x^1, \hdots, x^m\}$ is a \textit{labeled} sequence of tokens
+				\end{itemize}
+		\item Combining both objectives: 
+					\begin{align*}
+						L_3(\{x^1, \hdots, x^m\}) = L_2(\{x^1, \hdots, x^m\}) + \lambda \cdot L_1(\{x^1, \hdots, x^m\})
+					\end{align*}
 \end{itemize}
 
 \vfill
@@ -116,28 +153,6 @@
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
-
-\begin{vbframe}{...}
-
-\vfill
-
-
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{...}
-
-\vfill
-
-
-
-\vfill
-
-\end{vbframe}
 
 \endlecture
 \end{document}
