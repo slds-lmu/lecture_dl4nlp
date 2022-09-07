@@ -17,6 +17,29 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Machine Translation}
+
+\vfill
+
+\begin{itemize}
+	\item Sequence-to-sequence task
+	\item Already served as a motivation for introducing the "ordinary" Attention-mechanism by Bahdanau et al. (2014)
+	\item Crucial, that the decoder has access to the whole input sequence \\
+				$\to$ This is very well solved by cross-attention
+	\item Good contextualization in the encoder improves translation quality
+		\begin{itemize}
+			\item (Bidirectional) RNNs/LSTMs are only (concatenated) unidirectional architectures
+			\item Transformer-Encoder layers are bidirectional by construction
+			\item Stacking them on top of each other makes this bidirectional contextualization even "deeper"
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{WMT 2014 EN-to-DE and EN-to-FR}
 
 \vfill
@@ -33,7 +56,30 @@
 
 \begin{vbframe}{The BLEU Score}
 
-describe BLEU for context
+\vfill
+
+\begin{itemize}
+	\item Based on n-gram overlap from candidate and reference sentence
+	\item Precision (for each n-gram) calculated as follows:
+\end{itemize}
+
+\begin{equation}
+            P_{n} = \frac{\sum_{C \in\{\text { Candidates }\}} \sum_{n-g r a m \in C} \text { Count }_{\text {clip }}(n-\text { gram })}{\sum_{C^{\prime} \in\{\text { Candidates }\}}{\sum_{n-g r a m^{\prime} \in C^{\prime}} \text { Count }\left(n-\text { gram }^{\prime}\right)}}  \nonumber
+\end{equation}
+
+\begin{itemize}
+	\item Finally, the BLEU score can be computed as
+\end{itemize}
+
+\begin{equation}
+            \texttt{BLEU} = BP \cdot \exp\left(\sum_{n=1}^{N} w_n \cdot \log(P_n)\right), \nonumber
+\end{equation}
+
+\begin{itemize}
+	\item where $BP$ is a "brevity penalty" to penalize short generations, $N$ is the number of n-grams \& $w_n$ the weight for each $P_n$ (usually $\frac{1}{N}$)
+\end{itemize}
+
+\vfill
 
 \end{vbframe}
 
@@ -60,13 +106,13 @@ The Transformer ..
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Transformer for MT}
+\begin{vbframe}{Varying the Transformer architecture}
 
-\end{vbframe}
+\vfill
 
-% ------------------------------------------------------------------------------
+\includegraphics[width=\textwidth]{figure/vary-trafo.png}
 
-\begin{vbframe}{Transformer for MT}
+\vfill
 
 \end{vbframe}
 
