@@ -1,8 +1,9 @@
 ## Changelog
 
-### 10-2021
+### 09-2022
+- Setup of the repo and the website
 - Initial commit
-- Add a readme to all folders
+- Started creation of the material
 
 ### MM-YYYY
 - What has changed?
