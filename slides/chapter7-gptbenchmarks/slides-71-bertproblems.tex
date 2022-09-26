@@ -1,0 +1,151 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item Recap BERT-like models
+\item Understand problems models following this paradigm have}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Problems with BERT}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT \& Benchmarks}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Recap: BERT, RoBERTa etc.}
+
+\vfill
+
+  \begin{itemize}
+\item Transformer
+\item Training: Masked language modeling (MLM)
+\item BERT learns an enormous amount of knowledge
+about language and the world through MLM training on large corpora.
+\item Application: finetune on a particular task
+\item Great performance!
+\item What's not to like?
+\item (In what follows I will use BERT as a
+representative for this class of language models and only
+talk about BERT -- but the discussion includes RoBERTa,
+Albert, XLNet etc.)
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Problems with BERT (1)}
+
+\vfill
+
+  \begin{itemize}
+\item You need a different model for each task.
+\item (Because BERT is differently finetuned for each task.)
+  \begin{itemize}
+\item Not realistic in many real deployment
+scenarios, e.g., on mobile devices.
+    \end{itemize}
+\item Human learning: we arguably have a
+\myblue{single} model that solves all tasks!
+\item Question: Is there a framework that allows us to
+create a single model that solves all tasks?
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Problems with BERT (2)}
+
+\vfill
+			
+\begin{itemize}
+\item BERT has two training modes, first (MLM)
+pretraining, then finetuning.
+\item Finetuning is \myblue{supervised learning},
+i.e., learning from labeled examples.
+\item Arguably, learning from labeled examples is
+untypical for human learning.
+\item You never learn a task solely by being presented
+a bunch of examples, without explanation.
+\item Instead, in human learning, there is almost
+always a \myblue{task description}.
+\item Example: How to boil an egg.
+``Place eggs in the bottom of a saucepan. Fill the pan with
+cold water. Etc.''
+\item  (Notice that this is \myblue{not} an example.)
+\item Question: Is there a framework that allows us to
+leverage task descriptions?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Problems with BERT (3)}
+
+\vfill
+
+  \begin{itemize}
+\item BERT has great performance, but \ldots
+\item \ldots it only has great performance if the
+training set is fairly large, generally 1000s of examples.
+\item This is completely different from human learning!
+\item We do use examples in learning, but in most
+cases, only a few.
+\item Example: Maybe the person teaching you how to
+boil an egg will show you how to do it one or two times.
+\item
+But
+probably not 10 times
+\item
+Definitely not a 1000 times 
+\item More practical concern: it's very expensive to
+label 1000s of examples for each task (there are many  many tasks).
+\item Question: Is there a framework that allows us to
+learn from just a small number of examples?
+\item This is called \myblue{few-shot learning}.
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Problems with BERT (4)}
+
+\vfill
+
+  \begin{itemize}
+\item More subtle aspect of the same problem (i.e.,
+large training sets): overfitting
+\item Even though performance looks good on standard
+train/dev/test splits, 
+\item the deviation between the training set and the
+data actually encountered in real application can be large.
+\item So our benchmarks often overestimate what
+performance would be in reality.
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}

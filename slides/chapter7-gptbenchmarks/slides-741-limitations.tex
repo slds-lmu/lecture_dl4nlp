@@ -1,0 +1,155 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item Understand architectural limitations of GPT-3
+\item Understand differences to human learning and thinking}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{GPT Limitations}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT \&  Benchmarks}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Text generation}
+
+\vfill
+
+  \begin{itemize}
+\item Repetitions
+\item Lack of coherence
+\item Contradictions
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Common sense}
+
+\vfill
+
+  \begin{itemize}
+\item Common sense physics
+\item E.g., ``If I put cheese in the fridge, will it melt?''
+\item See below
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Comparison tasks}
+
+\vfill
+			
+  \begin{itemize}
+\item GPT3 performs poorly when two inputs have to be
+compared with each other or when rereading the first input
+might help.
+\item E.g., is the meaning of a word the same in two
+sentences (WiC).
+\item E.g., natural language inference, e.g., ANLI
+\item Not a good match for left-to-right processing model.
+\item Possible future direction: bidirectional models
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Self-supervised prediction on text}
+
+\vfill
+
+  \begin{itemize}
+\item All predictions are weighted equally, but some
+words are more informative than others.
+    \item Text does not capture the physical world.
+\item Many tasks are about satisfying a goal --
+prediction is not a good paradigm for that.
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Low sample efficiency}
+
+\vfill
+
+  \begin{itemize}
+\item Humans experience much less text than GPT3, but
+perform better.
+    \item We  need approaches that are as
+    sample-efficient as humans, i.e., need much less text
+    for same performance.
+
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations of GPT3:\\ Size/ Interpretability Calibration}
+
+\vfill
+
+  \begin{itemize}
+\item Difficult to use in practice due to its size.
+    \item Behavior hard to interpret
+    \item Probability badly calibrated
+
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Discussion: Does GPT3 ``learn'' from context?}
+
+\vfill
+
+  \begin{itemize}
+\item GPT3 learns a lot in pretraining.
+    \item But does it really learn anything from
+task description and    the few-shot prefix?
+    \item Notice that no parameters are changed during
+    fewshot ``learning'', so it is not true learning.
+    \item If you give the same task again to GPT3 an
+    hour later, it has retained no information about the
+    previous instance.
+    \item How much of human learning is ``de novo'',
+    how much just uses existing scales.
+
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}
