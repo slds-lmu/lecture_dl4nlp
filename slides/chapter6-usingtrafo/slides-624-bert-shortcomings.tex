@@ -1,0 +1,85 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bert.jpeg}
+\newcommand{\learninggoals}{
+\item Problem with the [MASK] token
+\item Inter-token dependencies}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT -- Shortcommings / Critique}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pretrain-finetune discrepancy}
+
+	\begin{itemize}
+		\item BERT \textit{artificially} introduces \texttt{[MASK]} tokens during pre-training
+		\item \texttt{[MASK]}-token does not occur during fine-tuning\\
+					$\rightarrow$ Lacks the ability to model joint probabilities\\
+					$\rightarrow$ Assumes independence of predicted tokens (given the context)
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Independence assumption}
+
+\vspace{1.5cm}
+
+\textbf{\texttt{[MASK]-ing procedure}:}
+
+\begin{itemize}
+	\item "Given a sentence, predict \texttt{[MASK]}ed tokens"
+	\item All \texttt{[MASK]}ed tokens are predicted based on the un-\texttt{[MASK]}ed tokens
+	\item \textit{Implicit assumption:} Independence of \texttt{[MASK]}ed tokens
+\end{itemize}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/xlnet-objective}\\ 
+		{\tiny Prediction of [New, York] given the factorization order [is, a, city, New, York]\\\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf} \it Yang et al. (2019)}
+	\end{figure}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Maximum sequence length}
+
+\begin{figure}
+\centering
+\includegraphics[width = 8.5cm]{figure/bert-problem.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1706.03762.pdf}{\footnotesize Vaswani et al. (2017)}
+\end{figure}
+
+\textbf{Limitation:}
+
+\begin{itemize}
+	\item BERT can only consume sequences of up to 512 tokens
+	\item Two sentences for NSP are sampled such that $$length_{sentence A} + length_{sentence B} \leq 512$$
+	\item Reason: Computational complexity of Transformer scales quadratically with the sequence length\\
+				$\rightarrow$ Longer sequences are disproportionally expensive
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Bias}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

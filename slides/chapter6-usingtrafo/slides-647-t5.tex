@@ -1,0 +1,87 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the improvements over BERT
+\item Dynamic Masking}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{T5 (Raffel et al., 2019)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Google's T5 \href{https://arxiv.org/pdf/1910.10683.pdf}{\beamergotobutton{Raffel et al. (2019)}}}
+
+	\textbf{T5: Text-to-Text Transfer Transformer:}
+
+	\begin{itemize}
+		\item A complete encoder-decoder Transformer architecture
+		\item All tasks reformulated as text-to-text tasks
+		\item From BERT-size up to 11 Billion parameters
+	\end{itemize}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/t5.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al. (2019)}
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{The \textbf{C}olossal \textbf{C}lean \textbf{C}rawled \textbf{C}orpus (C4)}
+\small
+	\begin{itemize}
+		\item Effort to measure the effect of quality, characteristics \& size of the pre-training resources
+		\item Common Crawl as basis, careful cleaning and filtering for English language
+		\item Orders of magnitude larger (750GB) compared to commonly used corpora 
+	\end{itemize}
+	
+	\textbf{Experiments (with respect to C4)}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/c4-characteristics.png}\\ 
+		\includegraphics[width = 9cm]{figure/c4-size.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al. (2019)}
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{T5 - Exhaustive Experiments}
+\small
+	\textbf{Performed experiments with respect to ..}
+	
+	\begin{itemize}
+		\item .. architecture, size \& objective
+		\item .. details of the Denoising objective
+		\item .. fine-tuning methods \& multi-taks learning strategies
+	\end{itemize}
+	
+	\textbf{Conclusions}
+	
+	\begin{itemize}
+		\item Encoder-decoder architecture works best in this "text-to-text" setting
+		\item More data, larger models \& ensembling all boost the performance
+			\begin{itemize}
+				\item Larger models trained for fewer steps better than smaller models on more data
+				\item Ensembling: Using same base pre-trained models worse than complete separate model ensembles
+			\end{itemize}
+		\item Different denoising objectives work similarly well
+		\item Updating \textit{all} model parameters during fine-tuning works best (but expensive)
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

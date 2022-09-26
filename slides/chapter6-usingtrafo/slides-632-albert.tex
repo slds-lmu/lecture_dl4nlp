@@ -1,0 +1,70 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the improvements over BERT
+\item Parameter sharing
+\item Disentangled}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{ALBERT (Lan et al., 2019)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{ALBERT \href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{Lan et al., 2019}}}
+
+	\textbf{Changes in the architecture:}
+
+	\begin{itemize}
+		\item Disentanglement of embedding size $E$ and hidden layer size $H$\\
+					$\rightarrow$ WordPiece-Embeddings (size $E$) context-independent\\
+					$\rightarrow$ Hidden-Layer-Embeddings (size $H$) context-dependent\\
+					$\Rightarrow$ Setting $H >> E$ enlargens model capacity without increasing the size of the embedding matrix,\\
+					since $O(V \times H) > O(V \times E +  E \times H)$ if $H >> E$.
+		\item Cross-Layer parameter sharing
+		\item Change of the pre-training NSP loss\\
+					$\rightarrow$ Introduction of \textit{Sentence-Order Prediction} (SOP)\\
+					$\rightarrow$ Positive examples created alike to those from NSP\\
+					$\rightarrow$ Negative examples: Just swap the ordering of sentences
+		\item $n-gram$ masking for the MLM task
+\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{ALBERT \href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{Lan et al., 2019}}}
+
+	\textbf{Performance differences:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/albert-sota.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1907.11942.pdf}{\footnotesize Lan et al. (2019)}
+	\end{figure}
+
+	\textbf{Notes:}
+
+	\begin{itemize}
+		\item In General: Smaller model size (because of parameter sharing)
+		\item Nevertheless: Scale model up to almost similar size (\texttt{xxlarge} version)
+		\item Strong performance compared to BERT
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+
+\end{document}

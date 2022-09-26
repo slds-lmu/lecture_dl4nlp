@@ -1,0 +1,113 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Understand model distillation in general
+\item Training regime of DistilBERT}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{DistilBERT (Sanh et al., 2019)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Model distillation \href{https://arxiv.org/pdf/1503.02531.pdf}{\beamergotobutton{Hinton et al. (2015)}}}
+
+\textbf{Model compression scheme:}
+
+\begin{itemize}
+	\item Motivation comes from having computationally expensive, cumbersome ensemble models. \href{http://www.niculescu-mizil.org/papers/rtpp364-bucila.rev2.pdf}{\beamergotobutton{Bucila et al. (2006)}}
+	\item Compressing the knowlegde of the ensemble into a single model has the benefit of easier deployment and better generalization
+	\item Reasoning:
+		\begin{itemize}
+			\item Cumbersome model generalizes well, because it is the average of an ensemble.
+			\item Small model trained to generalize in the same way typically better than small model trained "the normal way".
+		\end{itemize}
+\end{itemize}
+
+\textbf{Distillation:}
+
+\begin{itemize}
+	\item Temperature $T$ in the softmax: $q_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$
+	\item Knowledge transfer via soft targets with high $T$ from original model.
+	\item When true labels are known: Weighted average of two different objective functions
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+
+\textbf{Motivation:}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/distilbert-motivation}\\ 
+		{\footnotesize Source: \href{https://arxiv.org/pdf/1910.01108.pdf}{Sanh et al. (2019)}}
+	\end{figure}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+
+\textbf{Student architecture (\textit{DistilBERT}):}
+
+\begin{itemize}
+	\item Half the number of layers compared to BERT*
+ 	\item Half of the size of BERT, but retains 95\% of the performance
+	\item Initialize from BERT (taking one out of two hidden layers)
+	\item Same pre-training data as BERT (Wiki + BooksCorpus)
+\end{itemize}
+
+\vspace{.3cm}
+
+\textbf{Training and performance}
+
+\begin{itemize}
+	\item Distillation loss $L_{ce} = \sum_i t_i \cdot \log(s_i)$ + MLM-Loss $L_{mlm}$ + \\
+				Cosine-Embedding-Loss $L_{cos}$
+	\item Drops NSP, use dynamic masking, train with large batches
+\end{itemize}
+
+\vspace{1cm}
+
+{\footnotesize *Rationale for "only" reducing the number of layers:\\
+Larger influence on the computation efficiency compared to e.g. hidden size dimension}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+\small
+	\textbf{Performance differences to BERT:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/distilbert-vs-sota.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.01108.pdf}{\footnotesize Sanh et al. (2019)}
+	\end{figure}
+
+	\textbf{Ablation study regarding the loss:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/distilbert-ablation.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.01108.pdf}{\footnotesize Sanh et al. (2019)}
+	\end{figure}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

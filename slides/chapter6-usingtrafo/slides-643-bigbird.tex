@@ -1,0 +1,46 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Understand subtleties of Self-Attention
+\item BigBird architecture using patterns}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BigBird (Zaheer et al., 2020)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Introducing Patterns}
+
+\textbf{Reasoning:} 
+
+\begin{itemize}
+	\item Making every token attend to every other token might be unnecessary
+	\item Introduce sparsity in the commonly dense attention matrix
+\end{itemize}
+
+\textbf{Example:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/bigbird-patterns.png}\\ 
+		{\footnotesize Source: \href{https://proceedings.neurips.cc//paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf}{Zaheer et al. (2020)}}
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
