@@ -1,0 +1,220 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/tokenization.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the the process of text tokenization
+\item Learn the various types of text tokenization}
+
+\title{Advanced NN Architectures}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Tokenization}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Process of Text Tokenization}
+
+\vfill
+
+\begin{itemize}
+	\item Breaking text into smaller units called tokens
+		\begin{itemize}
+			\item Tokens are discrete text units (letters, words, etc.)
+			\item They are the building blocks of natural language
+		\end{itemize}
+	\item Encoding each token with unique IDs (numbers)
+	\item Performed on the entire corpus of documents
+		\begin{itemize}
+			\item Corpus vocabulary of unique tokens is obtained
+		\end{itemize}
+	\item Mandatory preprocessing step for most of NLP tasks
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Why Tokenize?}
+
+\vfill
+
+\begin{itemize}
+	\item Computers must understand text
+		\begin{itemize}
+			\item Text encoding is necessary
+			\item Encode small rather than large units
+		\end{itemize}
+	\item Corpus documents can be large and hard to interpret
+		\begin{itemize}
+			\item Working with tokens is easier
+			\item Building meaning in bottom-up fashion
+		\end{itemize}
+	\item Text may contain extra whitespaces
+		\begin{itemize}
+			\item Tokenization removes them
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tokenization in action}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/spacy_tok}\\ 
+		\footnotesize{Source:} \href{https://spacy.io/usage/linguistic-features}{\footnotesize \it spaCy}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tokenization Types}
+
+\vfill
+
+\begin{itemize}
+	\item Paragraph tokenization 
+		\begin{itemize}
+			\item Breaking doucments in paragraphs 
+			\item Rarely used
+		\end{itemize}
+		\item Sentence tokenization 
+			\begin{itemize}
+				\item Breaking text in sentences 
+			\end{itemize}
+		\item Word tokenization
+			\begin{itemize}
+				\item Breaking text in words
+				\item The most common
+			\end{itemize}
+	\item Subword tokenization
+		\begin{itemize}
+			\item Breaking words in morphemes
+		\end{itemize}
+	\item Character tokenization
+		\begin{itemize}
+			\item Breaking text in individual characters
+		\end{itemize}
+	\item Whitespace tokenization
+		\begin{itemize}
+			\item Typical whitespaces: \verb|" ", \t, \n|
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Word Tokenization}
+
+\vfill
+
+\begin{itemize}
+	\item Most popular type of tokenization
+		\begin{itemize}
+			\item Applied as preprocessing step in most NLP tasks
+		\end{itemize}
+	\item Considers dictionary words and several delimiters
+		\begin{itemize}
+			\item Accuracy depends on dictionary used for training
+			\item Tradeoff between accuracy and efficiency
+		\end{itemize}
+	\item Whitespaces and punctuation symbols are used 
+		\begin{itemize}
+			\item They determine word boundaries
+		\end{itemize}
+	\item Available in many NLP libraries
+\end{itemize}
+
+\vskip5mm
+Example: \vskip3mm 
+{\small\it What is the tallest building? => `What', `is', `the', `tallest', `building', `?'}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Subword Tokenization}
+
+\vfill
+
+\begin{itemize}
+	\item Finer grained than word tokenization
+		\begin{itemize}
+			\item Breaks text into words
+			\item Breaks words into smaller units (root, prefix, suffix, etc.)
+			\item Uses more complex linguistic rules
+		\end{itemize}
+	\item More important for highly flective languages
+		\begin{itemize}
+			\item Words have many forms
+			\item Prefixes and suffixes are added
+			\item Word meaning and function changes
+		\end{itemize}
+	\item Helps to disambiguate meaning 
+	\item Helps to reduce out of vocabulary words
+\end{itemize}
+
+\vskip5mm
+Example: \vskip3mm 
+{\small\it What is the tallest building? => `What', `is', `the', `tall', `est', `build', `ing', `?'}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Character Tokenization}
+
+\vfill
+
+\begin{itemize}
+	\item Creates smaller vocabulary
+		\begin{itemize}
+			\item Same as the number of lettters
+		\end{itemize}
+	\item Helps with out of vocabulary words
+		\begin{itemize}
+			\item Retains their character composition
+		\end{itemize}
+	\item More complex process
+		\begin{itemize}
+			\item The output becomes 5 or 6 times bigger
+		\end{itemize}
+\end{itemize}
+
+\vskip5mm
+Example: \vskip3mm 
+{\small\it What is the tallest building? => `W', `h', `a', `t', `i', `s', `t', `h', `e', `t', `a', `l', `l', `e', `s', `t', `b', `u', `i', `l', `d', `i', `n', `g', `?'}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
