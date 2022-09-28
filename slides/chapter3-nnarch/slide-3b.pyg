@@ -1,0 +1,2 @@
+./word2vec -train data.txt -output vec.txt
+	 -window 5 -negative 20 -hs 0 -cbow 1
