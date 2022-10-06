@@ -1,0 +1,281 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/selfsup.jpg}
+\newcommand{\learninggoals}{
+\item Understand the difference to other learning paradigms
+\item Learn to recognize self-supervision when you see it}
+
+\title{Transfer Learning}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Self-Supervision}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Definition}
+
+	\vfill 
+	
+	\textit{Unsupervised Learning:}
+
+	\begin{itemize}
+		\item No labels attached to the data
+		\item Learn patterns / clusters from the features only
+	\end{itemize}
+	
+	\textit{Supervised Learning:}
+
+	\begin{itemize}
+		\item (Gold) Labels attached to the data
+		\item Learn from the association between features and labels
+	\end{itemize}
+	
+	\textbf{Self-Supervised Learning:}
+
+	\begin{itemize}
+		\item No \textit{external} labels attached to the data\\
+					$\to$ Samples with suitable labels can be generated from the known structure of the data itself 
+		\item \textit{Technically} supervised learning, but \textit{no labeling effort} $+$ simultan-\\eous ability to generate massive amounts of labeled data points
+	\end{itemize}
+	
+	\vfill 
+	
+\end{frame}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Pre-training objectives}
+
+\vfill
+
+\textbf{Self-supervised objectives:}
+	
+	\begin{itemize}
+		\item Skip-gram objective (cf. word2vec \href{https://arxiv.org/pdf/1301.3781.pdf}{\beamergotobutton{Mikolov et al. (2013a)}})
+		\item Language modeling objective (cf. \href{http://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf}{\beamergotobutton{Bengio et al. (2003)}})
+		\item \textit{Masked language modeling (MLM)} objective (cf. chapter 6)\\
+					$\rightarrow$ Replace words by a \texttt{[MASK]} token and train the model to predict
+		\item \textit{Permutation language modeling (PLM)} objective (cf. chapter 6)\\
+					$\rightarrow$ Autoregressive objective of XLNet
+		\item \textit{Replaced token detection} objective (cf. chapter 6)\\
+					$\rightarrow$ Requires two models: One performing MLM \& the second model to discriminate between actual and the predicted tokens
+	\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contextuality}
+
+\vfill
+
+\textbf{1st Generation of neural embeddings are "context-free":}
+
+	\begin{itemize}
+		\item Breakthrough paper by Mikolov et al, 2013 (Word2Vec)
+		\item Followed by Pennington et al, 2014 (GloVe)
+		\item Extension of Word2Vec by Bojanowski et al, 2016 (FastText)
+	\end{itemize}
+	
+	\textbf{Why "Context-free"?}
+	
+	\begin{itemize}
+		\item Models learn \textit{one single} embedding for each word
+		\item Why could this possibly be problematic?
+			\begin{itemize}
+				\item "The \textit{default} setting of the function is xyz."
+				\item "The probability of \textit{default} is rather high."
+			\end{itemize}
+		\item Would be nice to have different embeddings for these two occurrences
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contextual embeddings}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/elmo-embedding-robin-williams.png}\\ 
+		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ELMo \href{https://www.aclweb.org/anthology/N18-1202.pdf}{\beamergotobutton{Peters et al., 2018}}}
+
+\vfill
+
+\begin{itemize}
+		\item Bidirectional language model (LM)
+		\item Combines a forward LM $$p\left(t_{1}, t_{2}, \ldots, t_{N}\right)=\prod_{k=1}^{N} p\left(t_{k} | t_{1}, t_{2}, \ldots, t_{k-1}\right)$$
+					and a backward LM $$p\left(t_{1}, t_{2}, \ldots, t_{N}\right)=\prod_{k=1}^{N} p\left(t_{k} | t_{k+1}, t_{k+2}, \ldots, t_{N}\right)$$
+					to arrive at the following loglikelihood:
+					$$\begin{array}{l}
+\sum_{k=1}^{N}\left(\log p\left(t_{k} | t_{1}, \ldots, t_{k-1} ; \Theta_{x}, \overrightarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right. \\
+\quad\left. +\log p\left(t_{k} | t_{k+1}, \ldots, t_{N} ; \Theta_{x}, \overleftarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right)
+\end{array}$$
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ELMo embeddings}
+
+\vfill
+
+	\begin{itemize}
+		\item Character-based (context-independent) token representations $$x_k^{LM}$$
+		\item Two-layer biLSTM as main architecture:
+			\begin{itemize}
+				\item Two context-dependent token representations \textit{per layer}, i.e.
+							$$\overrightarrow{\mathbf{h}}_{k, j}^{L M}\; \mbox{\&}\; \overleftarrow{\mathbf{h}}_{k, j}^{L M}\; \mbox{for the $k$-th token in the $j$-th layer.}$$
+				\item Four context-dependent token representations in total: 
+							$$\left\{\overrightarrow{\mathbf{h}}_{k, j}^{L M}, \overleftarrow{\mathbf{h}}_{k, j}^{L M} | j = 1, 2\right\}$$
+			\end{itemize}
+		\item Five representations per token in total:
+					$$\begin{aligned}
+R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \overleftarrow{\mathbf{h}}_{k, j}^{L M} | j=1, \ldots, L\right\} \\
+&=\left\{\mathbf{h}_{k, j}^{L M} | j = 0, 1, 2\right\}
+\end{aligned}$$
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Graphical representation}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/elmo-pretrained-bilm}\\ 
+		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Graphical representation}
+
+\vfill
+			
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/elmo-pretrained-bilm-2}\\ 
+		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Task Adaption}
+
+\vfill
+
+\textbf{Including ELMo in downstream tasks:}
+
+	\begin{itemize}
+		\item Calculate task-specific weights of all five representations:
+					$$\mathbf{E} \mathbf{L} \mathbf{M} \mathbf{o}_{k}^{t a s k}=E\left(R_{k} ; \Theta^{t a s k}\right)=\gamma^{t a s k} \sum_{j=0}^{L} s_{j}^{t a s k} \mathbf{h}_{k, j}^{L M},$$
+					where the $\mathbf{h}_{k, j}^{L M}$ are \textbf{not trainable} anymore.
+		\item Trainable parameters during the adaption:
+			\begin{itemize}
+				\item $s_{j}^{t a s k}$ are trainable (softmax-normalized) weights
+				\item $\gamma^{t a s k}$ is a trainable scaling parameter
+			\end{itemize}
+	\end{itemize}
+
+	\textbf{Advantages over context free-embeddings:}
+
+	\begin{itemize}
+		\item Task-specific model has access to \textit{multiple} representations of each token
+		\item Model learns to which degree to use the different representations depending on the task at hand
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Task Adaption}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 12cm]{figure/elmo-adaption}\\ 
+		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance}
+
+\vfill
+			
+	\begin{figure}
+		\centering
+		\includegraphics[width = 12cm]{figure/elmo-sota.png}\\ 
+		\footnotesize{Source:} \href{https://aclanthology.org/N18-1202.pdf}{\footnotesize \it Peters et al. (2018)}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Summary}
+
+\vfill
+
+	\begin{itemize}
+		\item Embeddings are (bidirectionally!) contextualized \\
+					(as opposed to word2vec)
+		\item Embeddings are \textit{not} adapted to target domain/task \\
+					(similar as for word2vec)
+		\item Additional weights are learned for each downstream task \\
+					(i.e. besides the embeddings, no shared knowledge across tasks)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
