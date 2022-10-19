@@ -26,9 +26,9 @@
 Python can be installed in many ways, e.g. by
 
 	\begin{itemize}
-		\item .. directly downloading it from \texttt{python.org}: \url{https://www.python.org/downloads/}
-		\item .. downloading Miniconda: \url{https://docs.conda.io/en/latest/miniconda.html}
-		\item .. installing Python via the Anaconda distribution: \url{https://docs.anaconda.com/anaconda/install/}
+		\item directly downloading it from \texttt{python.org}: \url{https://www.python.org/downloads/}
+		\item downloading Miniconda: \url{https://docs.conda.io/en/latest/miniconda.html}
+		\item installing Python via the Anaconda distribution: \url{https://docs.anaconda.com/anaconda/install/}
 	\end{itemize}
 
 \vfill
@@ -42,7 +42,7 @@ Python can be installed in many ways, e.g. by
 \vfill
 
 Unlike in R/RStudio (which you might be used to), package management in Python is a little more of a mess:  
-There are \textit{two} (concurring) package management systems:
+There are \textit{two} package management systems:
 
 \begin{itemize}
 		\item \texttt{pip} (+ PyPi)
@@ -62,7 +62,7 @@ There are \textit{two} (concurring) package management systems:
 \begin{vbframe}{0. Package management in Python}
 \vfill
 
-Key facts (\texttt{pip})
+\texttt{pip}
 			
 \begin{itemize}
 		\item Installs packages from the \href{https://pypi.org/}{Python Package Index (PyPi)}
@@ -85,7 +85,7 @@ Key facts (\texttt{pip})
 
 \vfill
 
-Key facts (\texttt{conda})
+\texttt{conda}
 
 \begin{itemize}
 		\item Installs packages from the \href{https://repo.anaconda.com/}{Anaconda repository}
@@ -159,8 +159,8 @@ Anaconda is a widely used open-source distribution of Python:
 We recommend downloading and installing \textit{Miniconda}, since it
 
 \begin{itemize}
-	\item .. directly brings \texttt{conda} (as well as \texttt{pip})
-	\item .. is a minimal installer (only the core parts, unlike Anaconda)
+	\item directly brings \texttt{conda} (as well as \texttt{pip})
+	\item is a minimal installer (only the core parts, unlike Anaconda)
 \end{itemize}
 
 \centering
@@ -184,8 +184,8 @@ We recommend downloading and installing \textit{Miniconda}, since it
 \includegraphics[width=0.5\textwidth]{figure/spyder.png}
 
 \begin{itemize}
-	\item It directly comes with the Anaconda distribution
-	\item It can also be installed from \url{https://www.spyder-ide.org/}
+	\item directly comes with the Anaconda distribution
+	\item can also be installed from \url{https://www.spyder-ide.org/}
 \end{itemize}
 
 \vfill
@@ -198,8 +198,12 @@ We recommend downloading and installing \textit{Miniconda}, since it
 
 \vfill
 
-A Jupyter Notebook is a slightly different way of writing and presenting Python codes. It is a web application that lets you develop Python code in your browser.\\
-Useful for explorative analyses and for beginning stages of a project, where you need frequent feedback.
+\begin{itemize}
+	\item web application that lets you develop Python code in your browser
+	\item combine code, text, images, and other media
+	\item execute your code in smaller parts (cells)
+	\item Useful for explorative analyses and for beginning stages of a project, where you need frequent feedback
+\end{itemize}
 
 \centering
 \includegraphics[width=0.3\textwidth]{figure/jupyter.jpg}
@@ -225,7 +229,7 @@ Code cells vs. Markdown cells
 
 \includegraphics[width=.6\textwidth]{figure/jupyter1.png}
 
-Creating e.g. figures
+Useful for creating and changing figures quickly
 
 \vspace{.2cm}
 
@@ -244,7 +248,7 @@ Creating e.g. figures
 \begin{itemize}
 	\item When you click into a cell and you see your cursor, then you are in \textbf{Edit Mode}
 	\item Write your Code/Explanations and execute with \texttt{Ctrl+Enter}
-	\item Hit \texttt{Esc}: Cursor disappears, cell is still selected\\
+	\item Hit \texttt{Esc} $\rightarrow$ Cursor disappears, cell is still selected\\
   (you are in \textbf{Command mode} now)
 	\item Now there are, among others, certain shortcuts available:
 	\begin{itemize}
@@ -266,11 +270,31 @@ Creating e.g. figures
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{6. R-Studio}
+\begin{vbframe}{6. Visual Studio Code}
+
+	\vfill
+	
+	\begin{itemize}
+		\item Widely used editor for many programming languages
+		\item Main advantage: supports Jupyter Notebooks, takes care of setting up server
+		\item install from \url{https://code.visualstudio.com/}
+	\end{itemize}
+	  
+	
+	\centering
+	\includegraphics[width=0.5\textwidth]{figure/vscode.png}
+	
+	\vfill
+	
+	\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{7. R-Studio}
 
 \vfill
 
-It is (meanwhile) also possible to use good old RStudio as an IDE for writing Python code:  
+RStudio can also be used as an IDE for Python:  
 
 \centering
 \includegraphics[width=0.5\textwidth]{figure/rstudio.png}
@@ -288,28 +312,28 @@ It is (meanwhile) also possible to use good old RStudio as an IDE for writing Py
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{6. R-Studio}
+% \begin{vbframe}{6. R-Studio}
 
-\vfill
+% \vfill
 
-You can also use Python in conjunction with R Markdown\\
-(as you will observe quite often in our slides)
+% You can also use Python in conjunction with R Markdown\\
+% (as you will observe quite often in our slides)
 
-\begin{lstlisting}[language=python]
-import pandas as pd
+% \begin{lstlisting}[language=python]
+% import pandas as pd
 
-x = pd.DataFrame({"a": [1,2,3,4],
-                  "b": ["c", "d", "e", "f"]})
-x
-\end{lstlisting}
+% x = pd.DataFrame({"a": [1,2,3,4],
+%                   "b": ["c", "d", "e", "f"]})
+% x
+% \end{lstlisting}
 
-\vfill
+% \vfill
 
-\end{vbframe}
+% \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{7. Virtual Environments}
+\begin{vbframe}{8. Virtual Environments}
 
 \vfill
 
@@ -319,17 +343,17 @@ Assume the following scenario:
 	\item We have two ongoing projects, \texttt{Project A} and \texttt{Project B}
 	\item Both projects need some package \texttt{pkg\_xy}
 	\item \texttt{Project A} needs \texttt{v1.2.0} while \texttt{Project B} requires \texttt{v2.1.3}
-	\item What can we do about this???
+	\item What can we do about this?
 \end{itemize}
 
 \vspace{.2cm}
 
 Solution: \textbf{Work with virtual environments}
 
-\begin{itemize}
-	\item You can also tell RStudio to activate environments automatically by ticking the box at: 
-	\item $\square$ \footnotesize \texttt{Automatically activate project-local Python environments}
-\end{itemize}
+% \begin{itemize}
+% 	\item You can also tell RStudio to activate environments automatically by ticking the box at: 
+% 	\item $\square$ \footnotesize \texttt{Automatically activate project-local Python environments}
+% \end{itemize}
 
 \vfill
 
@@ -337,15 +361,15 @@ Solution: \textbf{Work with virtual environments}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{7. Virtual Environments}
+\begin{vbframe}{8. Virtual Environments}
 
 \vfill
 
 Virtual Environments allow you to 
 
 \begin{itemize}
-	\item .. have different entire version of Python running on your machine (\texttt{Python 2}, \texttt{Python 3.x}, \texttt{Python 3.y}, ..)
-	\item .. maintain different versions of packages for your projects
+	\item have different entire version of Python running on your machine (\texttt{Python 2}, \texttt{Python 3.x}, \texttt{Python 3.y}, ..)
+	\item maintain different versions of packages for your projects
 \end{itemize}
 
 \vspace{.3cm}
@@ -366,7 +390,7 @@ Useful commands: \href{https://docs.conda.io/projects/conda/en/4.6.0/_downloads/
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{7. Virtual Environments}
+\begin{vbframe}{8. Virtual Environments}
 
 \vfill
 
@@ -388,11 +412,11 @@ Different (versions of) packages
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{8. Managing packages}
+\begin{vbframe}{9. Managing packages}
 
 \vfill
 
-Via \texttt{conda}:
+With \texttt{conda}:
 
 \begin{lstlisting}[language=bash]
 conda install pandas
@@ -402,7 +426,7 @@ conda remove pandas
 conda list
 \end{lstlisting}
 
-Via \texttt{pip}:
+With \texttt{pip}:
 
 \begin{lstlisting}[language=bash]
 pip install pandas
@@ -418,7 +442,7 @@ pip freeze
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{8. Managing packages}
+\begin{vbframe}{9. Managing packages}
 
 \vfill
 
@@ -458,16 +482,7 @@ conda install "pandas>=1.3.3,<1.4"
 
 \vfill
 
-Creating isolated environments and running different versions of Python as well
-as different packages (or versions) of them works perfectly fine \textit{(for us)}.
-
-\vspace{.3cm}
-
-What if we want to share our code with others? Make it publicly available? Across platforms? 
-
-\vspace{.3cm}
-
-There needs to be some standardized way to do so, right?\footnote{}
+Standardized way of sharing code requirements with others publicly across platforms:
 
 \vspace{.3cm}
 
@@ -478,13 +493,11 @@ There needs to be some standardized way to do so, right?\footnote{}
 
 \vfill
 
-\footnotesize $^2$Rhetorical question ;-)
-
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -506,13 +519,13 @@ conda env export > environment.yml
 
 \vfill
 
-\footnotesize $^3$Note, that \texttt{-n} is the short version of the \mbox{\texttt{-}}\texttt{-name} flag
+\footnotesize $^3$\texttt{-n} is the short version of the \mbox{\texttt{-}}\texttt{-name} flag
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -550,7 +563,7 @@ prefix: C:\Users\ri85vex\Miniconda3\envs\my_env
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -569,7 +582,7 @@ prefix: C:\Users\ri85vex\Miniconda3\envs\my_env
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -607,7 +620,7 @@ prefix: C:\Users\ri85vex\Miniconda3\envs\my_env
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -616,7 +629,7 @@ prefix: C:\Users\ri85vex\Miniconda3\envs\my_env
 		\begin{lstlisting}[language=bash]
 conda env export --from-history > environment.yml
 		\end{lstlisting}
-	\item .. allows you to create a reduced version of the \texttt{.yml}-file containing only the packages (+ version) you explicitly installed (\textbf{via conda}):  
+	\item allows you to create a reduced version of the \texttt{.yml}-file containing only the packages (+ version) you explicitly installed (\textbf{via conda}):  
 		\begin{lstlisting}[language=bash]
 name: my_env
 channels:
@@ -636,7 +649,7 @@ prefix: C:\Users\ri85vex\Miniconda3\envs\my_env
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
@@ -649,7 +662,7 @@ pip freeze > requirements.txt
 		\begin{lstlisting}[language=bash]
 pip install -r requirements.txt
 		\end{lstlisting}
-	\item \textbf{But}: Requiring others to execute these two steps is cumbersome!
+	\item \textbf{But}: Requiring others to execute these two steps will create a lot of work!
 \end{itemize}
 
 \vfill
@@ -658,7 +671,7 @@ pip install -r requirements.txt
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{9. Reproducibility}
+\begin{vbframe}{10. Reproducibility}
 
 \vfill
 
