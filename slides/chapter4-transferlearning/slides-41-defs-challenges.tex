@@ -1,0 +1,140 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/transfer_learning_taxonomy-1.png}
+\newcommand{\learninggoals}{
+\item Differentiate the different flavors of transfer learning
+\item Understand the challenges we might be able to overcome by using transfer learning}
+
+\title{Transfer Learning}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Basic definitions and challenges}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{What is Transfer Learning?}
+
+\vfill
+
+	\textbf{Wikipedia says:} \\
+    \textit{"Transfer learning is a research problem in machine learning that focuses on storing knowledge gained while solving one problem and applying it to a different but related problem."}\\
+		
+	\vspace{.5cm}
+	
+	\textbf{How it works with word2vec}
+	
+	\begin{itemize}
+		\item Train word2vec on some "fake task" (CBOW or Skip-gram)
+		\item Extract the stored knowledge (a.k.a. embedding)\\
+					\textit{or:} Directly download embeddings from the web 
+		\item Perform a different (supervised) task using the embeddings
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/transfer_learning_taxonomy-1.png}\\ 
+		\footnotesize{Source:} \href{https://ruder.io/thesis/}{\footnotesize \it Sebastian Ruder}
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+
+\vfill
+
+	\textbf{Transductive Transfer learning}
+
+	\begin{itemize}
+		\item Domain adaptation:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on labeled data from domain X to performing task A in domain Y.}"\\\mbox{}
+		\item Cross-lingual learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on labeled data from language X to performing task A in language Y.}"\\\mbox{}
+		\item \textit{Important:} No labeled data in target domain/language \textit{Y}.
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+
+\vfill
+
+	\textbf{Inductive Transfer learning}
+
+	\begin{itemize}
+		\item Multi-task learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on data from domain X to performing multiple (simultaneous) tasks B, C, D, .. in domain Y.}"\\\mbox{}
+		\item Sequential transfer learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on data from domain X to performing multiple (sequential) tasks B, C, D, .. in domain Y.}"\\\mbox{}
+		\item \textit{Important:} Labeled data only for task(s) from target domain \textit{Y}.
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Challenges I}
+
+\vfill
+
+\textbf{Low-resource environments:}
+
+\begin{itemize}
+	\item The larger the models, the more data is needed to train them
+	\item (Labeled) Data is scarce and expensive!
+	\item Many languages in the world are highly underrepresented in terms of existing resources\\
+						Often: \textit{Number of speakers} $\neq$ \textit{Amount of available written text}
+	\item Unlabeled (English) text data is ubiquitous
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Challenges II}
+
+\vfill
+
+\textbf{Cross-lingual transfer:}
+
+\begin{itemize}
+	\item Languages can be grouped into certain families
+	\item Patterns that a model learns for one language, might be beneficial for learning a second language 
+				(just as it is for us humans as well: For those who learned French in high school, learning Spanish
+				afterwards might be easier)
+	\item Again: Scarcity of resources; assume the following scenario:
+		\begin{itemize}
+			\item \textbf{Large} parallel corpus for languages A and B
+			\item \textbf{Large} parallel corpus for languages A and C
+			\item \textit{Small} parallel corpus for languages B and C
+			\item[$\to$] Training a model for B and C in isolation not the best idea
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\endlecture
+\end{document}
