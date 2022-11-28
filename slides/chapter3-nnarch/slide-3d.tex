@@ -263,18 +263,29 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{The Transformer architecture (1)}
+\begin{vbframe}{A Primer on the Transformer}
 
 \vfill
 
 \begin{itemize}
 	\item The Bahdanau model is still an RNN, just with attention on top.
-	\item Architecture that consists of attention only: Transformer (Vaswani et al. (2017), ``Attention is all you need'')
+	\item Another architecture that consists of attention only: 
+		\begin{itemize}
+			\item Transformer (Vaswani et al. (2017), ``Attention is all you need'')
+			\item No recurrence, \textit{just} Attention (as the name suggests)
+			\item Better parallelizable (as opposed to RNNs)
+			\item Will be introduced in chapter 5
+		\end{itemize}
 \end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
 
 % ------------------------------------------------------------------------------
 
@@ -586,8 +597,3 @@ $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta) = \mathrm{softmax}
 \vfill
 
 \end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\endlecture
-\end{document}

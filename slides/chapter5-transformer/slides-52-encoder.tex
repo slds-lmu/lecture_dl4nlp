@@ -82,6 +82,115 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Cross-attention (1)}
+
+\vfill
+
+\begin{itemize}
+	\item Here, we describe cross-attention. Self-attention can easily be derived by assuming $\vec X = \vec Y$. 
+	\item Let $\vec X \in \mathbb{R}^{J_x \times d_x}, \vec Y \in \mathbb{R}^{J_y \times d_y}$ be representations of $X, Y$ (e.g., stacked word embeddings, or the outputs of a previous layer)
+	\item Let $\theta = \{\vec W^{(q)} \in \mathbb{R}^{d_y \times d_q}, \vec W^{(k)} \in \mathbb{R}^{d_x \times d_k}, \vec W^{(v)} \in \mathbb{R}^{d_x \times d_v}\}$ be trainable weight matrices
+	\item We transform $\vec Y$ into a matrix of query vectors:
+	$$ \vec Q = \vec Y \vec W^{(q)} $$
+	\item We transform $\vec X$ into matrices of key and value vectors:
+	$$ \vec K = \vec X \vec W^{(k)} ; \qquad \vec V =  \vec X \vec W^{(v)}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Cross-attention (2)}
+
+\vfill
+
+\begin{itemize}
+	\item To calculate the $e$ scores (step 1 of the basic recipe), Vaswani et al. use a parameter-less scaled dot product instead of Bahdanau's complicated FFN:
+	$$ e_{j,j'} = a(\vec q_j, \vec k_{j'}) = \frac{\vec q_j^T \vec k_{j'}}{\sqrt{d_k}} $$
+	\item Note: This requires that $d_q = d_k$
+	\item Attention weights and outputs are defined like before (steps 2 and 3 of the basic recipe):
+	$$ \alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j'' = 1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+	$$ \vec o_j = \sum_{j'=1}^{J_x} \alpha_{j,j'} \vec v_{j'}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Cross-attention (3)}
+
+\vskip-2mm
+\begin{tikzpicture}[->, >=stealth]
+\foreach \x in {1,2,3}{
+\node (x\x) [vec] at (\x, -.5) {$\vec x_\x$};
+\node (k\x) [vec] at (\x, 1.5) {$\vec k_\x$};
+\node (v\x) [vec] at (\x, 3.5) {$\vec v_\x$};
+}
+\foreach \y in {1,2}{
+\node (y\y) [vec] at (\y+3.5, -.5) {$\vec y_\y$};
+\node (q\y) [vec] at (\y+3.5,1.5) {$\vec q_\y$};
+\node (o\y) [vec] at (\y+3.5,5.5) {$\vec o_\y$};
+\node (alpha\y) [vec, rectangle split, rectangle split parts=3] at (\y+3.5,3.5) {\nodepart{one} $\alpha_{\y,1}$ \nodepart{two} $\alpha_{\y,2}$ \nodepart{three} $\alpha_{\y,3}$};
+}
+
+\foreach \y in {1,2}{
+\draw (alpha\y.north) -- (o\y.south);
+\draw (q\y.north) -- (alpha\y.south);
+\draw (y\y.north) -- (q\y.south);
+\foreach \x in {1,2,3}{
+\draw (v\x.north) -- (o\y.south);
+\draw (k\x.north) -- (alpha\y.south);
+}}
+\foreach \x in {1,2,3}{
+\draw (x\x.north) -- (k\x.south);
+\draw [bend left=20] (x\x.north west) to (v\x.south west);
+}
+\node at (3.2, -1.5) {Cross-attention};
+\end{tikzpicture}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Cross-attention (4)}
+
+\vskip-2mm
+\hfill
+\begin{tikzpicture}[->, >=stealth]
+\foreach \x in {1,2,3}{
+\node (x\x) [vec] at (\x, -.5) {$\vec x_\x$};
+\node (k\x) [vec] at (\x, 1.5) {$\vec k_\x$};
+\node (v\x) [vec] at (\x, 3.5) {$\vec v_\x$};
+}
+\foreach \y in {1,2,3}{
+\node (q\y) [vec] at (\y+3,1.5) {$\vec q_\y$};
+\node (o\y) [vec] at (\y,5.5) {$\vec o_\y$};
+\node (alpha\y) [vec, rectangle split, rectangle split parts=3] at (\y+3,3.5) {\nodepart{one} $\alpha_{\y,1}$ \nodepart{two} $\alpha_{\y,2}$ \nodepart{three} $\alpha_{\y,3}$};
+}
+
+\foreach \y in {1,2,3}{
+\draw (alpha\y.north) -- (o\y.south);
+\draw (q\y.north) -- (alpha\y.south);
+\draw (x\y.north east) -- (q\y.south west);
+\foreach \x in {1,2,3}{
+\draw (v\x.north) -- (o\y.south);
+\draw (k\x.north) -- (alpha\y.south);
+}}
+\foreach \x in {1,2,3}{
+\draw (x\x.north) -- (k\x.south);
+\draw [bend left=20] (x\x.north west) to (v\x.south west);
+}
+\node at (3.2, -1.5) {Self-attention};
+\end{tikzpicture}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Self-Attention formalized}
 
 \vfill
@@ -239,8 +348,8 @@ $$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \
 
 \begin{itemize}
 \item We want to apply our attention recipe to every query vector $\vec q_j$
-\item We could simply loop over all time steps $1 \leq j \leq J_x$ and calculate each $\vec o_j$ independently.
-\item Then stack all $\vec o_j$ into an output matrix $\vec O \in \mathbb{R}^{J_x \times d_v}$
+\item We could simply loop over all time steps $1 \leq j \leq J_x$ (or $J_y$) and calculate each $\vec o_j$ independently.
+\item Then stack all $\vec o_j$ into an output matrix $\vec O \in \mathbb{R}^{J_x \times d_v}$ (or $\mathbb{R}^{J_y \times d_v}$
 \item But a loop does not use the GPU's capacity for parallelization
 \item So it might be unnecessarily slow
 \end{itemize}
@@ -251,7 +360,7 @@ $$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Parallelized attention}
+\begin{vbframe}{Parallelized Self-attention}
 
 \vfill
 
@@ -271,7 +380,7 @@ $$\vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta)$$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Parallelized attention}
+\begin{vbframe}{Parallelized Self-attention}
 
 \vfill
 
@@ -302,7 +411,7 @@ e_{J_x,1} & \ldots & e_{J_x,J_x} \\
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Parallelized scaled dot product attention}
+\begin{vbframe}{Parallelized scaled dot product Self-attention}
 
 \vfill
 
@@ -319,7 +428,7 @@ $$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^{J_x} \mathrm{exp}(
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Parallelized scaled dot product attention}
+\begin{vbframe}{Parallelized scaled dot product Self-attention}
 
 \vfill
 
@@ -365,6 +474,23 @@ $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta) = \mathrm{softmax}
 \item But: The memory requirements of $\vec E$ and $\vec A$ are $\mathcal{O}(J_x^2)$
 \item A length up to about 500 is usually ok on a medium-sized GPU (and most sentences are shorter than that anyway).
 \item But when we consider inputs that span several sentences (e.g., paragraphs or whole documents), we need tricks to reduce memory. These are beyond the scope of this lecture.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Add-On: Changes for Cross Attention}
+
+\vfill
+
+\begin{itemize}
+	  \item \textbf{Step 1}: Scaled dot-product $$\vec {E} = \frac{ \vec {Q} \vec {K}^T}{\sqrt{d_k}}; \quad \vec E \in \mathbb{R}^{J_y \times J_x}$$
+	  \item \textbf{Step 2}: Softmax $$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+		\item \textbf{Step 3}: Output $$\vec {O} = \vec {A} \vec {V}; \vec O \in \mathbb{R}^{J_y \times d_v}$$
+		\item As one-liner: $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta) = \mathrm{softmax}\Big(\frac{(\vec Y\vec W^{(q)} ) (\vec X\vec W^{(k)} )^T}{\sqrt{d_k}}\Big)(\vec X\vec W^{(v)} ) $$
 \end{itemize}
 
 \vfill
