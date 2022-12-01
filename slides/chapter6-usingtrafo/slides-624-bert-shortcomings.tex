@@ -5,7 +5,8 @@
 \newcommand{\titlefigure}{figure/bert.jpeg}
 \newcommand{\learninggoals}{
 \item Problem with the [MASK] token
-\item Inter-token dependencies}
+\item Inter-token dependencies
+\item Get aware of biases}
 
 \title{Using the Transformer}
 % \author{}
@@ -20,12 +21,19 @@
 
 \begin{frame}{Pretrain-finetune discrepancy}
 
+\vfill
+
 	\begin{itemize}
 		\item BERT \textit{artificially} introduces \texttt{[MASK]} tokens during pre-training
 		\item \texttt{[MASK]}-token does not occur during fine-tuning\\
 					$\rightarrow$ Lacks the ability to model joint probabilities\\
 					$\rightarrow$ Assumes independence of predicted tokens (given the context)
+		\item Other pre-training objectives (e.g. language modeling) don't have this issue
+		\item Further: BERT only learns from predicting the 15\% tokens which are \texttt{[MASK]}ed (or randomly replaced / kept as is)
 	\end{itemize}
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -75,9 +83,60 @@
 
 \begin{frame}{Bias}
 
+\vfill
+
+\begin{itemize}
+	\item Already known to exist in static pre-trained embeddings
+	\item E.g. for gender: \textit{Man} is to \textit{Doctor} as \textit{Woman} is to \textit{Nurse}
+	\item BERT also learns the patterns from the data it is trained on
+	\item Research on Detecting/Mitigating Bias receives a lot of attention
+\end{itemize}
+
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
+
+\begin{frame}{Bias -- Example \href{https://aclanthology.org/2021.acl-long.416.pdf}{\beamergotobutton{Nadeem et al. (2021)}}}
+
+\vfill
+
+\begin{itemize}
+	\item Nadeem et al. (2021) create a data set for measuring bias in LMs
+	\item Four categories: Gender, Profession, Race, Religion
+	\item Two types of probes: Intra- and Inter-sentence test sets
+\end{itemize}
+
+\begin{figure}%
+\includegraphics[width=7cm]{figure/stereoset.png}%
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Bias -- Example}
+
+\vfill
+
+\begin{itemize}
+	\item Calculate two scores:\\
+				$\to$ Stereotype Score (ideally $\approx 50$)\\
+				$\to$ Language Model Score (ideally $\approx 100$)
+	\item Combine both of them to measure both how good and how stereotypical a model is (ICAT Score)
+\end{itemize}
+
+\begin{figure}%
+\includegraphics[width=7cm]{figure/stereoset2.png}%
+\end{figure}
+
+\vfill
+
+\end{frame}
 
 % ------------------------------------------------------------------------------
 

@@ -1,0 +1,140 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bert.jpeg}
+\newcommand{\learninggoals}{
+\item Understand how impactful this architecture was
+\item See how this changed research in the field}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT -- Implications for future work}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{English Centricity of NLP}
+
+\vfill
+
+	\begin{itemize}
+		\item BERT trained on a corpus of English text
+		\item More importantly: Also only evaluated on English benchmarks (obviously)\\	
+					\href{https://gluebenchmark.com/}{\beamergotobutton{GLUE}}
+					\href{https://rajpurkar.github.io/SQuAD-explorer/}{\beamergotobutton{SQUAD}}
+					\href{https://www.qizhexie.com/data/RACE_leaderboard.html}{\beamergotobutton{RACE}}
+		\item Devlin et al. (2019) published different (monolingual) models, but only varying in size, not in language
+		\item Later: Multilingual BERT model \href{https://github.com/google-research/bert/blob/master/multilingual.md}{\beamergotobutton{mBERT}} for 100+ languages
+		\item This leads to a shared embedding space for all the languages included in the model
+		\item Before this: Need for alignment of separately learned embedding spaces
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTs for all languages}
+
+\vfill
+
+\begin{itemize}
+	\item The breakthrough performance of BERT in the English Language triggered a wave of new
+				BERT models in different languages. Just to name a few:
+			\begin{itemize}
+				\item \href{https://huggingface.co/bert-base-german-cased}{\beamergotobutton{German BERT}}
+				\item \href{https://huggingface.co/flaubert/flaubert_base_cased}{\beamergotobutton{FlauBERT (French)}}
+				\item \href{https://huggingface.co/dccuchile/bert-base-spanish-wwm-cased}{\beamergotobutton{BETO (Spanish)}}
+				\item \href{https://huggingface.co/GroNLP/bert-base-dutch-cased}{\beamergotobutton{BERTje (Dutch)}}
+				\item \href{https://huggingface.co/bert-base-chinese}{\beamergotobutton{Chinese BERT}}
+				\item \href{https://huggingface.co/DeepPavlov/rubert-base-cased}{\beamergotobutton{RuBERT (Russian)}}
+				\item \href{https://huggingface.co/dbmdz/bert-base-italian-cased}{\beamergotobutton{Italian BERT}}
+				\item ...
+			\end{itemize}
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pretrain-finetune + Transformer backbone}
+
+\vfill
+
+	\begin{itemize}
+		\item Before BERT: 
+			\begin{itemize}
+				\item ELMo (and other specialized architectures) very popular
+				\item Examples (also CNNs): 
+							\href{https://arxiv.org/abs/1408.5882}{\beamergotobutton{Kim, 2014}} 
+							\href{https://proceedings.neurips.cc/paper/2015/file/250cf8b51c773f3f8dc8b4be867a9a02-Paper.pdf}{\beamergotobutton{Zhang et al., 2016}}
+			\end{itemize}
+		\item After BERT:
+			\begin{itemize}
+				\item Using a pre-trained model and fine-tuning it is the de-facto standard
+				\item CNNs and RNNs rarely used, different variants of the transformer or other self-attention based mechanisms are the backbone of nearly every architecture
+			\end{itemize}
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTology \href{https://aclanthology.org/2020.tacl-1.54.pdf}{\beamergotobutton{Rodgers et al., 2020}}}
+
+\vfill
+
+\textbf{Post-BERT architectures:}
+
+\begin{itemize}
+\item Most architectures still rely on either an encoder- \textit{or} a decoder-style type of model (e.g. \href{https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf}{\beamergotobutton{GPT2}}, \href{https://arxiv.org/pdf/1906.08237.pdf}{\beamergotobutton{XLNet}})
+\item \textit{BERTology:} Many papers/models which aim at ..
+			\begin{itemize}
+				\item .. explanining BERT (e.g. \href{https://arxiv.org/pdf/1906.02715.pdf}{\beamergotobutton{Coenen et al., 2019}}, \href{https://arxiv.org/pdf/1905.10650.pdf}{\beamergotobutton{Michel et al., 2019}})
+				\item .. improving BERT (\href{https://arxiv.org/pdf/1907.11692.pdf}{\beamergotobutton{RoBERTa}}, \href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{ALBERT}})
+				\item .. making BERT more efficient (\href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{ALBERT}}, \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{DistilBERT}})
+				\item .. modifying BERT (\href{https://arxiv.org/pdf/1910.13461.pdf}{\beamergotobutton{BART}})
+			\end{itemize}
+\item Overview on many different papers:\\
+			\href{https://github.com/tomohideshibata/BERT-related-papers}{https://github.com/tomohideshibata/BERT-related-papers}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTology -- Example}
+
+\vfill
+
+\textbf{Examining/Interpreting Attention patterns:}
+
+\begin{figure}%
+\includegraphics[width=10cm]{figure/att-pattern-bert.png}%
+\end{figure}
+
+\begin{itemize}
+	\item Attempt to "understand" what the model has learned
+	\item Still relevant today when seeking interpretability
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
