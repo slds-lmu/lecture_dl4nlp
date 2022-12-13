@@ -18,27 +18,34 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{RoBERTa}
+\begin{frame}{Improvements in Pre-Training}
 
-\vspace{1cm}
+\vfill
 
-	\textbf{Improvements in Pre-Training:}
+	\textbf{Short summary:}
 
 	\begin{itemize}
-		\item Authors claim that BERT is seriously undertrained
 		\item Change of the \texttt{MASK}ing strategy  \\
 					$\rightarrow$ BERT masks the sequences once before pre-training  \\
 					$\rightarrow$ RoBERTa uses dynamic \texttt{MASK}ing  \\
 					$\Rightarrow$ RoBERTa sees the same sequence \texttt{MASK}ed differently
 		\item RoBERTa does not use the additional NSP objective during pre-training
-		\item 160 GB of pre-training resources instead of 13 GB
-		\item Pre-training is performed with larger batch sizes (8k)
+		\item Authors claim that BERT is seriously "undertrained"
+			\begin{itemize}
+				\item 160 GB of pre-training resources instead of 13 GB
+				\item Pre-training is performed with larger batch sizes (8k)
+			\end{itemize}
 	\end{itemize}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Dynamic vs. Static Masking \href{https://arxiv.org/pdf/1907.11692.pdf}{\beamergotobutton{Liu et al., 2019}}}
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
 
 	\textbf{Static Masking (BERT):}
 
@@ -59,6 +66,99 @@
 		\item Model sees each training instance in ten different "versions"\\
 					(each version four times) during pre-training
 	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/roberta-dynamic.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1907.11692.pdf}{\footnotesize Liu et al. (2019)}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{No NSP}
+
+\vfill
+
+	\begin{itemize}
+		\item Described as important part of the pre-training process in BERT
+		\item Liu et al. report that it hurts performance
+		\item[$\to$] Especially for QNLI, MNLI, and SQuAD 1.1
+		\item Conduct experiments in multiple settings: 
+			\begin{itemize}
+				\item SEGMENT-PAIR+NSP
+				\item SENTENCE-PAIR+NSP
+				\item FULL-SENTENCES
+				\item DOC-SENTENCES
+			\end{itemize}
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{RoBERTa \href{https://arxiv.org/pdf/1907.11692.pdf}{\beamergotobutton{Liu et al., 2019}}}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/roberta-nsp.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1907.11692.pdf}{\footnotesize Liu et al. (2019)}
+\end{figure}
+\footnotesize
+\textit{Note:} XLNet: see next Chapter.
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Changes in pre-training}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/roberta-undertrained.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1907.11692.pdf}{\footnotesize Liu et al. (2019)}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Changes in pre-training}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/roberta-undertrained2.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1907.11692.pdf}{\footnotesize Liu et al. (2019)}
+\end{figure}
+\footnotesize
+\textit{Note:} XLNet: see next Chapter.
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
