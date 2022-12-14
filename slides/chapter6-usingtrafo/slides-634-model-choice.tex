@@ -1,0 +1,113 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Huggingface model hub
+\item Grasp the difficulty of model choice}
+
+\title{Using the Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Add-On: Which model to use?}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{The Huggingface Hub}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/hf-models.png}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{A single model}
+
+\vfill
+
+\textbf{Example}: \url{https://huggingface.co/bert-base-uncased}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/hf-example.png}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Model recycling}
+
+\vfill
+
+\textbf{A variety of models:}
+
+\begin{itemize}
+	\item Everyone can push his/her fine-tuned model to the hub
+ 	\item Result: A multitude of different models available for each architecture
+	\item[$\to$] \textit{Burning Question:} Which one should I use??
+		\begin{itemize}
+			\item The "original" pre-trained version
+			\item A fine-tuned model on a similar task
+			\item An ensemble?
+			\item An averaged model?
+			\item Something else?
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Model recycling}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/model-recycling.png}\\
+		
+		Project website: \url{https://ibm.github.io/model-recycling/}\\
+		
+		Paper: \url{https://arxiv.org/pdf/2211.00107.pdf}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Model recycling}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/model-recycling2.png}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

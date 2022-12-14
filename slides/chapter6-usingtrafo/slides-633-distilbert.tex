@@ -47,9 +47,16 @@
 \textbf{Distillation:}
 
 \begin{itemize}
-	\item Temperature $T$ in the softmax: $q_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$
-	\item Knowledge transfer via soft targets with high $T$ from original model.
-	\item When true labels are known: Weighted average of two different objective functions
+	\item Knowledge transfer via \textit{soft targets} from original model
+		\begin{itemize}
+			\item \textit{Hard targets:} $[0, 0, 0, 1, 0]$
+			\item \textit{Soft targets:} $[0.01, 0.05, 0.03, 0.87, 0.04]$
+			\item[$\to$] Train the student to \textit{mimick} the teacher's behaviour
+		\end{itemize}
+	\item \textit{No need to know the true labels of the training instances}
+	\item[$\to$] When true labels are known: Weighted average of two different objective functions possible (on soft and hard targets)
+	\item Additional controlling parameter:
+	\item[$\to$] Temperature $T$ in the softmax: $$q_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$$
 \end{itemize}
 
 \vfill
@@ -71,9 +78,11 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+\begin{frame}{Student architecture}
 
-\textbf{Student architecture (\textit{DistilBERT}):}
+\vfill
+
+\textbf{Characteristics of \textit{DistilBERT}:}
 
 \begin{itemize}
 	\item Half the number of layers compared to BERT*
@@ -82,26 +91,47 @@
 	\item Same pre-training data as BERT (Wiki + BooksCorpus)
 \end{itemize}
 
-\vspace{.3cm}
-
-\textbf{Training and performance}
-
-\begin{itemize}
-	\item Distillation loss $L_{ce} = \sum_i t_i \cdot \log(s_i)$ + MLM-Loss $L_{mlm}$ + \\
-				Cosine-Embedding-Loss $L_{cos}$
-	\item Drops NSP, use dynamic masking, train with large batches
-\end{itemize}
-
 \vspace{1cm}
 
 {\footnotesize *Rationale for "only" reducing the number of layers:\\
 Larger influence on the computation efficiency compared to e.g. hidden size dimension}
-	
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+\begin{frame}{Training and performance}
+
+\vfill
+
+\textbf{Combination of different loss functions:}
+
+\begin{itemize}
+	\item Distillation loss $L_{ce} = \sum_i t_i \cdot \log(s_i)$
+	\item Masked language modeling loss $L_{mlm}$ (cf. BERT)
+	\item Cosine-Embedding-Loss $L_{cos}$\\
+				(\textit{Rationale:} Keep DistilBERT's embeddings close to the ones from BERT)
+\end{itemize}
+
+\vspace{.3cm}
+
+\textbf{Use improvement from RoBERTa:}
+
+\begin{itemize}
+	\item Stop using the NSP loss
+	\item Dynamic masking for MLM
+	\item Train with large batches
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Benchmark performance}
 
 \vfill
 
@@ -109,7 +139,7 @@ Larger influence on the computation efficiency compared to e.g. hidden size dime
 
 	\begin{figure}
 		\centering
-		\includegraphics[width = 9cm]{figure/distilbert-vs-sota.png}\\ 
+		\includegraphics[width = 11cm]{figure/distilbert-vs-sota.png}\\ 
 		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.01108.pdf}{\footnotesize Sanh et al. (2019)}
 	\end{figure}
 
@@ -119,7 +149,7 @@ Larger influence on the computation efficiency compared to e.g. hidden size dime
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{DistilBERT \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{Sanh et al. (2019)}}}
+\begin{frame}{Examining the importance of the losses}
 
 \vfill
 
@@ -127,7 +157,23 @@ Larger influence on the computation efficiency compared to e.g. hidden size dime
 
 	\begin{figure}
 		\centering
-		\includegraphics[width = 9cm]{figure/distilbert-ablation.png}\\ 
+		\includegraphics[width = 11cm]{figure/distilbert-ablation.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.01108.pdf}{\footnotesize Sanh et al. (2019)}
+	\end{figure}
+
+\vfill
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Size and speed}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/distilbert-size-speed.png}\\ 
 		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.01108.pdf}{\footnotesize Sanh et al. (2019)}
 	\end{figure}
 
