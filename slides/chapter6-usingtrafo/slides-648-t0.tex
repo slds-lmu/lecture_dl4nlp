@@ -4,8 +4,7 @@
 
 \newcommand{\titlefigure}{figure/sesamestreet.jpeg}
 \newcommand{\learninggoals}{
-\item Understand the improvements over BERT
-\item Dynamic Masking}
+\item }
 
 \title{Using the Transformer}
 % \author{}
@@ -13,27 +12,23 @@
 \date{}
 
 \begin{document}
-\lecturechapter{RoBERTa (Liu et al., 2019)}
+\lecturechapter{T0 (Sanh et al., 2022)}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{RoBERTa}
+\begin{frame}{Illustration}
 
-\vspace{1cm}
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/t0.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/2110.08207.pdf}{\footnotesize Sanh et al. (2022)}
+	\end{figure}
+	
+\vfill
 
-	\textbf{Improvements in Pre-Training:}
-
-	\begin{itemize}
-		\item Authors claim that BERT is seriously undertrained
-		\item Change of the \texttt{MASK}ing strategy  \\
-					$\rightarrow$ BERT masks the sequences once before pre-training  \\
-					$\rightarrow$ RoBERTa uses dynamic \texttt{MASK}ing  \\
-					$\Rightarrow$ RoBERTa sees the same sequence \texttt{MASK}ed differently
-		\item RoBERTa does not use the additional NSP objective during pre-training
-		\item 160 GB of pre-training resources instead of 13 GB
-		\item Pre-training is performed with larger batch sizes (8k)
-	\end{itemize}
 \end{frame}
 
 % ------------------------------------------------------------------------------
