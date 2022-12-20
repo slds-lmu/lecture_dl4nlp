@@ -5,8 +5,7 @@
 \newcommand{\titlefigure}{figure/sesamestreet.jpeg}
 \newcommand{\learninggoals}{
 \item Understand the improvements over BERT
-\item Permutation language modeling
-\item }
+\item Permutation language modeling}
 
 \title{Using the Transformer}
 % \author{}
@@ -14,65 +13,108 @@
 \date{}
 
 \begin{document}
-\lecturechapter{XLNet (Yang et al., 2019)}
+\lecturechapter{XLNet \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{\beamergotobutton{Yang et al., 2019}}}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{XLNet \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{\beamergotobutton{Yang et al., 2019}}}
+\begin{frame}{Conceptual Differences}
 
-	\textbf{Autoregressive (AR) language modeling vs. Autoencoding (AE)}
+\vfill
+
+	\textbf{Autoregressive (AR) language modeling}
 	
 	\begin{itemize}
-		\item \textit{AR:} Factorizes likelihood to $p(\mathbf{x}) = \prod_{t=1}^{T} p(x_t | \mathbf{x}{< t})$
-		\item Only uni-directional (backward factorization instead would also be possible)
-		\item \textit{AE:} Objective to reconstruct masked tokens $\bar{\mathbf{x}}$ from corrupted sequence $\hat{\mathbf{x}}$:
-					$p(\bar{\mathbf{x}}|\hat{\mathbf{x}}) = \prod_{t=1}^{T} m_t \cdot p(x_t | \hat{\mathbf{x}})$, $m_t$ as masking indicator
+		\item Factorizes likelihood to $$p(\mathbf{x}) = \prod_{t=1}^{T} p(x_t | \mathbf{x}{< t})$$
+		\item Only uni-directional (backward factorization also possible)
 	\end{itemize}
 
-	\vspace{.3cm}
-	
-	\textbf{Drawbacks / Advantages}
+	\textbf{}\\
+
+	\textbf{vs. (Denoising) Autoencoding (AE)}
 	
 	\begin{itemize}
-		\item No corruption of input sequences when using AR approach
-		\item AE approach induces independence assumption between corrupted tokens
-		\item AR approach only conditions on left side context\\$\Rightarrow$ No bidirectionality
+		\item Reconstruct masked tokens $\bar{\mathbf{x}}$ from corrupted sequence $\hat{\mathbf{x}}$:
+					$$p(\bar{\mathbf{x}}|\hat{\mathbf{x}}) = \prod_{t=1}^{T} m_t \cdot p(x_t | \hat{\mathbf{x}}),$$ with $m_t$ as masking indicator
+		\item Flexibility: Also other "\textit{corruptions}" possible
+		\item[$\to$] Replacing words with predictions (cf. ELECTRA)
+		\item[$\to$] Shuffling tokens or dropping them
 	\end{itemize}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Alternative objective funktion}
+\begin{frame}{Conceptual Differences}
+
+\vfill
+	
+	\textbf{Drawbacks / Advantages}
+	
+	\begin{itemize}
+		\item No corruption (needed) of input sequences when using AR approach
+		\item "Causal" structure in AR approach (sometimes needed)
+		\item AE approach induces independence assumption between corrupted tokens
+		\item[$\to$] \textbf{Why?}
+		\item AR approach only conditions on left side context
+		\item[$\to$] No (deep) bidirectionality possible (just e.g. biLSTMs)
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Alternative objective function}
+
+\vfill
 
 	\textbf{Permutation language modeling (PLM)}
 	
 	\begin{itemize}
 		\item Solves the pretrain-finetune discrepancy
-		\item Allows for bidirectionality while keeping AR objective
+		\item[$\to$] No artificial \texttt{[MASK]} token is introduced
+		\item Allows for bidirectionality while keeping an AR objective
+		\item[$\to$] Best of both worlds
 		\item Consists of two "\textit{streams}" of the Attention mechanism
 				\begin{itemize}
 					\item Content-stream attention
 					\item Query-stream attention
 				\end{itemize}
 	\end{itemize}
+	
+\vfill
 
-	\vspace{.3cm}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Alternative objective function}
+
+\vfill
 	
 	\textbf{Manipulating the factorization order}
 	
 	\begin{itemize}
-		\item Consider permutations $\mathbf{z}$ of the index sequence $[1,2, \hdots, T]$\\
-					$\rightarrow$ Used to permute the factorization order, \textit{not} the sequence order.
-		\item Original sequence order is retained by using positional encodings
+		\item Consider permutations $\mathbf{z}$ of the index sequence $[1,2, \hdots, T]$
+		\item[$\to$] Used to permute the factorization order, \textit{not} the sequence order.
+		\item Original order of the sequence is retained by using positional encodings
 		\item PLM objective (with $\mathcal{Z}_T$ as set of all possible permutations):
 					$$\max_{\theta} \quad \mathds{E}_{\mathbf{z}\sim\mathcal{Z}_T} \left[ \sum_{t=1}^{T} \log p_\theta (x_{z_t} | \mathbf{x}_{\mathbf{z}_{< t}}) \right]$$
 	\end{itemize}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Content- vs. Query-stream}
+
+\vfill
 
 	\textbf{Content-stream}
 	
@@ -83,8 +125,36 @@
 		\item Sets of queries ($Q$), keys ($K$) and values ($V$) from content stream*
 		\item Yields a \textit{content embedding} denoted as $h_{\theta}(\mathbf{x}_{\mathbf{z}_{\leq t}})$
 	\end{itemize}
+	
+	{\footnotesize *For a nice visual disentanglement, see \href{https://arxiv.org/pdf/1906.08237.pdf}{\beamergotobutton{Figures in A.7}}}
+	
+\vfill
 
-	\vspace{.3cm}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Content- vs. Query-stream}
+
+\vfill
+
+	\textbf{Content-stream}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/xlnet-a1.png}\\ 
+		{\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{Yang et al. (2019)}}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Content- vs. Query-stream}
+
+\vfill
 	
 	\textbf{Query-stream}
 	
@@ -97,21 +167,68 @@
 	\vspace{.3cm}
 	
 	{\footnotesize *For a nice visual disentanglement, see \href{https://arxiv.org/pdf/1906.08237.pdf}{\beamergotobutton{Figures in A.7}}}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Content- vs. Query-stream}
+
+\vfill
+
+	\textbf{Content-stream}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/xlnet-content.png}\\ 
+		{\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{Yang et al. (2019)}}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Content- vs. Query-stream}
+
+\vfill
+
+	\textbf{Query-stream}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/xlnet-query.png}\\ 
+		{\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{Yang et al. (2019)}}
+	\end{figure}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{XLNet -- Graphical representation}
+
+\vfill
+
 	\begin{figure}
 		\centering
 		\includegraphics[width = 12cm]{figure/xlnet}\\ 
 		{\tiny (a) content-stream; (b) query-stream; (c) whole model\\\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{Yang et al. (2019)}}
 	\end{figure}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{XLNet -- Model Input}
+
+\vfill
 
 \textbf{Generation of samples:}
 
@@ -142,12 +259,17 @@
 		\item XLNet uses relative encodings ($R_{i - j}$)
 	\end{itemize}
 \end{itemize}
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{XLNet -- Special remarks}
 	
+\vfill
+
 	\begin{itemize}
 		\item \textbf{Partial Prediction:} Only predict the last tokens in a factoriztion order (reduces optimization difficulty)
 					{\small $$\max_{\theta} \quad \mathds{E}_{\mathbf{z}\sim\mathcal{Z}_T} \left[ \sum_{t=c+1}^{|\mathbf{z}|} \log p_\theta (x_{z_t} | \mathbf{x}_{\mathbf{z}_{< t}}) \right],\quad \mbox{with $c$ as cutting point}$$}
@@ -159,12 +281,17 @@
 		{\tiny Prediction of [New, York] given the factorization order [is, a, city, New, York]\\\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf} \it Yang et al. (2019)}
 	\end{figure}
 	\end{itemize}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{XLNet -- SOTA performance}
-\small
+
+\vfill
+
 	\textbf{Performance differences to BERT:}
 
 	\begin{figure}
@@ -180,6 +307,9 @@
 		\includegraphics[width = 9cm]{figure/xlnet-sota.png}\\ 
 		\footnotesize{Source:} \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}{\footnotesize Yang et al. (2019)}
 	\end{figure}
+	
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
