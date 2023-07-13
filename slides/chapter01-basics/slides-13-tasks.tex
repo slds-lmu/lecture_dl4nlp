@@ -9,7 +9,7 @@
 \item Understand the different types of tasks
 \item Linguistic tasks vs. higher-level tasks}
 
-\title{ML Basics}
+\title{Basics}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
@@ -20,7 +20,57 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Categorization of NLP Tasks}
+\begin{vbframe}{categorization of nlp tasks}
+
+\vfill
+
+\textbf{Distinction between:}
+
+	\begin{itemize}
+		\item Language modeling
+		\item Token-level classification
+		\item Sequence-level classification
+		\item Similarity / Retrieval
+		\item Text generation
+	\end{itemize}
+	
+\vspace{.3cm}
+
+\textbf{Connection to learning paradigms:}
+
+	\begin{itemize}
+		\item Given the task, some learning paradigms are more suitable
+		\item Tasks can be formulated differently to fit a given learning paradigm
+		\item Amount of available (labeled) data might depend on task
+		\item Presence/Absence of labels important to consider
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{language modeling}
+	
+\vfill
+
+\textbf{Predict the next token:}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 11cm]{figure/language-modeling.png}\\ 
+		\includegraphics[width = 11cm]{figure/language-modeling2.png}\\
+	\beamergotobutton{\href{https://thegradient.pub/understanding-evaluation-metrics-for-language-models/}{Source: The Gradient}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{categorization of nlp tasks}
 
 \vfill
 
@@ -28,7 +78,7 @@
 
 	\begin{itemize}
 		\item \textit{Token-level Classification}: Problems on a word/token level
-		\item Modeling relationships between words/tokens (can also be rephrased to a token-level classification task)
+		\item Modeling relationships \textit{between} words/tokens %(can also be rephrased to a token-level classification task)
 		\item \textit{Note:} The latter one can also be formulated in such a way,\\that it can be solved as a \textit{token-level classification} task
 	\end{itemize}
 	
@@ -38,7 +88,9 @@
 
 	\begin{itemize}
 		\item \textit{Sequence-level Classification}: Problems on a sequence level
+		\item \textit{Retrieval}: Assess (semantic) similarity on document-level
 		\item Producing sequences of text based on an input sequences,\\known as \textit{seq2seq} tasks
+		\item \textit{Note:} The latter one is also an instance of a generation task
 	\end{itemize}
 
 \vfill
@@ -47,62 +99,53 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of low-level NLP tasks}
+\begin{frame}{low-level: sequence tagging}
 
+\vspace{1cm}
 
-\textbf{Sequence tagging}
+\textbf{POS-tagging (part of speech):}
 
-\begin{itemize}
-	\item POS-tagging (part of speech)
-\end{itemize}
-	
 \begin{exampleblock}{Example}
 	Time flies   like   an   arrow.\\Fruit   flies   like   a   banana.
 \end{exampleblock}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of low-level NLP tasks}
+\begin{frame}[noframenumbering]{low-level: sequence tagging}
 
+\vspace{1cm}
 
-\textbf{Sequence tagging}
+\textbf{POS-tagging (part of speech):}
 
-\begin{itemize}
-	\item POS-tagging (part of speech)
-\end{itemize}
+\begin{exampleblock}{Example}
+	Time flies   like   an   arrow.\\Fruit   flies   like   a   banana.
+\end{exampleblock}
 
 \begin{exampleblock}{Example}
 		Time\POS{NN} flies\POS{VBZ}  like\POS{IN}   an\POS{DT}   arrow\POS{NN}.		\\ Fruit\POS{NN}   flies\POS{NN}   like\POS{VB}   a\POS{DT}   banana\POS{NN}.
 \end{exampleblock}
 
+\vspace{.5cm}
+
 \begin{footnotesize}
 IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3rd person singular present; DT = determiner; NN = singular noun
 \end{footnotesize}
 
-
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Low-level NLP tasks}
+\begin{frame}{low-level: structure prediction}
 	
-\textbf{Sequence tagging}
+\vfill
 
-\begin{itemize}
-	\item POS-tagging (part of speech)
-\end{itemize}
-
-\textbf{Structure prediction}
-
-\begin{itemize}
-	\item Chunking/Parsing
-\end{itemize}
+\textbf{Chunking/Parsing:}
 
 \begin{columns}[T,onlytextwidth]
 \column{0.5\textwidth}
@@ -176,25 +219,11 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Examples of low-level NLP tasks}
+\begin{frame}{low-level: semantics}
 
-\textbf{Sequence tagging}
+\vfill
 
-\begin{itemize}
-	\item POS-tagging (part of speech)
-\end{itemize}
-
-\textbf{Structure prediction}
-
-\begin{itemize}
-	\item Chunking/Parsing
-\end{itemize}
-
-\textbf{Semantics}
-
-\begin{itemize}
-	\item Word sense disambiguation
-\end{itemize}
+\textbf{Word sense disambiguation:}
 
 	\begin{exampleblock}{Example}
 		Time flies   like   an   arrow. \hfil Fruit   flies   like   a   banana. \\
@@ -208,7 +237,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Example: Named Entity Recognition (NER)}
+\begin{frame}{Named Entity Recognition (NER)}
 
 \vfill
 
@@ -233,10 +262,12 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 \vfill
 
+\textbf{Pre-train/fine-tune:}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width = 8cm]{figure/toklevel.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize \it Devlin et al. (2018)}
+		\includegraphics[width = 7cm]{figure/toklevel.png}\\ 
+		\beamergotobutton{\href{https://aclanthology.org/N19-1423.pdf}{Source: Devlin et al., 2019}}
 	\end{figure}
 
 \vfill
@@ -245,7 +276,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{High-level NLP tasks}
+\begin{frame}{high-level NLP tasks}
 
 \vfill
 
@@ -282,14 +313,14 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Sequence-level classification}
+\begin{vbframe}{sequence-level classification}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/seqlevel.png}\\ 
-		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+		\beamergotobutton{\href{https://jalammar.github.io/illustrated-bert/}{Source: Jay Alammar}}
 	\end{figure}
 	
 \textbf{Notes:}
@@ -305,7 +336,44 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Example: Machine Translation}
+\begin{vbframe}{sequence-level classification}
+
+\vfill
+
+\textbf{Reformulation as generative task:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{../chapter06-t5/figure/t5.png}\\ 
+		\beamergotobutton{\href{https://jmlr.org/papers/v21/20-074.html}{Source: Raffel et al., 2020}}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{retrival (cf. previous chapter)}
+	
+\vfill
+
+\textbf{Document retrieval}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/retrieval.png}\\ 
+	\beamergotobutton{\href{https://www.analyticsvidhya.com/blog/2022/02/search-engines-using-deep-learning/}{Source: Analytics Vidhya}}
+\end{figure}
+
+\vfill
+
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{generation: machine translation}
 
 \vfill
 
@@ -325,7 +393,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 		\begin{itemize}
 			\item Driven by IBM guys
 		\end{itemize}
-	\item Neural Machine Translation (last few years)
+	\item Neural Machine Translation (10s -- now)
 		\begin{itemize}
 			\item Based on neural networks (LSTMs, Transformers)
 		\end{itemize}
@@ -339,12 +407,12 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 \begin{vbframe}{Seq2Seq modeling}
 
-\vfill
+\vspace{1cm}
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/seq2seq.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1409.3215.pdf}{\footnotesize \it Sutskever et al. (2014)}
+	\beamergotobutton{\href{https://arxiv.org/pdf/1409.3215.pdf}{Source: Sutskever et al., 2014}}
 	\end{figure}
 
 \textbf{Notes:}
@@ -352,7 +420,6 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 \begin{itemize}
 	\item In the meantime: Transformers replaced LSTMs
 	\item Overall architecture (\textit{Encoder-Decoder}) still used
-	\item[]
 \end{itemize}
 
 \vfill
@@ -363,12 +430,12 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 \begin{vbframe}{Seq2Seq modeling}
 
-\vfill
+\vspace{1cm}
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/seq2seq.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1409.3215.pdf}{\footnotesize \it Sutskever et al. (2014)}
+	\beamergotobutton{\href{https://arxiv.org/pdf/1409.3215.pdf}{Source: Sutskever et al., 2014}}
 	\end{figure}
 
 \textbf{Used for:}
@@ -385,7 +452,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Benchmarking: GLUE}
+\begin{vbframe}{benchmarking: traditional nlu}
 
 \vfill
 
@@ -397,7 +464,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/glue.png}\\ 
-		\footnotesize{Source:} \href{https://openreview.net/pdf?id=rJ4km2R5t7}{\footnotesize \it Wang et al. (2018)}
+	\beamergotobutton{\href{https://openreview.net/pdf?id=rJ4km2R5t7}{Source: Wang et al., 2018}}
 	\end{figure}
 
 \vfill
@@ -406,7 +473,63 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Benchmarking: GLUE}
+\begin{vbframe}{benchmarking: generation}
+
+\vfill
+
+\begin{itemize}
+	\item \textbf{WinoGrande} 
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/winogrande.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1907.10641}{Source: Sakaguchi et al., 2019}}
+	\end{figure}
+	\item \textbf{HellaSwag} 
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/hellaswag.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1905.07830}{Source: Zellers et al., 2019}}
+	\end{figure}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{benchmarking: generation}
+
+\vfill
+
+\begin{itemize}
+	\item \textbf{LAMBADA}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/lambada.png}\\ 
+	\beamergotobutton{\href{https://aclanthology.org/P16-1144/}{Source: Paperno et al., 2016}}
+	\end{figure}
+	\item \textbf{PIQA}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/piqa.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1911.11641}{Source: Bisk et al., 2019}}
+	\end{figure}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{benchmarking: traditional nlu}
 
 \vfill
 
@@ -438,7 +561,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Benchmarking: GLUE}
+\begin{vbframe}{benchmarking: traditional nlu}
 
 \vfill
 
@@ -470,12 +593,6 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 \vfill
 
 \end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\endlecture
-\end{document}
-
 
 
 % ------------------------------------------------------------------------------

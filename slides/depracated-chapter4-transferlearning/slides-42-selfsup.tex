@@ -160,52 +160,5 @@ $\Rightarrow$ \quad (fox, quick); (fox, brown); (fox, jumps); (fox, over)
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Pre-training vs. fine-tuning}
-
-\vfill
-
-\textbf{Pre-training:}
-
-	\begin{itemize}
-		\item Using unlabeled corpora in conjunction with self-supervised objectives 
-					is commonly referred to as \textit{Pre-Training} the model
-		\item Generation of samples for pre-training basically effortless, exploiting 
-					the inherent structure of the text
-		\item Construction of different self-supervised objectives, which are assumed
-			\begin{itemize}
-				\item to cover different phenomena better than the others
-				\item to work more efficiently for learning
-			\end{itemize}
-	\end{itemize}
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Pre-training vs. fine-tuning}
-
-\vfill
-
-\textbf{Fine-tuning:}
-
-	\begin{itemize}
-		\item The second phase of transfer learning, i.e. adapting the pre-trained model
-					to a labeled data set for a specific downstream task is referred to as \textit{Fine-Tuning}
-		\item Far less labeled data required compared to a scenario w/o pre-training
-		\item Also possible (cf. chapter 7): No fine-tuning, but .. 
-			\begin{itemize}
-				\item \textit{Zero-Shot Transfer} w/o ANY labeled data
-				\item \textit{Few-Shot Transfer} w/ FEW labaled data points
-			\end{itemize}
-		\item In both of the latter cases, good pre-training becomes even more important
-	\end{itemize}
-	
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
 \endlecture
 \end{document}

@@ -2,12 +2,12 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/word_emb.png}
+\newcommand{\titlefigure}{figure/linear-relationships.png}
 \newcommand{\learninggoals}{
 \item Understand what word embeddigns are
-\item Learn the main methods of creating them}
+\item Learn the main methods for creating them}
 
-\title{Advanced NN Architectures}
+\title{Basics}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
@@ -23,8 +23,8 @@
 \vfill
 
 \begin{itemize}
-	\item How to represent words in a neural network?
-	\item Possible solution: indicator vectors of length $|V|$ (vocabulary size).
+	\item How to represent words/tokens in a neural network?
+	\item Possible solution: one-hot encoded indicator vectors of length $|V|$.
 \end{itemize}
 
 \begin{center}
@@ -55,7 +55,7 @@
 	\item \ques Why is this a bad idea?
 		\begin{itemize}
 			\item Parameter explosion ($|V|$ might be $> 1M$)
-			\item All word vectors are orthogonal to each other $\rightarrow$ no notion of word similarity
+			\item All word vectors are orthogonal to each other\\$\rightarrow$ no notion of word similarity
 		\end{itemize}
 \end{itemize}
 
@@ -93,15 +93,20 @@
 
 \vfill
 
+\textbf{Supervised training?}
+
 \begin{itemize}
-	\item Training from scratch: Initialize embedding matrix randomly and learn it during training phase
-	\item $\rightarrow$ words that play similar roles w.r.t. task get similar embeddings
-	\item e.g., from sentiment classification, we might expect $\vec w^{(\text{great})} \approx \vec w^{(\text{awesome})}$
+	\item \textit{Training from scratch}:
+	\\ $\rightarrow$ Initialize embeddings randomly and learn it during training phase
+	\\ $\rightarrow$ Words that play similar roles w.r.t. task get similar embeddings
+	\item \textit{From sentiment classification}: 
+	\\ $\rightarrow$ We might expect $\vec w^{(\text{great})} \approx \vec w^{(\text{awesome})}$
 	\item \ques What could be a problem at test time?
 	\begin{itemize}
 		\item If training set is small, many words are unseen during training and therefore have random vectors
 	\end{itemize}
-	\item We typically have more unlabelled than labelled data. Can we learn embeddings from the unlabelled data?
+	\item We typically have more unlabeled than labeled data.
+	\\ $\rightarrow$ Can we learn embeddings from the unlabeled data?
 \end{itemize}
 
 \vfill
@@ -115,9 +120,16 @@
 \vfill
 
 \begin{itemize}
-	\item Distributional hypothesis: ``a word is characterized by the company it keeps"' (Firth, 1957)
-	\item Basic idea: learn similar vectors for words that occur in similar contexts
-	\item Word2Vec, FastText, Glove
+	\item Distributional hypothesis: 
+	\\ {\centering ``\textit{A word is characterized by the company it keeps}``}
+	\\ {\centering (J.R. Firth, 1957)}
+	\item Idea: Learn similar vectors for words that occur in similar contexts
+	\item Three different (milestone) methods:
+		\begin{itemize}
+			\item Word2Vec \beamergotobutton{\href{https://arxiv.org/abs/1301.3781}{(Mikolov et al., 2013)}}
+			\item GloVe (not covered) \beamergotobutton{\href{https://aclanthology.org/D14-1162/}{(Pennington et al., 2014)}}
+			\item FastText \beamergotobutton{\href{https://arxiv.org/abs/1607.04606}{(Bojanowski et al., 2016)}}
+		\end{itemize}
 \end{itemize}
 
 \vfill
@@ -126,25 +138,25 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Language Models}
+%\begin{vbframe}{again: language models}
 
-\vfill
+%\vfill
 
-\begin{itemize}
-	\item \ques What is a Language Model?
-		\begin{itemize}
-			\item Function to assign probability to a sequence of words.
-		\end{itemize}
-	\item \ques What is an n-gram language Model?
-		\begin{itemize}
-			\item Markov assumption: probability of word only depends on no more than $n-1$ other (previous) words:
-			$$P(w_{[1]} \dots w_{[T]}) = \prod_{t=1}^T P(w_{[t]}|w_{[t-1]} ... w_{[t - n + 1]}) $$
-		\end{itemize}
-\end{itemize}
+%\begin{itemize}
+%	\item \ques What is a Language Model?
+%		\begin{itemize}
+%			\item Function to assign probability to a sequence of words.
+%		\end{itemize}
+%	\item \ques What is an n-gram language Model?
+%		\begin{itemize}
+%			\item Markov assumption: probability of word only depends on no more than $n-1$ other (previous) words:
+%			$$P(w_{[1]} \dots w_{[T]}) = \prod_{t=1}^T P(w_{[t]}|w_{[t-1]} ... w_{[t - n + 1]}) $$
+%		\end{itemize}
+%\end{itemize}
 
-\vfill
+%\vfill
 
-\end{vbframe}
+%\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -175,10 +187,10 @@
 \begin{itemize}
 	\item Softmax!
 	$$P(i|j) = \frac{exp(\mathbf{w}^{(i)T} \mathbf{v}^{(j)})}{\sum_{k=1}^{|V|} exp(\mathbf{w}^{(k)T} \mathbf{v}^{(j)})}$$
+	\item[]
 	\item \ques Problem with training softmax?
-		\begin{itemize}
-			 \item $\Rightarrow$ Slow. Needs to compute dot products with the whole vocabulary for every single prediction.
-		\end{itemize}
+	\\ $\rightarrow$ \textit{SLOW}
+	\\ (Needs to compute dot products with the whole vocabulary in the denominator for every single prediction)
 \end{itemize}
 
 \vfill
@@ -187,7 +199,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Speeding up Training: Hierarchical Softmax}
+\begin{vbframe}{Hierarchical Softmax}
 
 \vfill
 
@@ -298,11 +310,11 @@ Calculate $p(\text{sat}|\text{cat})$.
 \vfill
 
 \begin{itemize}
-	\item Another trick: \textbf{negative sampling} (aka \emph{noise contrastive estimation})
+	\item Another trick: \textbf{negative sampling}\\ (a variant of \emph{noise contrastive estimation})
 	\item This changes the objective function, and the resulting model is not a language model anymore!
-	\item Idea: Instead of predicting probability distribution over whole vocabulary, make binary decisions for a small number of words.
-	\item Positive training set: Bigrams seen in the corpus.
-	\item Negative training set: Random bigrams (not seen in the corpus).
+	\item \textbf{Idea}: Instead of predicting the probability distribution over whole vocabulary, make binary decisions for a small number of words.
+	\item ``Positive`` samples: Bigrams seen in the corpus.
+	\item ``Negative`` samples: Random bigrams (not seen in the corpus).
 \end{itemize}
 
 \vfill
@@ -418,7 +430,7 @@ Calculate $p(\text{sat}|\text{cat})$.
 \end{minipage}
 \begin{minipage}{.36\textwidth}
 \begin{center}
-\includegraphics[scale=0.99]{./figure/skipgram}
+\includegraphics[scale=0.99]{figure/skipgram}
 \end{center}
 \end{minipage}
 
@@ -466,7 +478,7 @@ Calculate $p(\text{sat}|\text{cat})$.
 \end{minipage}
 \begin{minipage}{.41\textwidth}
 \begin{center}
-\includegraphics[scale=0.99]{./figure/cbow}
+\includegraphics[scale=0.99]{figure/cbow}
 \end{center}
 \end{minipage}
 
@@ -476,18 +488,18 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{CBOW Command Example}
+%\begin{vbframe}{CBOW Command Example}
 
-\vfill
+%\vfill
 
-\begin{verbatim}
-$ word2vec -train data.txt -output vec.txt -window 5 
-  -negative 20 -hs 0 -cbow 1
-\end{verbatim}
+%\begin{verbatim}
+%$ word2vec -train data.txt -output vec.txt -window 5 
+%  -negative 20 -hs 0 -cbow 1
+%\end{verbatim}
 
-\vfill
+%\vfill
 
-\end{vbframe}
+%\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -534,7 +546,7 @@ $$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem
 \vfill
 
 \begin{itemize}
-\item $\mathrm{ngrams}$ typically contains 3- to 6-grams
+\item $\mathrm{ngrams}$ typically contains character 3- to 6-grams
 \item Replace $\vec w$ in Skipgram objective with its new definition
 \item During backpropagation, loss gradient vector $\frac{\partial J}{\partial \vec w^{(i)}}$ is distributed to word vector $\vec u^{(i)}$ and associated n-gram vectors $\vec u^{(n)}$
 \end{itemize}
@@ -589,11 +601,11 @@ $$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem
 \vfill
 
 \begin{tikzpicture}
-\node at (0,0) {\includegraphics[width=.95\textwidth]{./figure/kim}};
+\node at (0,0) {\includegraphics[width=.95\textwidth]{figure/kim}};
 \node [red] at (-2,0.25) {\tiny (randomly initialized)};
-\node [red] at (-2,-0.1) {\tiny (pretrained+frozen)};
-\node [red] at (-2,-0.4) {\tiny (pretrained+fine-tuned)};
-\node [red] at (-2,-0.7) {\tiny (combination)};
+\node [red] at (-1.95,-0.05) {\tiny (pretrained+frozen)};
+\node [red] at (-2.1,-0.35) {\tiny (pretrained+fine-tuned)};
+\node [red] at (-1.7,-0.65) {\tiny (combination)};
 \end{tikzpicture}
 
 Table from Kim 2014: Convolutional Neural Networks for Sentence Classification.
@@ -615,7 +627,7 @@ Table from Kim 2014: Convolutional Neural Networks for Sentence Classification.
 		\end{itemize}
 	\item \url{https://nlp.stanford.edu/projects/glove/}
 		\begin{itemize}
-			\item GloVe word vectors: Cooccurrence-count objective, not n-gram based
+			\item GloVe word vectors: Co-occurrence-count objective, not n-gram based
 		\end{itemize}
 \end{itemize}
 
@@ -646,7 +658,7 @@ $$\vec w^{(\text{Australian})} - \vec w^{(\text{Australia})} +  \vec w^{(\text{S
 
 \begin{center}
 \begin{tikzpicture}
-\node at (0,0) {\includegraphics[width = 0.82\textwidth]{./figure/countries_capitals}};
+\node at (0,0) {\includegraphics[width = 0.82\textwidth]{figure/countries_capitals}};
 \draw [->, thick] (0.2,-0.2) -- (4.1,1.5);
 \draw [->, thick] (0.2,-0.2) -- (-2.1,2);
 \draw [->, thick] (0.2,-0.2) -- (-2.6,0.45);
@@ -666,7 +678,7 @@ $$\vec w^{(\text{Australian})} - \vec w^{(\text{Australia})} +  \vec w^{(\text{S
 \begin{center}
 $$\vec w^{(a)} - \vec w^{(b)} +  \vec w^{(c)} = \vec w^{(?)}$$
 $$\vec w^{(d)} = \underset{\vec w^{(d')} \in \mathbf{W}}{\mathrm{argmax}} \quad \mathrm{cos}(\vec w^{(?)}, \vec w^{(d')})$$
-\includegraphics[width = 0.9\textwidth]{./figure/similar_relationships}
+\includegraphics[width = 0.9\textwidth]{figure/similar_relationships}
 \end{center}
 
 \vfill
