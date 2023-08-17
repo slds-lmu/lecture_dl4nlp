@@ -128,11 +128,11 @@
         \item \textbf{Input:} {\it Context of $(n-1)$ words} \hfill $[w_{(t-n+1):(t-1)}]$
         \item \textbf{In between:} 
         \begin{itemize}
-            \item {\it Look-up table} \hfill $[C(w_{t-n+1}); .. ; C(w_{t-2}); C(w_{t-1})]$
+            \item {\it Look-up table} \hfill $[\vec w^{({w_{t-n+1}})}; .. ; \vec w^{({w_{t-2}})}; \vec w^{({w_{t-1}})}]$
             \item[]
             \item {\it Non-linearity} \hfill e.g. tanh, ReLU
         \end{itemize}
-        \item \textbf{Output:}\\{\it Probability distribution over the next word} \hfill $P(w_t = i|w_{(t-n+1):(t-1)})$
+        \item \textbf{Output:}\\{\it Probability distribution over the next word} \hfill $P(w_t|w_{(t-n+1):(t-1)})$
         \end{itemize}
 \end{block}
 
@@ -152,6 +152,8 @@
 		\beamergotobutton{\href{https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf}{Source: Bengio et al., 2003}}
 \end{figure}
 
+\scriptsize{\textit{Note: C($\cdot$) replaced by $\vec w^{(\cdot)}$ on the previous slide.}}
+
 \vfill
 
 \end{frame}
@@ -167,7 +169,7 @@
         \item Vanilla softmax is expensive
         \item Proposed solution(s): 
         \begin{enumerate}
-            \item Hierarchical softmax (Morin and Bengio, 2005)
+            \item Hierarchical softmax \beamergotobutton{\href{https://www.iro.umontreal.ca/~lisa/pointeurs/hierarchical-nnlm-aistats05.pdf}{Morin and Bengio, 2005}}
             \item Sampling Approaches (next chapter)
         \end{enumerate}
     \end{itemize}

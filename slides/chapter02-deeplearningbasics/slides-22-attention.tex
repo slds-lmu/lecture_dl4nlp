@@ -5,12 +5,12 @@
 \tikzstyle{squ}=[draw, rectangle, minimum size = 5mm]
 \tikzstyle{del}=[squ, fill = white]
 
-%\newcommand{\titlefigure}{figure/word_emb.png}
+\newcommand{\titlefigure}{figure/attn.png}
 \newcommand{\learninggoals}{
 \item Understand attention mechanism
 \item Learn the different types of attention}
 
-\title{Advanced NN Architectures}
+\title{Deep Learning Basics}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
@@ -111,14 +111,30 @@
 
 \begin{itemize}
 	\item In an RNN, at a given point in time $j$, the information about all past inputs $x^{(1)} \ldots x^{(j)}$ is ``crammed'' into the state vector $\vec h^{(j)}$ (and $\vec c^{(j)}$ for an LSTM)
-	\item So for long sequences, the state becomes a bottleneck
+	\item So for long sequences, the state becomes a \textbf{bottleneck}
 	\item Especially problematic in encoder-decoder models (e.g., for Machine Translation)
-	\item Solution: Attention (Bahdanau et al., 2015) -- an architectural modification of the RNN encoder-decoder that allows the model to ``attend to'' past encoder states
+	\item Solution: Attention \beamergotobutton{\href{https://arxiv.org/abs/1409.0473}{Bahdanau et al., 2015}} -- an architectural modification of the RNN encoder-decoder that allows the model to ``attend to'' past encoder states
 \end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{bahdanau attention}
+	
+\vfill
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 5.5cm]{figure/bahdanau-attention.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1409.0473}{Source: Bahdanau et al., 2015}}
+\end{figure}
+
+\vfill
+	
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -222,23 +238,21 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Attention in neural networks (1)}
+\begin{vbframe}{Attention in neural networks}
 
 \vskip-2mm
 \vfill
 
 \begin{itemize}
-\item Contrary to our geolocation example, the $\vec q$, $\vec k_j$ and $\vec v_j$ vectors of a neural network are produced as a function of the input and some trainable parameters
+\item Contrary to our geolocation example, the $\vec q$, $\vec k_j$ and $\vec v_j$ vectors of a neural network are a function of the input and trainable parameters
 \item So the \textit{model} learns which keys are relevant for which queries, based on the training data and loss function
 \end{itemize}
-\begin{center}
-\begin{tikzpicture}
-\node (pic) at (0,0){\includegraphics[width=.3\textwidth]{figure/bahdanau4}};
-\node [above=.5mm of pic.north, anchor=center] {\tiny encoder states (keys/values)};
-\node [left=3mm of pic.west, anchor=center, rotate=90] {\tiny decoder states (queries)};
-\end{tikzpicture}
-\end{center}
-{\scriptsize Figure from Bahdanau et al. 2015: Neural Machine Translation by Jointly Learning to Align and Translate.}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 4.5cm]{figure/bahdanau4.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1409.0473}{Source: Bahdanau et al., 2015}}
+\end{figure}
 
 \vfill
 
@@ -246,24 +260,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Attention in neural networks (2)}
-
-\vfill
-
-\begin{itemize}
-	\item No (or few) assumptions are baked into the architecture (no notion of which words are neighbors in the sentence, sequentiality, etc.)
-	\item The lack of prior knowledge often means that the Transformer requires more training data than an RNN/CNN to achieve a certain performance
-	\item But when presented with sufficient data, it usually outperforms them
-	\item After Christmas: Transfer learning as a way to pretrain Transformers on \textbf{lots} of data
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{A Primer on the Transformer}
+\begin{vbframe}{A Primer on the Transformer (1)}
 
 \vfill
 
@@ -271,11 +268,27 @@
 	\item The Bahdanau model is still an RNN, just with attention on top.
 	\item Another architecture that consists of attention only: 
 		\begin{itemize}
-			\item Transformer (Vaswani et al. (2017), ``Attention is all you need'')
+			\item Transformer: ``Attention is all you need'' \beamergotobutton{\href{https://arxiv.org/abs/1706.03762}{Vaswani et al., 2017}}
 			\item No recurrence, \textit{just} Attention (as the name suggests)
 			\item Better parallelizable (as opposed to RNNs)
-			\item Will be introduced in chapter 5
+			\item Will be introduced in chapter 3
 		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{A Primer on the Transformer (2)}
+
+\vfill
+
+\begin{itemize}
+	\item No (or few) assumptions are baked into the architecture (no notion of which words are neighbors in the sentence, sequentiality, etc.)
+	\item The lack of prior knowledge often means that the Transformer requires more training data than an RNN to achieve a certain performance
+	\item But when presented with sufficient data, it usually outperforms them
 \end{itemize}
 
 \vfill

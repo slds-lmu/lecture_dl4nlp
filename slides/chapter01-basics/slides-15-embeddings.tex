@@ -65,7 +65,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Motivation (2)}
+\begin{frame}{Motivation (2)}
 
 \vfill
 
@@ -74,10 +74,11 @@
 	\item Typical dimensionality: $50 \leq D \leq 1000 \ll |V|$
 	\item Embedding matrix: $\mathbf{W} \in \mathbb{R}^{|V|\times D}$
 	\item \ques Advantages of using word vectors?
+	\pause
 		\begin{itemize}
 			\item We can express similarities between words, e.g., with cosine similarity:
 		\end{itemize}
-		 $$\mathrm{cos}(\vec w^{(i)}, \vec w^{(j)}) = \frac{\mathbf{w}^{(i)T}\mathbf{w}^{(j)}}{\lVert \mathbf{w}^{(i)} \rVert_2 \cdot \lVert \mathbf{w}^{(j)}\lVert_2}$$
+		 $$\mathrm{cos}(\vec w^{(i)}, \vec w^{(j)}) = \frac{\vec w^{(i)T}\vec w^{(j)}}{\lVert \vec w^{(i)} \rVert_2 \cdot \lVert \vec w^{(j)}\lVert_2}$$
 		\begin{itemize}
 			\item Since the embedding operation is a \emph{lookup operation}, we only need to update the vectors that occur in a given training batch
 		\end{itemize}
@@ -85,7 +86,7 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -180,22 +181,24 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{A Simple Neural Network Bigram Language Model}
+\begin{frame}{A Simple Neural Network Bigram Language Model}
 
 \vfill
 
 \begin{itemize}
 	\item Softmax!
-	$$P(i|j) = \frac{exp(\mathbf{w}^{(i)T} \mathbf{v}^{(j)})}{\sum_{k=1}^{|V|} exp(\mathbf{w}^{(k)T} \mathbf{v}^{(j)})}$$
+	$$P(i|j) = \frac{exp(\vec w^{(i)T} \vec v^{(j)})}{\sum_{k=1}^{|V|} exp(\vec w^{(k)T} \vec v^{(j)})}$$
 	\item[]
 	\item \ques Problem with training softmax?
-	\\ $\rightarrow$ \textit{SLOW}
-	\\ (Needs to compute dot products with the whole vocabulary in the denominator for every single prediction)
+	\pause
+	\item[]
+	\item[] $\rightarrow$ \textit{SLOW}
+	\item[] Needs to compute dot products with the whole vocabulary in the denominator for every single prediction
 \end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -292,9 +295,8 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 \begin{itemize}
 	\item \ques How many dot products do we need to calculate to get to $p(i|j)$? How does this compare to the naive softmax?
-		\begin{itemize}
-			\item $\log_2|V| \ll |V|$
-		\end{itemize}
+		 $$\log_2|V| \ll |V|$$
+
 	\vskip5mm
 	\item \ques Show that $\sum_{i'} p(i'|j)$ sums to 1.
 \end{itemize}
@@ -401,7 +403,7 @@ Calculate $p(\text{sat}|\text{cat})$.
 	\item \ques How many dot products do we need to calculate for a given word pair? How does this compare to the naive and hierarchical softmax?
 		\begin{itemize}
 			\item $M+1 \approx \mathrm{log}_2 |V| \ll |V|$
-			\item (for $M=20, |V| = 1,000,000$)
+			\item[] (for $M=20, |V| = 1,000,000$)
 		\end{itemize}
 \end{itemize}
 
@@ -548,7 +550,7 @@ $$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem
 \begin{itemize}
 \item $\mathrm{ngrams}$ typically contains character 3- to 6-grams
 \item Replace $\vec w$ in Skipgram objective with its new definition
-\item During backpropagation, loss gradient vector $\frac{\partial J}{\partial \vec w^{(i)}}$ is distributed to word vector $\vec u^{(i)}$ and associated n-gram vectors $\vec u^{(n)}$
+\item During backpropagation, loss gradient vector $\frac{\partial L}{\partial \vec w^{(i)}}$ is distributed to word vector $\vec u^{(i)}$ and associated n-gram vectors $\vec u^{(n)}$
 \end{itemize}
 
 \vfill
@@ -659,11 +661,11 @@ $$\vec w^{(\text{Australian})} - \vec w^{(\text{Australia})} +  \vec w^{(\text{S
 \begin{center}
 \begin{tikzpicture}
 \node at (0,0) {\includegraphics[width = 0.82\textwidth]{figure/countries_capitals}};
-\draw [->, thick] (0.2,-0.2) -- (4.1,1.5);
-\draw [->, thick] (0.2,-0.2) -- (-2.1,2);
-\draw [->, thick] (0.2,-0.2) -- (-2.6,0.45);
-\draw [->, thick, red] (4.1,1.5) -- (6.4,-0.7);
-\draw [->, thick, green] (6.4,-0.7) -- (3.6, -0.05);
+\draw [->, thick] (0.2,-0.2) -- (3.45,1.27); %tokyo
+\draw [->, thick] (0.2,-0.2) -- (-1.8,1.75); % japan
+\draw [->, thick] (0.2,-0.2) -- (-2.2,0.35); % poland
+\draw [->, thick, red] (3.45,1.27) -- (5.45,-0.68); 
+\draw [->, thick, green] (5.45,-0.68) -- (3.05, -0.13);
 \end{tikzpicture}
 \end{center}
 

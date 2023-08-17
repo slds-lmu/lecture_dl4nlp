@@ -5,13 +5,13 @@
 \tikzstyle{squ}=[draw, rectangle, minimum size = 5mm]
 \tikzstyle{del}=[squ, fill = white]
 
-%\newcommand{\titlefigure}{figure/word_emb.png}
+\newcommand{\titlefigure}{figure/rnn.png}
 \newcommand{\learninggoals}{
 \item Understand recurent structure of RNNs
 \item Learn the different types of RNNs
 \item Understand applicability of RNNs}
 
-\title{Advanced NN Architectures}
+\title{Deep Learning Basics}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
@@ -28,13 +28,15 @@
 
 \begin{itemize}
 	\item Assumption: Text is written sequentially, so our model should read it sequentially
-	\item ``RNN'': class of Neural Network architectures that process text sequentially (left-to-right or right-to-left)
+	\item ``RNN'': class of neural network that processes text sequentially\\
+				(left-to-right \textit{or} right-to-left)
 	\item Generally speaking:
 		\begin{itemize}
 			\item Internal ``state'' $\vec h$
 			\item RNN consumes one input $\vec x^{(j)}$ per time step $j$
-			\item Update function: $\vec h^{(j)} = f(\vec x^{(j)}, \vec h^{({j-1})}; \theta)$
+			\item Update function:
 			\begin{itemize}
+				\item $\vec h^{(j)} = f(\vec x^{(j)}, \vec h^{({j-1})}; \theta)$,
 				\item where parameters $\theta$ are shared across all time steps
 			\end{itemize}
 		\end{itemize}
@@ -51,10 +53,11 @@
 \vfill
 
 \begin{itemize}
-	\item Let $\vec x^{(1)} \ldots \vec x^{(J)}$, with $\mathbf{x}^{(j)} \in \mathbb{R}^{d'}$ be our input (e.g., a sequence of $d'$-dimensional word embeddings)
-	\item Let $\mathbf{h}^{(0)}  = \{0\}^{d}$ be our initial state
+	\item Let $\vec x^{(1)} \ldots \vec x^{(J)}$, with $\vec x^{(j)} \in \mathbb{R}^{d'}$ be our input\\
+				(e.g., a sequence of $d'$-dimensional word embeddings)
+	\item Let $\vec h^{(0)}  = \{0\}^{d}$ be our initial state
 	\item Let $\theta = \{\vec W \in \mathbb{R}^{d \times d'}, \vec V \in \mathbb{R}^{d \times d}, \vec b \in \mathbb{R}^{d}\}$ be our parameters
-	\item Then the $j$'th update is defined as:
+	\item Then the $j$'th state is defined as:
 	$$\vec h^{(j)} = \mathrm{tanh}(\vec W \vec x^{(j)}  + \vec V \vec h^{({j-1})} + \vec b)$$
 \end{itemize}
 
@@ -68,30 +71,30 @@
 
 \vfill
 
-\begin{itemize}
-\item Sentence: ``the cat sat''
-\item $(\vec x^{(1)}, \vec x^{(2)}, \vec x^{(3)}) = (\vec x^{(\text{the})}, \vec x^{(\text{cat})}, \vec x^{(\text{sat})})$
-$$
-\footnotesize
-\begin{aligned}
-\vec h^{(1)} & = \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec V \vec h^{(0)} + \vec b) = \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec b) \\
-\vec h^{(2)} & = \mathrm{tanh}(\vec W \vec x^{(\text{cat})} + \vec V \vec h^{(1)}+ \vec b) = \mathrm{tanh}(\vec W \vec x^{(\text{cat})} + \vec V \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec b) + \vec b) \\
-\vec h^{(3)} & = \mathrm{tanh}(\vec W \vec x^{(\text{sat})} + \vec V \vec h^{(2)} + \vec b) = \ldots
-\end{aligned}
-$$
-\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(1)}$ depend on?
-\begin{itemize}
-\item ``the''
-\end{itemize}
-\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(2)}$ depend on?
-\begin{itemize}
-\item ``the cat''
-\end{itemize}
-\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(3)}$ depend on?
-\begin{itemize}
-\item ``the cat sat''
-\end{itemize}
-\end{itemize}
+	\begin{itemize}
+		\item Sentence: ``the cat sat''
+		\item $(\vec x^{(1)}, \vec x^{(2)}, \vec x^{(3)}) = (\vec x^{(\text{the})}, \vec x^{(\text{cat})}, \vec x^{(\text{sat})})$
+			$$
+			\footnotesize
+			\begin{aligned}
+				\vec h^{(1)} & = \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec V \vec h^{(0)} + \vec b) = \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec b) \\
+				\vec h^{(2)} & = \mathrm{tanh}(\vec W \vec x^{(\text{cat})} + \vec V \vec h^{(1)}+ \vec b) = \mathrm{tanh}(\vec W \vec x^{(\text{cat})} + \vec V \mathrm{tanh}(\vec W \vec x^{(\text{the})} + \vec b) + \vec b) \\
+				\vec h^{(3)} & = \mathrm{tanh}(\vec W \vec x^{(\text{sat})} + \vec V \vec h^{(2)} + \vec b) = \ldots
+			\end{aligned}
+			$$
+		\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(1)}$ depend on?
+			\begin{itemize}
+					\item ``the''
+			\end{itemize}
+		\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(2)}$ depend on?
+			\begin{itemize}
+					\item ``the cat''
+			\end{itemize}
+		\item \textcolor{red}{Question:} Which word(s) does $\vec h^{(3)}$ depend on?
+			\begin{itemize}
+					\item ``the cat sat''
+			\end{itemize}
+	\end{itemize}
 
 \vfill
 
@@ -99,9 +102,7 @@ $$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Vanilla RNN cell}
-
-\vfill
+\begin{frame}{Vanilla RNN cell}
 
 \begin{center}
 \begin{tikzpicture}[->, >=stealth, thick]
@@ -129,16 +130,15 @@ $$
 \draw (b) -- (plus);
 \draw (w) -- (dotx);
 \draw (v) -- (doth);
-\node at (9,2.3) [draw, ellipse] {operators};
-\node at (9,1) [vec, fill=blue!50] {parameters};
+\node at (0,0.5) [draw, ellipse] {operators};
+\node at (0,-0.5) [vec, fill=blue!50] {parameters};
 \end{tikzpicture}
 \end{center}
 
-\vfill
-
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
+\iffalse
 
 \begin{vbframe}{Example: Binary sentiment classifier}
 
@@ -187,8 +187,8 @@ $$
 \vfill
 
 \begin{itemize}
-	\item RNNs are trained via ``backpropagation through time''
-	\item To understand how this works, imagine the RNN as a Feed-Forward Net (FFN), whose depth is equal to the sentence length
+	\item RNNs are trained via ``\textit{backpropagation through time}''
+	\item To understand how this works, imagine the RNN as a Feed-Forward Neural Network (FFNN), whose depth is equal to the sentence length
 	\item For now, let's pretend that every time step (every layer) has its own dummy parameters $\theta^{(j)}$, which are identical copies of $\theta$
 \end{itemize}
 
@@ -196,6 +196,7 @@ $$
 
 \end{vbframe}
 
+\fi
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Vanishing gradients (1)}
@@ -203,23 +204,13 @@ $$
 \vfill
 
 \begin{itemize}
-	\item On long inputs, Vanilla RNNs suffer from ``vanishing'' gradients
+	%\item On long inputs, Vanilla RNNs suffer from ``vanishing'' gradients
 	\item Vanishing gradients mean that the impact that an input has on the gradient of the loss becomes smaller when it is further away from the loss in the computation graph.
 \end{itemize}
 
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Vanishing gradients (2)}
-
-\vfill
-
 \begin{itemize}
-\item We assume that we have backpropagated the partial derivatives of the loss to $\vec h^{(J)}$:
-$$ \frac{\partial L}{\partial \vec h^{(J)}}$$
+%\item Backpropagating the partial derivatives of the loss to $\vec h^{(J)}$:
+%$$ \frac{\partial L}{\partial \vec h^{(J)}}$$
 \item Backpropagate to $\vec h^{(j)}$ via chain rule:
 $$
 \begin{aligned}
@@ -235,7 +226,7 @@ $$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Vanishing gradients (3)}
+\begin{vbframe}{Vanishing gradients (2)}
 
 \vfill
 
@@ -258,7 +249,7 @@ $$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Vanishing gradients (4)}
+\begin{vbframe}{Vanishing gradients (3)}
 
 \vfill
 
@@ -299,7 +290,7 @@ $$
 \vfill
 
 \begin{itemize}
-	\item Proposed in Hochreiter and Schmidhuber, 1997
+	\item Proposed in \beamergotobutton{\href{https://www.bioinf.jku.at/publications/older/2604.pdf}{Hochreiter and Schmidhuber, 1997}}
 	\item Became popular around 2010 for handwriting recognition, speech recognition, and many NLP problems
 	\item Addresses vanishing gradients by changing the architecture of the RNN cell
 \end{itemize}
@@ -413,6 +404,8 @@ $$
 
 % ------------------------------------------------------------------------------
 
+\iffalse
+
 \begin{vbframe}{Gated Recurrent Unit (GRU)}
 
 \vfill
@@ -516,6 +509,8 @@ $$
 
 \end{vbframe}
 
+\fi
+
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Tagging (example: Part-Of-Speech)}
@@ -548,7 +543,7 @@ $$
 \node [orange, rotate=90, font=\tiny, right=2mm of pred\i] {argmax};
 }
 \draw [dotted, -] (ffn1) -- (ffn2) -- (ffn3) -- (ffn4);
-\draw [dotted, -] (9.5, 2.9) -- node[font=\tiny, midway, above] {shared params} (11, 2.9);
+\draw [dotted, -] (9.5, 2.9) -- node[font=\tiny, midway, above] {shared params} (10.5, 2.9);
 \draw [dashed, orange] (-1, 4) -- node[midway, above, font=\scriptsize] {inference} (1,4);
 \draw [dashed, red] (-1, 6) -- node[midway, above, font=\scriptsize] {training} (1,6);
 \end{tikzpicture}

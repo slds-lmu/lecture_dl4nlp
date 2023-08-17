@@ -7,13 +7,13 @@
 \item Understand the contextualization of word embeddings
 \item Get the intuition of feature-based Transfer Learning}
 
-\title{Transfer Learning}
+\title{Deep Learning Basics}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{ELMo (Peters et al., 2018)}
+\lecturechapter{ELMo \beamergotobutton{\href{https://aclanthology.org/N18-1202/}{Peters et al., 2018}}}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/linear-relationships.png}\\ 
-		\footnotesize{Source:} \href{https://developers.google.com/machine-learning/crash-course/embeddings/translating-to-a-lower-dimensional-space}{\footnotesize \it google}
+		\beamergotobutton{\href{https://developers.google.com/machine-learning/crash-course/embeddings/translating-to-a-lower-dimensional-space}{Source: Google}}
 	\end{figure}
 
 	\begin{itemize}
@@ -39,31 +39,31 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Feature-based Transfer Learning}
+%\begin{vbframe}{Feature-based Transfer Learning}
 
-\vfill
+%\vfill
 
-\textbf{Using word2vec:}
+%\textbf{Using word2vec:}
 	
-	\begin{enumerate}
-		\item Self-supervised pre-training of word2vec ..
-			\begin{itemize}
-				\item Using a large, unannotated corpus
-				\item Objective: CBOW or Skip-gram
-			\end{itemize}
-		.. and extract the stored knowledge (i.e. embedding)\\
-		\item \textit{Alternative:} Download embeddings from the web,
-		e.g. \url{https://code.google.com/archive/p/word2vec/}
-		\item Perform a (supervised) task using the embeddings,
-		e.g. Sentiment classification using an LSTM network
-	\end{enumerate}
+%	\begin{enumerate}
+%		\item Self-supervised pre-training of word2vec ..
+%			\begin{itemize}
+%				\item Using a large, unannotated corpus
+%				\item Objective: CBOW or Skip-gram
+%			\end{itemize}
+%		.. and extract the stored knowledge (i.e. embedding)\\
+%		\item \textit{Alternative:} Download embeddings from the web,
+%		e.g. \url{https://code.google.com/archive/p/word2vec/}
+%		\item Perform a (supervised) task using the embeddings,
+%		e.g. Sentiment classification using an LSTM network
+%	\end{enumerate}
 	
-\textit{The stored knowledge from the pre-trained model is extracted as is
-and is not further adapted to the actual domain/task of interest!}
+%\textit{The stored knowledge from the pre-trained model is extracted as is
+%and is not further adapted to the actual domain/task of interest!}
 
-\vfill
+%\vfill
 
-\end{vbframe}
+%\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -74,9 +74,9 @@ and is not further adapted to the actual domain/task of interest!}
 \textbf{1st Generation of neural embeddings are "context-free":}
 
 	\begin{itemize}
-		\item Breakthrough paper by Mikolov et al, 2013 (Word2Vec)
-		\item Followed by Pennington et al, 2014 (GloVe)
-		\item Extension of Word2Vec by Bojanowski et al, 2016 (FastText)
+		\item Breakthrough paper (word2vec): \beamergotobutton{\href{https://arxiv.org/abs/1301.3781}{Mikolov et al, 2013}}
+		\item Followed by GloVe: \beamergotobutton{\href{https://aclanthology.org/D14-1162/}{Pennington et al, 2014}}
+		\item FastText as extension of word2vec: \beamergotobutton{\href{https://arxiv.org/abs/1607.04606}{Bojanowski et al, 2016}}
 	\end{itemize}
 	
 	\textbf{Why "Context-free"?}
@@ -104,7 +104,7 @@ and is not further adapted to the actual domain/task of interest!}
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/elmo-embedding-robin-williams.png}\\ 
-		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+		\beamergotobutton{\href{https://jalammar.github.io/illustrated-bert/}{Source: Jay Alammar}}
 	\end{figure}
 
 \vfill
@@ -113,18 +113,18 @@ and is not further adapted to the actual domain/task of interest!}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{ELMo \href{https://www.aclweb.org/anthology/N18-1202.pdf}{\beamergotobutton{Peters et al., 2018}}}
+\begin{vbframe}{embeddings from language models}
 
 \vfill
 
 \begin{itemize}
 		\item Bidirectional language model (LM)
-		\item Combines a forward LM $$p\left(t_{1}, t_{2}, \ldots, t_{N}\right)=\prod_{k=1}^{N} p\left(t_{k} | t_{1}, t_{2}, \ldots, t_{k-1}\right)$$
-					and a backward LM $$p\left(t_{1}, t_{2}, \ldots, t_{N}\right)=\prod_{k=1}^{N} p\left(t_{k} | t_{k+1}, t_{k+2}, \ldots, t_{N}\right)$$
+		\item Combines a forward LM $$p\left(w_{1}, w_{2}, \ldots, w_{N}\right)=\prod_{k=1}^{N} p\left(w_{k} | w_{1}, w_{2}, \ldots, w_{k-1}\right)$$
+					and a backward LM $$p\left(w_{1}, w_{2}, \ldots, w_{N}\right)=\prod_{k=1}^{N} p\left(w_{k} | w_{k+1}, w_{k+2}, \ldots, w_{N}\right)$$
 					to arrive at the following loglikelihood:
 					$$\begin{array}{l}
-\sum_{k=1}^{N}\left(\log p\left(t_{k} | t_{1}, \ldots, t_{k-1} ; \Theta_{x}, \overrightarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right. \\
-\quad\left. +\log p\left(t_{k} | t_{k+1}, \ldots, t_{N} ; \Theta_{x}, \overleftarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right)
+\sum_{k=1}^{N}\left(\log p\left(w_{k} | w_{1}, \ldots, w_{k-1} ; \Theta_{x}, \overrightarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right. \\
+\quad\left. +\log p\left(w_{k} | w_{k+1}, \ldots, w_{N} ; \Theta_{x}, \overleftarrow{\Theta}_{L S T M}, \Theta_{s}\right)\right)
 \end{array}$$
 	\end{itemize}
 
@@ -139,18 +139,18 @@ and is not further adapted to the actual domain/task of interest!}
 \vfill
 
 	\begin{itemize}
-		\item Character-based (context-independent) token representations $$x_k^{LM}$$
+		\item Character-based (context-independent) token representations $$\vec x_k^{LM}$$
 		\item Two-layer biLSTM as main architecture:
 			\begin{itemize}
 				\item Two context-dependent token representations \textit{per layer}, i.e.
-							$$\overrightarrow{\mathbf{h}}_{k, j}^{L M}\; \mbox{\&}\; \overleftarrow{\mathbf{h}}_{k, j}^{L M}\; \mbox{for the $k$-th token in the $j$-th layer.}$$
+							$$\overrightarrow{\vec h}_{k, j}^{L M}\; \mbox{\&}\; \overleftarrow{\vec h}_{k, j}^{L M}\; \mbox{for the $k$-th token in the $j$-th layer.}$$
 				\item Four context-dependent token representations in total: 
-							$$\left\{\overrightarrow{\mathbf{h}}_{k, j}^{L M}, \overleftarrow{\mathbf{h}}_{k, j}^{L M} | j = 1, 2\right\}$$
+							$$\left\{\overrightarrow{\vec h}_{k, j}^{L M}, \overleftarrow{\vec h}_{k, j}^{L M} | j = 1, 2\right\}$$
 			\end{itemize}
 		\item Five representations per token in total:
 					$$\begin{aligned}
-R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \overleftarrow{\mathbf{h}}_{k, j}^{L M} | j=1, \ldots, L\right\} \\
-&=\left\{\mathbf{h}_{k, j}^{L M} | j = 0, 1, 2\right\}
+R_{k} &=\left\{\vec x_{k}^{L M}, \overrightarrow{\vec h}_{k, j}^{L M}, \overleftarrow{\vec h}_{k, j}^{L M} | j=1, \ldots, L\right\} \\
+&=\left\{\vec h_{k, j}^{L M} | j = 0, 1, 2\right\}
 \end{aligned}$$
 	\end{itemize}
 
@@ -167,7 +167,7 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/elmo-pretrained-bilm}\\ 
-		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+		\beamergotobutton{\href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{Source: Carolin Becker}}
 	\end{figure}
 
 \vfill
@@ -183,7 +183,7 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/elmo-pretrained-bilm-2}\\ 
-		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+		\beamergotobutton{\href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{Source: Carolin Becker}}
 	\end{figure}
 
 \vfill
@@ -200,8 +200,8 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 
 	\begin{itemize}
 		\item Calculate task-specific weights of all five representations:
-					$$\mathbf{E} \mathbf{L} \mathbf{M} \mathbf{o}_{k}^{t a s k}=E\left(R_{k} ; \Theta^{t a s k}\right)=\gamma^{t a s k} \sum_{j=0}^{L} s_{j}^{t a s k} \mathbf{h}_{k, j}^{L M},$$
-					where the $\mathbf{h}_{k, j}^{L M}$ are \textbf{not trainable} anymore.
+					$$\mathbf{E} \mathbf{L} \mathbf{M} \mathbf{o}_{k}^{t a s k}=E\left(R_{k} ; \Theta^{t a s k}\right)=\gamma^{t a s k} \sum_{j=0}^{L} s_{j}^{t a s k} \vec h_{k, j}^{L M},$$
+					where the $\vec h_{k, j}^{L M}$ are \textbf{not trainable} anymore.
 		\item Trainable parameters during the adaption:
 			\begin{itemize}
 				\item $s_{j}^{t a s k}$ are trainable (softmax-normalized) weights
@@ -229,7 +229,7 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 	\begin{figure}
 		\centering
 		\includegraphics[width = 12cm]{figure/elmo-adaption}\\ 
-		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+		\beamergotobutton{\href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{Source: Carolin Becker}}
 	\end{figure}
 
 \vfill
@@ -245,7 +245,7 @@ R_{k} &=\left\{\mathbf{x}_{k}^{L M}, \overrightarrow{\mathbf{h}}_{k, j}^{L M}, \
 	\begin{figure}
 		\centering
 		\includegraphics[width = 12cm]{figure/elmo-sota.png}\\ 
-		\footnotesize{Source:} \href{https://aclanthology.org/N18-1202.pdf}{\footnotesize \it Peters et al. (2018)}
+		\beamergotobutton{\href{https://aclanthology.org/N18-1202/}{Source: Peters et al., 2018}}
 	\end{figure}
 
 \vfill
