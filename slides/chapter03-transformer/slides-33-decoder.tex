@@ -8,7 +8,7 @@
 \item Understand the connection between the encoder and the decoder}
 
 \title{Transformer}
-% \author{Bernd Bischl, Christoph Molnar, Daniel Schalk, Fabian Scheipl}
+% \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
@@ -271,7 +271,7 @@ $$ \mu = \frac{1}{d} \sum_{i=1}^d h_{i}; \qquad \sigma = \sqrt{\frac{1}{d} \sum_
 
 \vfill
 
-\textbf{Open question: How do we connect encoder and decoder?}\\
+\textbf{\ques How do we connect encoder and decoder?}\\
 
 \vspace{.3cm}
 	
@@ -292,7 +292,7 @@ Construction of one decoder block:
 \vspace{.3cm}
 	
 $\to$ Allows the decoder to attend to \textit{all} tokens from the input sequences\\
-(cf. Bahdanau et al. (2014) for RNNs)
+(cf. \beamergotobutton{\href{https://arxiv.org/abs/1409.0473}{Bahdanau et al., 2015}} for RNNs)
 
 \vfill
 
@@ -315,9 +315,9 @@ $\to$ Allows the decoder to attend to \textit{all} tokens from the input sequenc
 \draw [bend right=55] (y.north east) to (nll);
 \draw ([xshift=-1cm, yshift=-5mm] transformer.north east) to (nll);
 \node at (-3, 2) [align=left] {(For simpler problems (e.g., \\ classification, tagging), \\ you would simply use \\ the encoder.)};
-\end{tikzpicture}
+\end{tikzpicture}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1706.03762}{Source: Vaswani et al., 2017}}
 \end{center}
-{\tiny Figure from Vaswani et al. 2017: Attention is all you need}
 
 \end{vbframe}
 

@@ -97,10 +97,10 @@
 \textbf{Supervised training?}
 
 \begin{itemize}
-	\item \textit{Training from scratch}:
-	\\ $\rightarrow$ Initialize embeddings randomly and learn it during training phase
+	\item \textit{Training embeddings from scratch}:
+	\\ $\rightarrow$ Initialize randomly and learn it during training phase
 	\\ $\rightarrow$ Words that play similar roles w.r.t. task get similar embeddings
-	\item \textit{From sentiment classification}: 
+	\item \textit{Example: Sentiment Classification} 
 	\\ $\rightarrow$ We might expect $\vec w^{(\text{great})} \approx \vec w^{(\text{awesome})}$
 	\item \ques What could be a problem at test time?
 	\begin{itemize}
@@ -122,9 +122,8 @@
 
 \begin{itemize}
 	\item Distributional hypothesis: 
-	\\ {\centering ``\textit{A word is characterized by the company it keeps}``}
-	\\ {\centering (J.R. Firth, 1957)}
-	\item Idea: Learn similar vectors for words that occur in similar contexts
+	\\ {\centering ``\textit{A word is characterized by the company it keeps}``} (J.R. Firth, 1957)
+	\item \textit{Idea:}\\ Learn similar vectors for words that occur in similar contexts
 	\item Three different (milestone) methods:
 		\begin{itemize}
 			\item Word2Vec \beamergotobutton{\href{https://arxiv.org/abs/1301.3781}{(Mikolov et al., 2013)}}
@@ -165,6 +164,8 @@
 
 \vfill
 
+\textbf{Model architecture:}
+
 \begin{itemize}
 	\item Words in our vocabulary are represented as two sets of vectors:
 		\begin{itemize}
@@ -181,7 +182,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{A Simple Neural Network Bigram Language Model}
+\begin{frame}{Word2Vec as a Bigram Language Model}
 
 \vfill
 
@@ -192,8 +193,9 @@
 	\item \ques Problem with training softmax?
 	\pause
 	\item[]
-	\item[] $\rightarrow$ \textit{SLOW}
 	\item[] Needs to compute dot products with the whole vocabulary in the denominator for every single prediction
+	\item[]
+	\item[] \centering $\rightarrow$ \textit{SLOW}
 \end{itemize}
 
 \vfill
@@ -201,6 +203,8 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
+
+\iffalse
 
 \begin{vbframe}{Hierarchical Softmax}
 
@@ -305,6 +309,8 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 \end{vbframe}
 
+\fi
+
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Speeding up Training: Negative Sampling}
@@ -312,11 +318,14 @@ Calculate $p(\text{sat}|\text{cat})$.
 \vfill
 
 \begin{itemize}
-	\item Another trick: \textbf{negative sampling}\\ (a variant of \emph{noise contrastive estimation})
-	\item This changes the objective function, and the resulting model is not a language model anymore!
+	\item One option: \textbf{Hierarchical Softmax} (not covered) reduces complexity from $\mathcal{O}(|V|)$ to $\mathcal{O}(log_2|V|)$
+	\item Another trick: \textbf{Negative Sampling}\\ (a variant of \emph{noise contrastive estimation})
+	\item[] $\to$ Changes the objective function; the resulting model is not a language model anymore!
 	\item \textbf{Idea}: Instead of predicting the probability distribution over whole vocabulary, make binary decisions for a small number of words.
-	\item ``Positive`` samples: Bigrams seen in the corpus.
-	\item ``Negative`` samples: Random bigrams (not seen in the corpus).
+			\begin{itemize}
+				\item ``Positive`` samples: Bigrams seen in the corpus.
+				\item ``Negative`` samples: Random bigrams (not seen in corpus)
+			\end{itemize}
 \end{itemize}
 
 \vfill
@@ -354,19 +363,36 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Word2Vec with negative sampling as classification}
+\begin{vbframe}{Word2Vec with negative sampling}
 
 \vfill
 
 \begin{itemize}
 	\item Maximize likelihood of training data:
 	$$\mathcal{L}(\theta) = \prod_{i} P(y^{(i)}|x^{(i)}; \theta)$$
-	\item $\Leftrightarrow$ minimize negative log likelihood:
+	\item[] $\Leftrightarrow$ minimize negative log likelihood:
 	$$NLL(\theta) = - \log \mathcal{L}(\theta) = - \sum_{i} \log P(y^{(i)}|x^{(i)}; \theta))$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Word2Vec with negative sampling}
+
+\vfill
+
+\begin{itemize}
 	\item \ques What do these components stand for in Word2Vec with negative sampling?
 		\begin{itemize}
 			\item $x^{(i)}$ Word pair, from corpus OR randomly created
-			\item $y^{(i)}$ Label: $1 = $ word pair is from positive training set, $0 = $ word pair is from negative training set
+			\item $y^{(i)}$ Label: 
+					\begin{itemize}
+						\item $1 = $ word pair is from positive training set,
+						\item $0 = $ word pair is from negative training set
+					\end{itemize} 
 			\item $\theta$ Parameters $\vec v$, $\vec w$
 			\item $P(...)$ Logistic sigmoid: $P(1|\cdot) = \sigma(\vec w^T \vec v)$, resp. $P(0|\cdot) = 1-\sigma(\vec w^T \vec v)$.
 		\end{itemize}
@@ -406,6 +432,46 @@ Calculate $p(\text{sat}|\text{cat})$.
 			\item[] (for $M=20, |V| = 1,000,000$)
 		\end{itemize}
 \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{skip-gram (Word2Vec)}
+
+\vfill
+
+\textit{Create a fake task:}
+
+\begin{itemize}
+	\item \textbf{Training objective:} Given a word, predict the neighbouring words
+	\item \textbf{Generation of samples:} Sliding fixed-size window over the text
+\end{itemize}
+
+\textit{Example: Window size = 2}
+
+\medskip
+
+\begin{tabular}{|c|c|c|cccccc|}
+\hline
+\cellcolor{blue!15}The & \cellcolor{blue!65}quick & \cellcolor{blue!65}brown & fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad (the, quick); (the, brown)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+\cellcolor{blue!65}The & \cellcolor{blue!15}quick & \cellcolor{blue!65}brown & \cellcolor{blue!65}fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad (quick, the); (quick, brown); (quick, fox)
+\begin{tabular}{|c|c|c|c|c|cccc|}
+\hline
+\cellcolor{blue!65}The & \cellcolor{blue!65}quick & \cellcolor{blue!15}brown & \cellcolor{blue!65}fox & \cellcolor{blue!65}jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad (brown, the); (brown, quick), (brown, fox), (brown, jumps)
 
 \vfill
 
@@ -466,7 +532,46 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{C(ontinuous) B(ag) o(f) W(ords)}
+\begin{vbframe}{Continuous Bag of Words (CBOW)}
+
+\vfill
+
+\textit{Create a fake task:}
+
+\begin{itemize}
+	\item \textbf{Training objective:} Given a context, predict the center word
+	\item \textbf{Generation of samples:} Sliding fixed-size window over the text
+\end{itemize}
+
+\textit{Example: Window size = 2}
+
+\medskip
+
+\begin{tabular}{|c|c|c|c|c|cccc|}
+\hline
+\cellcolor{blue!15}The & \cellcolor{blue!15}quick & \cellcolor{blue!65}brown & \cellcolor{blue!15}fox & \cellcolor{blue!15}jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad ([the, quick, fox, jumps], brown)
+\begin{tabular}{|c|c|c|c|c|c|ccc|}
+\hline
+The & \cellcolor{blue!15}quick & \cellcolor{blue!15}brown & \cellcolor{blue!65}fox & \cellcolor{blue!15}jumps & \cellcolor{blue!15}over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad ([quick, brown, jumps, over], fox)
+\begin{tabular}{|cc|c|c|c|c|c|cc|}
+\hline
+The & quick & \cellcolor{blue!15}brown & \cellcolor{blue!15}fox & \cellcolor{blue!65}jumps & \cellcolor{blue!15}over & \cellcolor{blue!15}the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \qquad ([brown, fox, over, the], jumps)
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Continuous Bag of Words (CBOW)}
 
 \vfill
 
@@ -490,27 +595,23 @@ Calculate $p(\text{sat}|\text{cat})$.
 
 % ------------------------------------------------------------------------------
 
-%\begin{vbframe}{CBOW Command Example}
-
-%\vfill
-
-%\begin{verbatim}
-%$ word2vec -train data.txt -output vec.txt -window 5 
-%  -negative 20 -hs 0 -cbow 1
-%\end{verbatim}
-
-%\vfill
-
-%\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
 \begin{vbframe}{FastText (1)}
 
 \vfill
 
+\textbf{Accomplishments:}
+
+\begin{itemize}
+	\item Words can be repesented as dense, low-dimensional vectors \hfill $\checkmark$
+	\item Easy to capture similarity between words \hfill $\checkmark$
+	\item Additive Compositionality of word vectors \hfill $\checkmark$
+\end{itemize}
+
+\textbf{Open issues:}
+
 \begin{itemize}
 	\item Even if we train Word2Vec on a very large corpus, we will still encounter unknown words at test time
+	\item What about rare words? 
 	\item Orthography can often help us:
 	\item $\vec w^{(\text{remuneration})}$ should be similar to
 		\begin{itemize}
@@ -535,7 +636,33 @@ Calculate $p(\text{sat}|\text{cat})$.
 \text{unknown word:  } & \vec w^{(i)} = \frac{1}{|\mathrm{ngrams}(i)|} \sum_{n \in \mathrm{ngrams}(i)} \vec u^{(n)} \nonumber
 \end{align}
 
-$$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem}, \ldots  \text{ration}, \text{ation\$}\} $$
+%$$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem}, \ldots  \text{ration}, \text{ation\$}\} $$
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{FastText (3)}
+
+\vfill
+
+\textbf{Assume, we want to represent the word \textit{example}:}
+
+\begin{itemize}
+	\item Character n-grams (n = 3):  
+		$$\text{<ex, exa, xam, amp, mpl, ple, le>, <example>}$$
+	\item In practice, we don't set $n = a$ but rather $a \leq n \leq b$
+	\item Character n-grams ($2 \leq n \leq 4$):
+  \begin{align*}
+    & \text{<e, ex, xa, am, mp, pl, le, e>,} \\
+    & \text{<ex, exa, xam, amp, mpl, ple, le>,} \\
+    & \text{<exa, exam, xamp, ampl, mple, ple>,} \\
+		& \text{<example>}
+  \end{align*}
+	\item Note, that the 4-gram \textit{exam} is different from the word $<$exam$>$.
+\end{itemize}
 
 \vfill
 
@@ -565,7 +692,6 @@ $$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem
 
 \begin{itemize}
 	\item Word2Vec as a bigram Language Model
-	\item Hierarchical Softmax
 	\item Negative Sampling
 	\item Skipgram: Predict words in window given word in the middle
 	\item CBOW: Predict word in the middle given words in window
