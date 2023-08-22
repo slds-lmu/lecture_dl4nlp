@@ -51,7 +51,7 @@
 
 \vfill
 
-\textbf{Broad overview on so-called "X-formers"} \beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020}}
+\textbf{Broad overview on so-called "X-formers"} \beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020a}}
 
 \begin{itemize}
 	\item Efficient \& fast Transformer-based models\\
@@ -73,7 +73,7 @@
 
 \begin{itemize}
 	\item Most Benchmark data sets not explicitly designed for evaluating long-range abilities of the models.
-	\item Recently proposed: \textit{Longe Range Arena: A benchmark for efficient transformers} \beamergotobutton{\href{https://arxiv.org/pdf/2011.04006.pdf}{Tay et al., 2020}}
+	\item Recently proposed: \textit{Longe Range Arena: A benchmark for efficient transformers} \beamergotobutton{\href{https://arxiv.org/pdf/2011.04006.pdf}{Tay et al., 2020b}}
 \end{itemize}
 	
 \vfill
@@ -82,14 +82,14 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Efficient Transformers}
+\begin{frame}{efficient transformers}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/tay-xformers.png}\\ 
-		\beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020}}
+		\beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020a}}
 	\end{figure}
 	
 \vfill
@@ -98,7 +98,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Attention Patterns}
+\begin{frame}{efficient transformers - example}
 
 \vfill
 
@@ -114,7 +114,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/bigbird-patterns.png}\\ 
-		\beamergotobutton{\href{https://proceedings.neurips.cc//paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf}{Source: Zaheer et al. (2020)}}
+		\beamergotobutton{\href{https://proceedings.neurips.cc//paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf}{Source: Zaheer et al., 2020}}
 	\end{figure}
 	
 \vfill
@@ -123,9 +123,41 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{tbd}
+\begin{frame}{efficient transformers - tradeoff}
 
 \vfill
+
+\begin{itemize}
+	\item \textit{Quality:} How well can we approximate the results we would get when applying full attention?
+	\item[]
+	\item \textit{Speed:} Can we reduce the computational complexity from quadratic to (nearly) linear?
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{a primer on flash attention}
+
+\vfill
+
+\textbf{Compute-bound vs. Memory-bound operations:}
+
+\begin{itemize}
+	\item Wall-clock time not (necessarily) a function of FLOPs
+	\item Most of these ``Efficient Transformers`` focus on FLOP reduction
+	\item[] $\to$ This ignores existing memory overheads
+	\item \textit{Compute-bound operations:} ($\approx$ FLOPs)
+			\begin{itemize}
+				\item Matrix Multiplication
+			\end{itemize}
+	\item \textit{Memory-bound operations:} ($\approx$ data transfer)
+			\begin{itemize}
+				\item Attention
+			\end{itemize}
+\end{itemize}
 
 \vfill
 
@@ -133,11 +165,51 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{tbd}
+\begin{frame}{a primer on flash attention}
 
 \vfill
 
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/memory-hierarchy2.png}\\ 
+		%\beamergotobutton{\href{https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad}{Source: Gordic, 2023}}
+		\beamergotobutton{\href{https://www.youtube.com/watch?v=gMOAud7hZg4}{Source: Talk by Tri Dao, 2023}}
+	\end{figure}
+	
 \vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{a primer on flash attention}
+
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width = 5cm]{figure/flash-attn.png}\\ 
+		%\beamergotobutton{\href{https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad}{Source: Gordic, 2023}}
+		\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+\begin{minipage}[c]{.49\textwidth}
+	\begin{itemize}
+	\item \textit{Compute-bound operations:} 
+			\begin{itemize}
+				\item Matmul
+			\end{itemize}
+	\item \textit{Memory-bound operations:}
+			\begin{itemize}
+				\item Mask
+				\item Dropout
+				\item Softmax
+			\end{itemize}
+	\item[] $\to$ Reducing memory-bound operations most effective for reducing wall-clock time
+	\end{itemize}
+\end{minipage}
 
 \end{frame}
 

@@ -36,19 +36,63 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Key facts on BERT \href{https://arxiv.org/pdf/1810.04805.pdf}{\beamergotobutton{Devlin et al. (2018)}}}
+\begin{frame}{context: ulmfit and gpt}
+
+\vfill
+
+	\textbf{Shortcomings of ELMo:}
+
+	\begin{itemize}
+		\item No adaption of the Embeddings to target domain/task
+		\item Sequential nature of LSTMs: Not fully parallelizable 
+	\end{itemize}
+
+	\vspace{.3cm}
+	
+	\textbf{Alleviations/Alternatives:}
+
+	\begin{itemize}
+		\item ULMFiT \citebutton{Howard and Ruder, 2018}{https://www.aclweb.org/anthology/P18-1031} is a uni-directional LSTM which is fine-tuned as a whole model on data from the target domain/task.
+		\item GPT \citebutton{Radford et al., 2018}{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf} is a Transformer decoder which is fine-tuned as a whole model on data from the target domain/task.
+	\end{itemize}
+	
+\vfill
+
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{bert: key facts}
 
 \vfill
 
 \textit{\textbf{B}idirectional \textbf{E}ncoder \textbf{R}epresentations from \textbf{T}ransformers:}
+
 \begin{itemize}
 		\item Bidirectionally contextual model
+		\item[] $\to$ The embeddings of a single token depend on its left- and on its right-side context (similar to ELMo, but better)
 		\item Introduces new self-supervised objective(s)
-		\item Completely replaces recurrent architectures by Self-Attention\\$+$ simultaneously able to include bidirectionality
+		\item[] $\to$ MLM as \textit{necessity} for the architecture to work
+		\item[] $\to$ Next-Sentence-Prediction as complementary objective\\(cf. next section)
+		\item Completely replaces recurrent architectures by Self-Attention\\
+					$+$ simultaneously includes bidirectionality into the embeddings\\
+					$+$ fine-tuned as a whole					
 \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{bert: key facts}
+
+\vfill
 
 	\begin{itemize}
 		\item Transformer \textit{encoder} as backbone of the architecture
+		\item 110M (340M) parameters in total for $BERT_{Base}$ ($BERT_{Large}$)
 			\begin{itemize}
 				\item 12 (24) Transformer encoder blocks
 				\item Embedding size of $E = 768$ (1024)
@@ -56,7 +100,6 @@
 				\item $A = H/64 = 12$ (16) attention heads
 				\item Feed-forward size is set to $4H$
 			\end{itemize}
-			$\rightarrow$ 110M (340M) parameters in total for $BERT_{Base}$ ($BERT_{Large}$)
 	\end{itemize}
 
 \vfill
@@ -78,7 +121,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{A remark on "Causality"}
+\begin{frame}{A remark on "Causality"}
 
 \vfill
 
@@ -88,15 +131,17 @@
 	\item Goal: Learn contextual representations for words/tokens
 	\item \textit{Self-Supervision:} Input and target sequence are the same\\
 				$\rightarrow$ We modify the input to create a meaningful task 
-	\item Unconstrained Self-Attention makes using the LM objective infeasible
-	\item Bidirectionality at a lower layer would allow a word to see itself at later hidden layers\\
+	\item \warning Unconstrained Self-Attention makes using the LM objective infeasible
+	\item \ques Why is this the case?
+	\pause
+	\item[] Bidirectionality at a lower layer would allow a word to see itself at later hidden layers\\
 				$\rightarrow$ The model would be allowed to cheat!\\
 				$\rightarrow$ This would not lead to meaningful internal representations
 \end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
