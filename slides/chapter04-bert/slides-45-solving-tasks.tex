@@ -1,77 +1,95 @@
 \input{../../style/preamble}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
-\newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
-\usepackage{qtree} %parse tree
 
-\newcommand{\titlefigure}{figure/tasks.png}
+\newcommand{\titlefigure}{figure/bert.jpeg}
 \newcommand{\learninggoals}{
 \item defined the key learning goals here
 \item second learning goal}
 
-\title{chapter title}
+\title{BERT}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{specific lecture title}
+\lecturechapter{Solving tasks with BERT}
 \lecture{Deep Learning for NLP} % stays constant
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Categorization of NLP Tasks}
+\begin{frame}{Huggingface}
 
 \vfill
 
-\textbf{"Low-Level" tasks:}
-
 	\begin{itemize}
-		\item some text
-		\item would be nice to use these visual separations between slides (see below)\\
-					\%--------------
+		\item General Link: \url{https://huggingface.co/}
+		\item \texttt{transformers}: Python library for state-of-the-art NLP \\
+		\citebutton{Wolf et al., 2020}{https://aclanthology.org/2020.emnlp-demos.6/} 
+					\citebutton{huggingface transformers documentation}{https://huggingface.co/docs/transformers/index}
+		\item Further I: Model Hub for sharing model weights\\
+					\citebutton{huggingface models}{https://huggingface.co/models}
+		\item Further II: Hosting APIs / Apps for interacting with models\\
+					\citebutton{huggingface spaces}{https://huggingface.co/spaces}
+		\item Further III: \citebutton{\texttt{datasets}}{https://huggingface.co/datasets} module that is perfectly integrated with their \texttt{transformers} library
 	\end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of low-level NLP tasks}
+\begin{vbframe}{Document Classification}
 
-\textbf{Sequence tagging}
+\vfill
 
 \begin{itemize}
-	\item POS-tagging (part of speech)
-\end{itemize}
+	\item Assume the \citebutton{IMDB data set}{https://huggingface.co/datasets/imdb}:
+\begin{lstlisting}[language=python]
+from datasets import load_dataset
+dataset = load_dataset("imdb", split = "train")
+\end{lstlisting}	
+		
+	\item Split the training data into train and validation
+\begin{lstlisting}[language=python]
+train_data = dataset.train_test_split(test_size = 0.2)
+\end{lstlisting}	
+
+\begin{lstlisting}[language=python]
+DatasetDict({
+    train: Dataset({
+        features: ['text', 'label'],
+        num_rows: 20000
+    })
+    test: Dataset({
+        features: ['text', 'label'],
+        num_rows: 5000
+    })
+})
+\end{lstlisting}	
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Document Classification}
+
+\vfill
+
+\begin{itemize}
 	
-\begin{exampleblock}{Example}
-	Time flies   like   an   arrow.\\Fruit   flies   like   a   banana.
-\end{exampleblock}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Examples of low-level NLP tasks}
-
-
-\textbf{Sequence tagging}
-
-\begin{itemize}
-	\item POS-tagging (part of speech)
+	\item Load model and tokenizer:
+\begin{lstlisting}[language=python]
+tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased", use_fast=True)
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=2)
+\end{lstlisting}	
+	
 \end{itemize}
 
-\begin{exampleblock}{Example}
-		Time\POS{NN} flies\POS{VBZ}  like\POS{IN}   an\POS{DT}   arrow\POS{NN}.		\\ Fruit\POS{NN}   flies\POS{NN}   like\POS{VB}   a\POS{DT}   banana\POS{NN}.
-\end{exampleblock}
-
-\begin{footnotesize}
-IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3rd person singular present; DT = determiner; NN = singular noun
-\end{footnotesize}
 
 \vfill
 
@@ -79,18 +97,15 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{a slide with a figure}
+\begin{frame}{a slide with a figure}
 
 \vfill
 
-	\begin{figure}
-		\centering
-		\includegraphics[width = 8cm]{figure/toklevel.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize \it Devlin et al. (2018)}
-	\end{figure}
-
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

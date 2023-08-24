@@ -1,0 +1,307 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/bertology.png}
+\newcommand{\learninggoals}{
+\item Understand how impactful this architecture was
+\item See how this changed research in the field}
+
+\title{Post-BERT era}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Implications for future work \& BERTology}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{English Centricity of NLP}
+
+\vfill
+
+	\begin{itemize}
+		\item BERT trained on a corpus of English text
+		\item More importantly: Also only evaluated on English benchmarks (obviously)
+					\citebutton{GLUE}{https://gluebenchmark.com/}
+					\citebutton{SQUAD}{https://rajpurkar.github.io/SQuAD-explorer/}
+					\citebutton{RACE}{https://www.qizhexie.com/data/RACE_leaderboard.html}
+		\item Devlin et al. (2019) published different (monolingual) models, but only varying in size, not in language
+		\item Later: Multilingual BERT model \citebutton{mBERT}{https://github.com/google-research/bert/blob/master/multilingual.md} for 100+ languages
+		\item This leads to a shared embedding space for all the languages included in the model
+		\item Before this: Need for alignment of separately learned embedding spaces
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTs for all languages}
+
+\vfill
+
+\begin{itemize}
+	\item The breakthrough performance of BERT in the English Language triggered a wave of new
+				BERT models in different languages. Just to name a few:
+			\begin{itemize}
+				\item \citebutton{German BERT}{https://huggingface.co/bert-base-german-cased}
+				\item \citebutton{FlauBERT (French)}{https://huggingface.co/flaubert/flaubert_base_cased}
+				\item \citebutton{BETO (Spanish)}{https://huggingface.co/dccuchile/bert-base-spanish-wwm-cased}
+				\item \citebutton{BERTje (Dutch)}{https://huggingface.co/GroNLP/bert-base-dutch-cased}
+				\item \citebutton{Chinese BERT}{https://huggingface.co/bert-base-chinese}
+				\item \citebutton{RuBERT (Russian)}{https://huggingface.co/DeepPavlov/rubert-base-cased}
+				\item \citebutton{Italian BERT}{https://huggingface.co/dbmdz/bert-base-italian-cased}
+				\item ...
+			\end{itemize}
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pretrain-finetune + Transformer}
+
+\vfill
+
+\textbf{Before BERT:} 
+			\begin{itemize}
+				\item ELMo (and other specialized architectures) very popular
+				\item Examples (also CNNs): 
+							\citebutton{Kim, 2014}{https://arxiv.org/abs/1408.5882}
+							\citebutton{Zhang et al., 2016}{https://proceedings.neurips.cc/paper/2015/file/250cf8b51c773f3f8dc8b4be867a9a02-Paper.pdf}
+			\end{itemize}
+\textbf{After BERT:}
+			\begin{itemize}
+				\item Using a pre-trained model and fine-tuning it to one's own data is* the de-facto standard
+				\item CNNs and RNNs rarely used, different variants of the transformer or other self-attention based mechanisms are the backbone of nearly every architecture
+			\end{itemize}
+
+\vfill
+
+{\scriptsize *Or probably ``\textit{was}``. This standard is (rapidly) changing at the moment as Large Language Models (LLMs) and Prompting are becoming incredibly popular and effective.}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTology}
+
+\vfill
+
+\textbf{Origin}
+
+\begin{itemize}
+		\item Survey by \citebutton{Rodgers et al., 2020}{https://aclanthology.org/2020.tacl-1.54.pdf} covering studies on BERT coined the term ``BERTology``.
+		\item \citebutton{Huggingface}{https://huggingface.co/docs/transformers/bertology} defines it as ``\textit{field of study concerned with investigating the inner working of large-scale transformers like BERT}``
+\end{itemize}
+
+\textbf{Included investigations} \citebutton{Rodgers et al., 2020}{https://aclanthology.org/2020.tacl-1.54.pdf}
+	
+\begin{itemize}
+		\item Does BERT exhibit Syntactic/Semantic/World knowledge?
+		\item Localization of Linguistic knowledge
+		\item The optimal parametrization and training of BERT, i.e., number of heads, batch sizes, pre-training objectives
+				\item Model compression techniques
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{examining attention patterns}
+
+\vfill
+
+\textbf{What does BERT look at?} \citebutton{Clark et al., 2019}{https://aclanthology.org/W19-4828/}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/what-bert-look-at.png}\\ 
+		\citebutton{Source: Clark et al., 2019}{https://aclanthology.org/W19-4828/}
+	\end{figure}
+	
+	\begin{itemize}
+		\item Extract BERT's attention maps for 1000 segments from Wikipedia
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pretrain-finetune + Transformer}
+
+\vfill
+
+\begin{itemize}
+\item Most architectures still rely on either an encoder- \textit{or} a decoder-style type of model (e.g. \href{https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf}{\beamergotobutton{GPT2}}, \href{https://arxiv.org/pdf/1906.08237.pdf}{\beamergotobutton{XLNet}})
+\item \textit{BERTology:} Many papers/models which aim at ..
+			\begin{itemize}
+				\item .. explanining BERT (e.g. \href{https://arxiv.org/pdf/1906.02715.pdf}{\beamergotobutton{Coenen et al., 2019}}, \href{https://arxiv.org/pdf/1905.10650.pdf}{\beamergotobutton{Michel et al., 2019}})
+				\item .. improving BERT (\href{https://arxiv.org/pdf/1907.11692.pdf}{\beamergotobutton{RoBERTa}}, \href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{ALBERT}})
+				\item .. making BERT more efficient (\href{https://arxiv.org/pdf/1909.11942.pdf}{\beamergotobutton{ALBERT}}, \href{https://arxiv.org/pdf/1910.01108.pdf}{\beamergotobutton{DistilBERT}})
+				\item .. modifying BERT (\href{https://arxiv.org/pdf/1910.13461.pdf}{\beamergotobutton{BART}})
+			\end{itemize}
+\item Overview on many different papers:\\
+			\href{https://github.com/tomohideshibata/BERT-related-papers}{https://github.com/tomohideshibata/BERT-related-papers}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{BERTology -- Example}
+
+\vfill
+
+\textbf{Examining/Interpreting Attention patterns:}
+
+\begin{figure}%
+\includegraphics[width=10cm]{figure/att-pattern-bert.png}%
+\end{figure}
+
+\begin{itemize}
+	\item Attempt to "understand" what the model has learned
+	\item Still relevant today when seeking interpretability
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pretrain-finetune discrepancy}
+
+\vfill
+
+	\begin{itemize}
+		\item BERT \textit{artificially} introduces \texttt{[MASK]} tokens during pre-training
+		\item \texttt{[MASK]}-token does not occur during fine-tuning\\
+					$\rightarrow$ Lacks the ability to model joint probabilities\\
+					$\rightarrow$ Assumes independence of predicted tokens (given the context)
+		\item Other pre-training objectives (e.g. language modeling) don't have this issue
+		\item Further: BERT only learns from predicting the 15\% tokens which are \texttt{[MASK]}ed (or randomly replaced / kept as is)
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Independence assumption}
+
+\vspace{1.5cm}
+
+\textbf{\texttt{[MASK]-ing procedure}:}
+
+\begin{itemize}
+	\item "Given a sentence, predict \texttt{[MASK]}ed tokens"
+	\item All \texttt{[MASK]}ed tokens are predicted based on the un-\texttt{[MASK]}ed tokens
+	\item \textit{Implicit assumption:} Independence of \texttt{[MASK]}ed tokens
+\end{itemize}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/xlnet-objective}\\ 
+		{\tiny Prediction of [New, York] given the factorization order [is, a, city, New, York]\\\footnotesize Source: \href{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf} \it Yang et al. (2019)}
+	\end{figure}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Maximum sequence length}
+
+\begin{figure}
+\centering
+\includegraphics[width = 8.5cm]{figure/bert-problem.png}\\ 
+\footnotesize{Source:} \href{https://arxiv.org/pdf/1706.03762.pdf}{\footnotesize Vaswani et al. (2017)}
+\end{figure}
+
+\textbf{Limitation:}
+
+\begin{itemize}
+	\item BERT can only consume sequences of up to 512 tokens
+	\item Two sentences for NSP are sampled such that $$length_{sentence A} + length_{sentence B} \leq 512$$
+	\item Reason: Computational complexity of Transformer scales quadratically with the sequence length\\
+				$\rightarrow$ Longer sequences are disproportionally expensive
+\end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Bias}
+
+\vfill
+
+\begin{itemize}
+	\item Already known to exist in static pre-trained embeddings
+	\item E.g. for gender: \textit{Man} is to \textit{Doctor} as \textit{Woman} is to \textit{Nurse}
+	\item BERT also learns the patterns from the data it is trained on
+	\item Research on Detecting/Mitigating Bias receives a lot of attention
+\end{itemize}
+
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Bias -- Example \href{https://aclanthology.org/2021.acl-long.416.pdf}{\beamergotobutton{Nadeem et al. (2021)}}}
+
+\vfill
+
+\begin{itemize}
+	\item Nadeem et al. (2021) create a data set for measuring bias in LMs
+	\item Four categories: Gender, Profession, Race, Religion
+	\item Two types of probes: Intra- and Inter-sentence test sets
+\end{itemize}
+
+\begin{figure}%
+\includegraphics[width=7cm]{figure/stereoset.png}%
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Bias -- Example}
+
+\vfill
+
+\begin{itemize}
+	\item Calculate two scores:\\
+				$\to$ Stereotype Score (ideally $\approx 50$)\\
+				$\to$ Language Model Score (ideally $\approx 100$)
+	\item Combine both of them to measure both how good and how stereotypical a model is (ICAT Score)
+\end{itemize}
+
+\begin{figure}%
+\includegraphics[width=7cm]{figure/stereoset2.png}%
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

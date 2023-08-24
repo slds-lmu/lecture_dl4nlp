@@ -4,19 +4,19 @@
 
 \newcommand{\titlefigure}{figure/bert.jpeg}
 \newcommand{\learninggoals}{
-\item Understand the two pre-training tasks
-\item Learn how samples are constructed
-\item Understand the pre-training process
-\item Understand the fine-tuning procedure
-\item Learn the differences between token- and sequence classification}
+\item Know the pre-training tasks
+\item How to construct samples
+\item Understand the pre-training
+\item Gain understanding of the fine-tuning procedure
+\item Differences between token- and sequence classification}
 
-\title{Using the Transformer}
+\title{BERT}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{BERT -- Pre-training \& Fine-Tuning}
+\lecturechapter{Pre-training \& Fine-Tuning}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
@@ -28,9 +28,9 @@
 \textbf{First remark:}
 
 \begin{itemize}
-	\item It has nothing to do with Masked Self-Attenion\\ 
-				$\rightarrow$ Masked Self-Attention is an architectural detail in the decoder of the Transformer, i.e. used by e.g. GPT
-	\item Masked Self-Attention as a way to prevent causality issues in a Transformer decoder
+	\item Distinguish from \textit{Masked Self-Attenion}\\ 
+				$\to$ Masked Self-Attention is an architectural detail in the decoder of the Transformer, i.e. used by e.g. GPT
+	\item Masked Self-Attention as a way to prevent causality issues in a Transformer decoder 
 	\item MLM is a self-supervised \textit{modeling objective} introduced to couple Self-Attention and (deep) bidirectionality without violating causality
 \end{itemize}
 
@@ -40,7 +40,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Masked Language Modeling (MLM) ctd.}
+\begin{frame}{MLM (2)}
 
 \begin{itemize}
 \item \textbf{Training objective:} $$\text{Given a sentence, predict \texttt{[MASK]}ed tokens}$$
@@ -55,10 +55,38 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 \end{tabular}\\\mbox{}
 \item \normalsize \textbf{Targets:} $$(fox,\; lazy)$$
 \end{itemize}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{MLM (3)}
+
+\begin{itemize}
+\item \warning But 20\% of the samples will look different!\\
+			$\to$ 10\% replaced by a random token; 10\% left unchanged
+\item \normalsize \textbf{Input (first case):}\\\mbox{}\\
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{orange} & jumps & over & the & \cellcolor{blue!65}\texttt{is} & dog & . \\
+\hline
+\end{tabular}\\\mbox{}
+\item \normalsize \textbf{Targets (first case):} $$(fox,\; lazy)$$
+\item \normalsize \textbf{Input (second case):}\\\mbox{}\\
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{fox} & jumps & over & the & \cellcolor{blue!65}\texttt{lazy} & dog & . \\
+\hline
+\end{tabular}\\\mbox{}
+\item \normalsize \textbf{Targets (second case):} $$(fox,\; lazy)$$
+\end{itemize}
+
 \end{frame}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Masked Language Modeling (MLM) ctd.}
+\begin{frame}{MLM (4)}
 
 \vfill
 
@@ -70,13 +98,11 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 	\item \textbf{Modified pre-training task:}\\
 				Predict 15\% of the tokens of which only 80\% have been replaced by \texttt{[MASK]}
 				\begin{itemize}
-					\item 80\% of the selected tokens:\\
-								\texttt{The quick brown fox $\rightarrow$ The quick brown [MASK]}
-					\item 10\% of the selected tokens:\\
-								\texttt{The quick brown fox $\rightarrow$ The quick brown went}
-					\item 10\% of the selected tokens:\\
-								\texttt{The quick brown fox $\rightarrow$ The quick brown fox}
+					\item 80\% of the selected tokens are actually \texttt{[MASK]}ed
+					\item 10\% of the selected tokens: The model has to ``understand`` that the word needs to be \textit{replaced}
+					\item 10\% of the selected tokens: The model has to ``understand`` that the word needs to be \textit{kept}
 			\end{itemize}
+	\item This ensures overlap between the kind data seen during pre-training and during fine-tuning
 \end{itemize}
 	
 \vfill
@@ -85,19 +111,19 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Masked Language Modeling (MLM) ctd.}
+\begin{frame}{MLM (5)}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/bert-mlm.png}\\ 
-		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+		\citebutton{Source: Jay Alammar}{https://jalammar.github.io/illustrated-bert/}
 	\end{figure}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -124,43 +150,65 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Next Sentence Prediction (NSP) ctd.}
+\begin{frame}{NSP (2)}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/bert-nsp.png}\\ 
-		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+		\citebutton{Source: Jay Alammar}{https://jalammar.github.io/illustrated-bert/}
 	\end{figure}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Pre-Training BERT}
 
-\textbf{Ingredients:}
+\vfill
+
+\textbf{Setup:}
 
 \begin{itemize}
-	\item Massive lexical resources (BooksCorpus $+$ Eng. Wikipedia)\\
-				$\rightarrow$ 13 GB in total
+	\item 13 GB of text (BooksCorpus $+$ Eng. Wikipedia)\\
+				$\rightarrow$ Back then: \textbf{huge}; Now: rather \textbf{small}
 	\item Train for approximately* 40 epochs
 	\item 4 (16) \href{https://cloud.google.com/tpu/}{Cloud TPUs} for 4 days for the BASE (LARGE) variant
 	\item Loss function: $$Loss_{BERT} = Loss_{MLM} + Loss_{NSP}$$
 \end{itemize}
-				\vspace{.3cm}
-				{\scriptsize *1.000.000 steps on batches of 256 sequences with a sequence length of 512 tokens}
+
+\vfill
+
+{\scriptsize *1.000.000 steps on batches of 256 sequences with a sequence length of 512 tokens}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pre-Training BERT}
+
+\vfill
+
+\textbf{Sequence lengths:}
+
 \begin{itemize}
 	\item For their experiments:
 		\begin{itemize}
 			\item Pre-train w/ sequence length 128 for 90\% of the steps
 			\item Pre-train w/ sequence length 512 for 10\% of the steps \\
-						\textit{(Reason: Learn positional embeddings for all positions)}
+		\end{itemize}
+	\item \textit{Reason:} Positional embeddings
+		\begin{itemize}
+			\item Learned, not sinusoidal (as opposed to the original Transformer)
+			\item Training on long sequences necessary to learn them well
+			\item \textbf{But:} Training expensive, hence this ``compromise``
 		\end{itemize}
 \end{itemize}
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -169,7 +217,7 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 	\begin{figure}
 	\centering
 		\includegraphics[width = 10cm]{figure/bert-finetune.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\citebutton{Source: Devlin et al., 2019}{https://aclanthology.org/N19-1423.pdf}
 	\end{figure}
 \end{frame}
 
@@ -183,12 +231,12 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 	\begin{figure}
 	\centering
 		\includegraphics[width = 11cm]{figure/bert-sota.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\citebutton{Source: Devlin et al., 2019}{https://aclanthology.org/N19-1423.pdf}
 	\end{figure}
 \begin{itemize}
-	\item Performance of BERT on the \href{https://gluebenchmark.com/}{\beamergotobutton{GLUE Benchmark}}
+	\item Performance of BERT on the GLUE Benchmark \citebutton{Wang et al., 2018}{https://gluebenchmark.com/}
 	\item Beats all of the previous state-of-the-art models
-	\item In the meantime: Other models better than BERT
+	\item In the meantime: Other models (way) better than BERT
 \end{itemize}
 
 \end{frame}
@@ -210,7 +258,7 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 			\item \textbf{Batch Size:} 16, 32
 			\item \textbf{Adam learning rate:} 5e-5, 3e-5, 2e-5
 			\item \textbf{\#epochs:} 2, 3, 4
-			\item \textbf{Dropout probability:} 0,1
+			\item \textbf{Dropout probability:} 0.1
 		\end{itemize}
 	\item Data sets w/ > 100k labeled examples rather insensitive to hyperparameters
 \end{itemize}
@@ -221,19 +269,19 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Feature Extraction from BERT}
+\begin{frame}{Feature Extraction from BERT}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/bert-featextr.png}\\ 
-		\footnotesize{Source:} \href{https://jalammar.github.io/illustrated-bert/}{\footnotesize \it Jay Alammar}
+		\citebutton{Source: Jay Alammar}{https://jalammar.github.io/illustrated-bert/}
 	\end{figure}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -242,7 +290,7 @@ The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & 
 	\begin{figure}
 	\centering
 		\includegraphics[width = 7.5cm]{figure/bert-featextr-results.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1810.04805.pdf}{\footnotesize Devlin et al. (2018)}
+	\citebutton{Source: Devlin et al., 2019}{https://aclanthology.org/N19-1423.pdf}
 	\end{figure}
 
 \end{frame}
