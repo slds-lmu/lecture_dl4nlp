@@ -589,6 +589,7 @@ $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta) = \mathrm{softmax}
 \item $M$ sets of parameters $\{\theta^{(1)}, \ldots, \theta^{(M)}\}$, with $\theta^{(m)} = \{\vec {W}^{(m,q)}, \vec {W}^{(m,k)}, \vec {W}^{(m,v)}\}$
 \item For every head, compute in parallel:
 $$ \vec O^{(m)} = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta^{(m)}) $$
+\item Choice of dimensionality: $d_k = d_v = d_{x}/M$ 
 \item Concatenate all $\vec {O}^{(m)}$ along their last axis; then down-project the concatenation with an additional parameter matrix $\vec W^{(o)} \in \mathbb{R}^{Md_v \times d_v}$:
 $$ \vec O = [\vec O^{(1)}; \ldots;  \vec O^{(M)}] \vec W^{(o)}$$
 \end{itemize}
@@ -620,17 +621,23 @@ $$ \vec O = [\vec O^{(1)}; \ldots;  \vec O^{(M)}] \vec W^{(o)}$$
 
 % ------------------------------------------------------------------------------
 
-\endlecture
-\end{document}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{}
+\begin{vbframe}{model size}
 
 \vfill
 
-
+\begin{itemize}
+\item Embedding size: $d_x = 512$
+\item Number of heads: $M = 8$
+\item Embedding size \textit{per head}: $d_k = d_v = 512/8 = 64$\\\medskip
+			$\to$ $\vec W^{(q)} \in \mathbb{R}^{512 \times 64}$, $\vec W^{(k)} \in \mathbb{R}^{512 \times 64}$, $\vec W^{(v)} \in \mathbb{R}^{512 \times 64}$
+\item Projection matrix after multi-head attention: $\vec W^{(o)} \in \mathbb{R}^{512 \times 512}$
+\end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

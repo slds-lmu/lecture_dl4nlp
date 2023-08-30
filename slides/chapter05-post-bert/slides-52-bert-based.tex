@@ -22,13 +22,13 @@
 \begin{frame}{Sucessors of BERT}
 \hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=1]{figure/transfer_learning_timeline3_nlp.pdf}}
 \end{frame}
-\begin{frame}[noframenumbering]{Predecessors of BERT}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
 \hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=2]{figure/transfer_learning_timeline3_nlp.pdf}}
 \end{frame}
-\begin{frame}[noframenumbering]{Predecessors of BERT}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
 \hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=3]{figure/transfer_learning_timeline3_nlp.pdf}}
 \end{frame}
-\begin{frame}[noframenumbering]{Predecessors of BERT}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
 \hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=4]{figure/transfer_learning_timeline3_nlp.pdf}}
 \end{frame}
 
@@ -44,18 +44,46 @@
 
 	\begin{itemize}
 		\item Change of the \texttt{MASK}ing strategy  \\
-					$\rightarrow$ BERT masks the sequences once before pre-training  \\
-					$\rightarrow$ RoBERTa uses dynamic \texttt{MASK}ing  \\
-					$\Rightarrow$ RoBERTa sees the same sequence \texttt{MASK}ed differently
-		\item RoBERTa does not use the additional NSP objective during pre-training
+					$\to$ BERT masks the sequences once before pre-training  \\
+					$\to$ RoBERTa uses dynamic \texttt{MASK}ing  \\
+					$\to$ RoBERTa sees the same sequence \texttt{MASK}ed differently
+		\item RoBERTa \textbf{does not use} the additional NSP objective during pre-training
 		\item Authors claim that BERT is seriously "undertrained"
 			\begin{itemize}
 				\item 160 GB pre-training corpus instead of 13 GB
 				\item Pre-training is performed with larger batch sizes (8k)
 			\end{itemize}
+		\item Training on full-length sequences only (512 tokens)
 	\end{itemize}
 	
 \vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{roberta -- the architecture}
+
+\textbf{Architectural differences:}
+
+\begin{itemize}
+\item Architecture (layers, heads, embedding size) identical to BERT
+\item 50k token BPE vocabulary instead of 30k
+\item Model size differs (due to the larger embedding matrix)\\
+			$\Rightarrow$ $\sim$ 125M (360M) for the BASE (LARGE) variant 
+\end{itemize}
+
+\textbf{Performance differences:}
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/roberta-sota.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\scriptsize
+\textit{Note:} Liu et al. (2019) report the accuracy for QQP while Devlin et al. (2019) report the F1 score (cf. results displayed in chapter 6.2.3); XLNet: see next Chapter.
 
 \end{frame}
 
@@ -95,6 +123,70 @@
 
 \vfill
 
+\begin{itemize}
+	\item \normalsize \textbf{BERT:}
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \begin{center}$\vdots$\end{center}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+\end{itemize}
+
+\vspace{.75cm}
+
+\begin{itemize}
+	\item \normalsize \textbf{RoBERTa:}
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & \cellcolor{blue!65}\texttt{[MASK]} & brown & fox & \cellcolor{blue!65}\texttt{[MASK]} & over & the & lazy & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+\cellcolor{blue!65}\texttt{[MASK]} & quick & \cellcolor{blue!65}\texttt{[MASK]} & fox & jumps & over & the & lazy & dog & . \\
+\hline
+\end{tabular}
+	\item[] \begin{center}$\vdots$\end{center}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+\cellcolor{blue!65}\texttt{[MASK]} & quick & brown & fox & jumps & over & the & lazy & \cellcolor{blue!65}\texttt{[MASK]} & . \\
+\hline
+\end{tabular}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
+
 \begin{figure}
 \centering
 \includegraphics[width = 8cm]{figure/roberta-dynamic.png}\\ 
@@ -107,7 +199,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{no nsp}
+\begin{frame}{no next sentence prediction}
 
 \vfill
 
@@ -118,9 +210,13 @@
 		\item Conduct experiments in multiple settings: 
 			\begin{itemize}
 				\item SEGMENT-PAIR+NSP
+				\item[] \textit{(Exactly like BERT)}
 				\item SENTENCE-PAIR+NSP
+				\item[] \textit{(Like BERT, but with natural sentences)}
 				\item FULL-SENTENCES
+				\item[] \textit{(No NSP, inputs may cross document boundaries)}
 				\item DOC-SENTENCES
+				\item[] \textit{(No NSP, only sentences from one document)}
 			\end{itemize}
 	\end{itemize}
 	
@@ -129,7 +225,7 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{no nsp}
+\begin{frame}{no next sentence prediction}
 
 \vfill
 
@@ -164,7 +260,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Changes in pre-training}
+\begin{frame}{further changes in pre-training}
 
 \vfill
 
@@ -182,35 +278,30 @@
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{RoBERTa \href{https://arxiv.org/pdf/1907.11692.pdf}{\beamergotobutton{Liu et al., 2019}}}
 
-\textbf{Architectural differences:}
-
-\begin{itemize}
-\item Architecture (layers, heads, embedding size) identical to BERT
-\item 50k token BPE vocabulary instead of 30k
-\item Model size differs (due to the larger embedding matrix)\\
-			$\Rightarrow$ $\sim$ 125M (360M) for the BASE (LARGE) variant 
-\end{itemize}
-
-\textbf{Performance differences:}
-
-\begin{figure}
-\centering
-\includegraphics[width = 11cm]{figure/roberta-sota.png}\\ 
-\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
-\end{figure}
+\begin{frame}{albert}
 
 \vfill
 
-\scriptsize
-\textit{Note:} Liu et al. (2019) report the accuracy for QQP while Devlin et al. (2019) report the F1 score (cf. results displayed in chapter 6.2.3); XLNet: see next Chapter.
+\textbf{A} \textbf{L}ite \textbf{BERT} \citebutton{Lan et al., 2019}{https://arxiv.org/abs/1909.11942}\\ \medskip\medskip
+
+\textbf{Short summary:}
+
+	\begin{itemize}
+		\item Major change to the architecture \\
+					$\to$ Size of embedding layer independent from hidden layer\\
+					(rember in Transformer/BERT: $E = H$)\\
+					$\to$ Saves memory and compute
+		\item Parameter sharing across layers	
+		\item Substitution of the NSP objective during pre-training
+	\end{itemize}
+	
+\vfill
 
 \end{frame}
 
 % ------------------------------------------------------------------------------
-
-\begin{frame}{Size of embedding and hidden layer}
+\begin{frame}{architectural changes}
 
 \vfill
 
@@ -230,7 +321,7 @@
 				\item concatenate resulting embeddings from all $A$ heads
 				\item results in hidden layer representation of size $H$
 			\end{itemize}
-		\item Implications?
+		\item \ques What are the implications?
 	\end{itemize}
 
 \vfill
@@ -239,9 +330,11 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Thoughts / Implications}
+\begin{frame}{architectural changes}
 
 \vfill
+
+\textbf{Thoughts / Implications}
 
 	\begin{itemize}
 		\item	WordPiece-Embeddings (size $E$) 
@@ -268,9 +361,11 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Disentanglement solves this}
+\begin{frame}{architectural changes}
 
 \vfill
+
+\textbf{Disentanglement solves this}
 
 	\begin{itemize}
 		\item Hidden-Layer-Embeddings (size $H$) context-dependent\\
@@ -290,22 +385,20 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 \vfill
 
 	\begin{itemize}
-		\item Typically pre-trained transformer-based models are deep and thus have many parameters
+		\item Pre-trained transformer-based models are deep stacks of identically parametrized layers and thus have many parameters
 		\item Sharing them as a way to gain parameter efficiency
 		\item Two different places in the network, where sharing can be done
 			\begin{itemize}
 				\item Attention parameters
 				\item FFN parameters
-				\item (or both)
 			\end{itemize}
-		\item Ablations: both; both individually; none
+		\item Ablation studies: 
+			\begin{itemize}
+				\item both
+				\item both individually
+				\item none
+			\end{itemize}
 	\end{itemize}
-
-	\begin{figure}
-		\centering
-		\includegraphics[width = 11cm]{figure/albert-param-sharing.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1909.11942.pdf}{\footnotesize Lan et al. (2019)}
-	\end{figure}
 
 \vfill
 
@@ -313,14 +406,14 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Observations}
+\begin{frame}{Cross-Layer parameter sharing}
 
 \vfill
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/albert-param-sharing.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1909.11942.pdf}{\footnotesize Lan et al. (2019)}
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
 	\end{figure}
 
 	\begin{itemize}
@@ -329,7 +422,7 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 			\begin{itemize}
 				\item Worse for models with larger $E$
 				\item Worse for sharing FNN compared to Attention weights
-				\item[$\to$] \textbf{Why?}
+		\item \ques \textbf{Why? What is the intuition here?}
 			\end{itemize}
 	\end{itemize}
 
@@ -347,8 +440,13 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/albert-param-sharing2.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1909.11942.pdf}{\footnotesize Lan et al. (2019)}
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
 	\end{figure}
+	
+\begin{itemize}
+	\item Distince/Similarity of input and output embeddings per layer
+	\item Smoother transitions for ALBERT models
+\end{itemize}
 
 \vfill
 
@@ -360,7 +458,7 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 
 \vfill
 
-	\textbf{Change/Substitution of the NSP objective}
+	\textbf{Substitution of the NSP objective}
 		
 	\begin{itemize}
 			\item Previous works questioned the usefulness of NSP
@@ -384,16 +482,16 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 		
 	\begin{figure}
 		\centering
-		\includegraphics[width = 10cm]{figure/albert-sop.png}\\ 
-		\footnotesize{Source:} \href{https://amitness.com/2020/02/albert-visual-summary/}{\footnotesize Amit Chaudhary}
+		\includegraphics[width = 8cm]{figure/albert-sop.png}\\ 
+		\citebutton{Source: Amit Chaudhary}{https://amitness.com/2020/02/albert-visual-summary/}
 	\end{figure}
 
 	\textbf{Effectiveness:}
 		
 	\begin{figure}
 		\centering
-		\includegraphics[width = 11cm]{figure/albert-sop-ablation.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1909.11942.pdf}{\footnotesize Lan et al. (2019)}
+		\includegraphics[width = 10cm]{figure/albert-sop-ablation.png}\\ 
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
 	\end{figure}
 
 \vfill
@@ -423,14 +521,14 @@ $\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{ALBERT}
+\begin{frame}{performance}
 
 	\textbf{Performance differences:}
 
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/albert-sota.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1909.11942.pdf}{\footnotesize Lan et al. (2019)}
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
 	\end{figure}
 
 	\textbf{Notes:}
