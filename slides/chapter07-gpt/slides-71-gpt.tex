@@ -2,30 +2,30 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\titlefigure}{figure/71-gpt_sq.png}
 \newcommand{\learninggoals}{
-\item Understand the use of the transformer decoder in this model
-\item Understand the input modifications and how this is useful}
+\item use of the transformer decoder
+\item input modifications (and how this is useful)}
 
-\title{Using the Transformer}
+\title{Generative Pre-Trained Transformers}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{GPT (Radford et al., 2018)}
+\lecturechapter{GPT-1 (2018)}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT \href{https://openai.com/blog/language-unsupervised/}{\beamergotobutton{Radford et al., 2018}}}
+\begin{vbframe}{GPT-1}
 
 \vfill
 
 	\begin{figure}
 		\centering
-		\includegraphics[width = 12cm]{figure/gpt}\\ 
-		\footnotesize{Source:} \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\footnotesize \it Radford et al., 2018}
+		\includegraphics[width = 12cm]{figure/71-gpt}\\
+		\citebutton{Source: Radford et al., 2018}{https://openai.com/blog/language-unsupervised/}
 	\end{figure}
 
 \vfill
@@ -46,13 +46,13 @@
 				\item BPE vocabulary w/ 40k merges
 				\item Learned positional embeddings (as opposed to fixed, sinusoidal ones in the original Transformer)
 			\end{itemize}
-	\end{itemize}
-
+		\item With $U = (w_{t-k}, \hdots, w_{t-1})$
 \begin{align*}
-	h_0 &= U W_e + W_p \\
-	h_l &= Trafo(h_{l-1}) \forall l \in [1,n]\\
-	P(u) &= softmax(h_n W_e^\top)
+	\vec h_0 &= \vec U \vec W_e + \vec W_p \\
+	\vec h_l &= Trafo(\vec h_{l-1}) \forall l \in [1,n]\\
+	P(w_t) &= softmax(\vec h_n \vec W_e^\top)
 \end{align*}
+	\end{itemize}
 
 \vfill
 
@@ -68,10 +68,10 @@
 		\item Standard LM objective
 
 \begin{align*}
-	L_1(\{u_1, \hdots, u_n\}) = \sum_i \log(P(u_i | u_{i-k}, \hdots, u_{i-1}; \Theta))
+	L_1(\{w_1, \hdots, w_n\}) = \sum_i \log(P(w_t | w_{t-k}, \hdots, w_{t-1}; \Theta))
 \end{align*}
 					
-					where $\{u_1, \hdots, u_n\}$ is an \textit{unlabeled} sequence of tokens
+					where $\{w_1, \hdots, w_n\}$ is an \textit{unlabeled} sequence of tokens
 
 		\item \textit{Resource:} BooksCorpus 
 			\begin{itemize}
