@@ -35,7 +35,7 @@
 	
 \begin{itemize}
 	\item \texttt{<task prefix>} for each task
-	\item[] Concatenation with the input
+	\item[] $\to$ Concatenation with the input
 	\item Output label / score formatted as string
 \end{itemize}
 	
@@ -58,7 +58,7 @@
 		\item Relative positional embeddings
 		\item All tasks reformulated as text-to-text tasks
 		\item[] $\to$ Probably the most important innovation of this work
-		\item From BERT-size (110M parameters) up to 11 Billion parameters
+		\item From BERT-size $\times2$ (since enc-dec) up to 11B parameters
 		\item Paradigm shift from \textit{Sequential Transfer Learning} towards true \textit{Multi-Task Learning}
 	\end{itemize}
 	
@@ -74,7 +74,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{t5 -- Input and Output Format}
+\begin{frame}{input and output format}
 
 \vfill
 
@@ -103,7 +103,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Add-On: Distinction to Prompting}
+\begin{frame}{task prefix vs. prompting}
 
 \vfill
 
@@ -132,14 +132,33 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Pre-training T5}
+\begin{frame}{architectural differences}
+
+\vfill
+	
+	\textbf{Attention patterns (top) and Schematics of considered architectures (bottom)}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 7.5cm]{figure/63-mask-patterns.png}\\ 
+		\includegraphics[width = 7.5cm]{figure/63-schematics.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-training objective}
 
 \vfill
 	
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/63-t5-span-pred.png}\\ 
-		\footnotesize{Baseline objective (Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al., 2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 	\begin{enumerate}
@@ -166,7 +185,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/63-t5-objectives1.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al. (2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
@@ -182,7 +201,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/63-t5-objectives2.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al. (2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
@@ -217,7 +236,7 @@
 		\centering
 		\includegraphics[width = 9cm]{figure/63-c4-characteristics.png}\\ 
 		\includegraphics[width = 9cm]{figure/63-c4-size.png}\\ 
-		\footnotesize{Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al. (2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
@@ -258,7 +277,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/63-t5-glue.png}\\ 
-		\footnotesize{Results on GLUE (Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al., 2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
@@ -274,7 +293,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/63-t5-squad-sglue.png}\\ 
-		\footnotesize{Results on SQUAD and S-GLUE (Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al., 2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
@@ -290,7 +309,7 @@
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/63-t5-mt.png}\\ 
-		\footnotesize{Results on MT/Summarization Benchmarks (Source:} \href{https://arxiv.org/pdf/1910.10683.pdf}{\footnotesize Raffel et al., 2019)}
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 	
 \vfill
