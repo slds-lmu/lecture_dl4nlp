@@ -1,0 +1,1026 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/rlhfbackflip.png}
+\newcommand{\learninggoals}{
+\item ADD MORE QUESTIONS
+\item a
+\item a}
+
+\title{RLHF}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Reinforcement Learning from Human Feedback (RLHF)}
+\lecture{Deep Learning for NLP}
+
+\input{ackslide}
+% ------------------------------------------------------------------------------
+
+
+
+
+
+
+\section{Motivation: Why do we need InstructGPT?}
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (1): Alignment (with human values)}
+
+	\begin{itemize}
+		\item LLM training data are incompatible
+		with generally accepted values.
+		\item Racism, sexism, toxicity etc.
+		\item $\rightarrow$ We need to align the LLM
+		with human values.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (2): Harm}
+
+	\begin{itemize}
+		\item LLMs learn a lot of potentially
+		harmful information from training data.
+		\item How to commit suicide, how to build a
+		bomb, how to cheat at an exam
+		\item $\rightarrow$ We want to prevent LLMs
+		from providing any of this harmful information.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (3): Hallucination}
+
+	\begin{itemize}
+		\item LLMs hallucinate: they make stuff up.
+		\item $\rightarrow$ We want to reduce
+                hallucination as much as possible.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (4a): Dialog}
+
+	\begin{itemize}
+		\item LLM training data: non-dialog text\\
+                (Wikipedia, news etc)
+		\item Our goal: a dialog model!
+		\item $\rightarrow$ We need to train/finetune the LLM on dialog
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (4b): Follow instructions in dialog}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/moon6yearold.png}
+\end{figure}
+
+\begin{itemize}
+	\item The pretraining text does not contain a lot of
+	instances of instruction following, so the raw
+	models are not good at following instructions.
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+\begin{vbframe}{InstructGPT: Why?}
+
+\vfill
+
+\textbf{Motivation (4c): Helpfulness in dialog}
+
+	\begin{itemize}
+		\item We have certain expectations about
+		what people say in a dialog (can be
+		different in different cultures). 
+		\item Example 1: It is understood that
+		everything is uncertain. Only hedge if there
+		is a lot of uncertainty, otherwise don't hedge.
+		\item Example 2: What makes a good
+		conversationalist? Don't rudely attack even
+		if you disagree. On the other hand, don't
+		accept completely wrong premises. It's complicated!
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Is there a better way?}
+
+\vfill
+
+\textbf{Our approach: create something flawed, then fix it}
+
+	\begin{itemize}
+		\item Can we create something instead that
+		is not so flawed?
+                \item Can we train an LLM that does not
+		suffer from hallucinations, harmful content,
+		bias, not being dialogic?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
+
+\vfill
+
+\textbf{What is hard about this?}
+
+	\begin{itemize}
+		\item Why don't we just finetune the model
+		on dialog data?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
+
+\vfill
+
+\textbf{Key idea}
+
+	\begin{itemize}
+		\item Preference feedback (binary or
+                  ranking)
+                  \item Given two GPT answers: which is
+                    better?
+                    \item This feedback is easy to give for
+                      annotators.
+                      \item In contrast:
+                    \item Writing good GPT answers for
+                      training is hard.
+                    \item Describing what is good, bad,
+                      could be improved, is missing is hard.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\input{roadmap.tex}
+
+\section{Original RLHF work: The backflipper}
+
+\begin{vbframe}{Origin of RLHF: Learn how to backflip}
+
+\vfill
+
+\textbf{How to label data for training a backflipper?}
+
+	\begin{itemize}
+		\item It is very very costly on the level of
+		regular supervised training: telling the
+		backflipper what exactly to do to backflip.
+                \item Alternative: Present two different
+		attempts to backflip
+                \item Have humans provide one bit of
+		information which one is better?
+\item https://openai.com/research/learning-from-human-preferences
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Backflipping: What we want to learn}
+
+\vfill
+
+\textbf{This animation shows what we want to learn}
+
+	\begin{itemize}
+		\item \href{https://images.openai.com/blob/cf6fdf49-ea9e-489d-a1f1-9753291cd09e/humanfeedbackjump.gif}{\beamergotobutton{trained
+		backflipper}}
+
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Training process}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/trainingprocess.png}
+\end{figure}
+
+\begin{itemize}
+	\item AI agent randomly initialized
+	\item Periodically, the human provides feedback on
+	two video clips: which is better
+        \item Human feedback is used to build reward predictor
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{The human feedback part of RLHF}
+
+\vfill
+
+\textbf{Human chooses one of two clips = one bit}
+
+	\begin{itemize}
+		\item \href{https://player.vimeo.com/video/754042470?h=e64a40690d&badge=0&autopause=0&player_id=0&app_id=58479}{\beamergotobutton{example
+		of human feedback}}
+
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Summary}
+
+\vfill
+
+\textbf{}
+
+	\begin{itemize}
+		\item One step towards building safe AI
+		systems is to remove the need for humans to
+		write goal functions, since using a simple
+		proxy for a complex goal, or getting the
+		complex goal a bit wrong, can lead to
+		undesirable and even dangerous behavior.
+                \item
+		We’ve developed an algorithm which can infer
+		what humans want by being told which of two
+		proposed behaviors is better.
+\item Our algorithm needed 900 bits of feedback from a human
+		evaluator to learn to backflip -- a seemingly
+	simple task which is simple to judge but challenging
+	to specify.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Question}
+
+\vfill
+
+\textbf{Compare backflipper with LLM use cases}
+
+	\begin{itemize}
+		\item What's common?
+                \item Any differences?
+
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\input{roadmap.tex}
+
+
+\section{RLHF for GPT: Introduction}
+
+
+\begin{vbframe}{How to make the model ``dialogic''}
+
+\vfill
+
+\textbf{Three steps}
+
+	\begin{itemize}
+		\item Finetuning on human-written dialogs
+                \item Create a reward model that measures
+		quality of dialogs -- not based on dialogs,
+		but on preferences which dialogs are
+		better/worse.
+                \item Use reward model for further training
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Three steps}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/threesteps.png}
+\end{figure}
+
+
+\end{vbframe}
+
+\begin{vbframe}{SFT model}
+
+\vfill
+
+\textbf{SFT = supervised finetuning}
+
+	\begin{itemize}
+	\item Collect demonstration data
+        \item Labelers provide demonstrations of the
+          desired behavior on the input prompt distribution
+\item Continued pretraining of GPT3
+\item Main difficulty of this step: collect good data from annotators                  
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Input prompt distribution}
+
+\vfill
+
+\textbf{The basis for SFT training dataset}
+
+	\begin{itemize}
+	\item Primarily prompts submitted to an earlier
+          version of InstructGPT
+          \item Deduplication
+        \item At most 200 per user ID
+        \item At the very beginning: bootstrapping
+          \item For bootstrapping, prompts are also written
+            by annotators
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Dataset sizes}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/datasetsize.png}
+\end{figure}
+
+\begin{itemize}
+	\item RM model is trained on ranked pairs, so the
+	actual size of the RM training set is much larger.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{API prompt dataset}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/apipromptdataset.png}
+\end{figure}
+
+\begin{itemize}
+	\item Table 1: Use case categories in RM dataset
+        \item Example prompts (made up) submitted to
+        InstructGPT model
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Metadata for model output collected from labelers}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/instructgpttable3.png}
+\end{figure}
+
+\begin{itemize}
+	\item Not used for training, just for analysis?
+	\item Gives a good sense of what the problem
+	behaviors of LLMs are
+	that we are trying to eliminate.
+        \item This is for RM training/validation (page 33).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\input{roadmap.tex}
+
+
+\section{RM and PPO models}
+
+
+
+
+
+
+
+
+\begin{vbframe}{Instructions to labelers for evaluation of
+	model outputs (1)}
+
+	\begin{itemize}
+
+
+\item You are given a text-based description of a task, submitted
+by a user. This task description may be in the form of an
+explicit instruction (e.g. “Write a story about a wise
+frog.”). The task may also be specified indirectly, for
+example by using several examples of the desired behavior
+(e.g. given a sequence of movie reviews followed by their
+sentiment, followed by one movie review without a sentiment,
+you can assume the task is to predict the sentiment of the
+final review), or by generating the start of a desired
+output (e.g. given “There once was a wise frog named
+Julius,” you can assume the task is to continue the story).
+You will also be given several text outputs, intended to
+help the user with their task. Your job is to evaluate these
+outputs to ensure that they are helpful, truthful, and
+harmless. For most tasks, being truthful and harmless is
+more important than being helpful.
+
+
+
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
+
+
+
+
+
+
+
+\begin{vbframe}{Instructions to labelers for evaluation of
+	model outputs (2)}
+
+
+
+
+	\begin{itemize}
+\item For most tasks, being harmless and truthful is more
+important than being helpful. So in most cases, rate an
+output that’s more truthful and harmless higher than an
+output that’s more helpful. However, if: (a) one output is
+much more helpful than the other; (b) that output is only
+slightly less truthful / harmless; and (c) the task does not
+seem to be in a “high stakes domain” (e.g. loan
+applications, therapy, medical or legal advice, etc.); then
+rate the more helpful output higher. When choosing between
+outputs that are similarly helpful but are untruthful or
+harmful in different ways, ask: which output is more likely
+to cause harm to an end user?
+\item A guiding principle for deciding on borderline cases: which
+output would you rather receive from a customer assistant
+who is trying to help you with this task?
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
+
+
+
+\begin{vbframe}{Web interface for labelers (1)}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/webinterface1.png}
+\end{figure}
+
+\begin{itemize}
+	\item This first part evaluates each output individually.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Web interface for labelers (2)}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/webinterface2.png}
+\end{figure}
+
+\begin{itemize}
+	\item In the second part, labelers rank all the outputs for a given prompt.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Example of a prompt written by a labeler and
+model responses}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/labelerpromptexample.png}
+\end{figure}
+
+%\begin{itemize}
+%	\item So there is still work to do \ldots
+%\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Reward model}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/threesteps.png}
+\includegraphics[width = 4cm]{figure/rewardloss.png}
+\end{figure}
+
+
+\begin{itemize}
+	\item Start with SFT model, final layer removed
+        	\item Input: prompt+response, output: reward
+        \item Only uses 6B model (not 175B)
+        \item The comparisons from $k$ responses to rank are
+        	highly correlated $\rightarrow$ put them in
+        	a single batch (prevents overfitting)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{PPO model}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/threesteps.png}
+\includegraphics[width = 4cm]{figure/objectiveppo.png}
+\end{figure}
+
+
+\begin{itemize}
+	\item Start with SFT model?
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\input{roadmap.tex}
+
+
+\section{Evaluation}
+
+
+
+
+
+\begin{vbframe}{Main evaluation result}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+	\item PPO-ptx: tries to preserve behavior on
+	pretraining data $\rightarrow$ less regression on
+	public NLP datasets.
+	\item SFT and PPO look like they are about equally
+	powerful.
+        \item Note that win rate is ``only'' about .6.
+        \item So PPO wins in 6 cases, SFT in 4.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Improvement on four dimensions}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/evaluationon4categories.png}
+\end{figure}
+
+\begin{itemize}
+	\item PPO models better than GPT throughout
+	\item SFT better than PPO on hallucinations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Important hyperparameter: KL reward coefficient}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/klrewardcoefficient.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Summarize/answer questions about code}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/questionsaboutcode.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT more reliably handles questions
+	about code as this example shows.
+        \item The training data contains almost no examples
+	of this,
+ so it's surprising that this works!
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Q\&A for languages other than English}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/nonenglish.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT more reliably follows instructions
+	in other languages (but will generate English
+	answers sometimes).
+        \item GPT3 requires more careful prompting
+	about code as this example shows.
+        \item The training data is almost exclusively
+	English, so it's surprising that this works!
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\input{roadmap.tex}
+
+
+\section{Things that don't work so well}
+
+
+
+
+
+
+
+
+
+
+
+\begin{vbframe}{Getting scolded}
+
+\vfill
+
+\begin{itemize}
+	\item wasn't part of initial instructgpt effort
+        \item should we eliminate this or not?
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
+	Altman on youtube}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{False premises}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/falsepremises.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT does not handle false premises well.
+\item False premises are not sufficiently represented in the
+training data.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{Hedging}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/hedging.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT can overly hedge.
+\item The reason could be that labelers rewards ``epistemic humility''.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Difficult constraints}
+
+\vfill
+
+\textbf{The aligned model cannot handle certain constraints}
+
+	\begin{itemize}
+		\item Write a summary in a specified number
+		of sentences
+                \item Multiple constraints: list 10 movies
+		in the 1930's set in France
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{InstructGPT often follows harmful prompts}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 5cm]{figure/harmfulpromptfollowing.png}
+\end{figure}
+
+\begin{itemize}
+	\item So there is still work to do \ldots
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+
+\begin{vbframe}{Attack suffixes}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/attacksuffixes.png}
+\includegraphics[width = 7cm]{figure/attacksuffixex.png}
+\end{figure}
+
+\begin{itemize}
+	\item Seems to disable all guardrails?
+        \item Surprisingly: generalize across language
+        models?
+        \item So is RLHF methodology just a dark magic hack?
+        Instead we should be looking for principled solutions?
+\item Can ``aligned'' LLMs be made to produce bad content?
+\item Prior jailbreaks: brittle, require human ingenuity
+\item Attack suffix: automatic, robust across LLMs
+\item Method: Greedy Coordinate Descent
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\input{roadmap.tex}
+
+
+\section{Discussion}
+
+
+
+
+
+\begin{vbframe}{Refusals}
+
+\vfill
+
+\begin{itemize}
+	\item Questions it should not answer.
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
+	Altman on youtube}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{GPT3 vs GPT4}
+
+\vfill
+
+\begin{itemize}
+	\item ``finding a lot of small wins and multiplying
+        them together''
+        \item ``hundreds of complicated things'' (to get the
+        big leap in performance from GPT3 to GPT4)
+        \item No fundamental breakthrough in artificial intelligence?
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
+	Altman on youtube}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Who are we aligning to?}
+
+\vfill
+
+\textbf{What we align to is determined by:}
+
+	\begin{itemize}
+		\item The labelers (from US and Southeast Asia)
+		\item OpenAI (through detailed directions
+		they give to labelers)
+		\item OpenAI customers and their end users
+		(that's where the prompts come from)
+                \item There clearly are many groups whose
+		values are not represented: cultural,
+		geographic, age, education etc.
+                \item So there is no such thing as
+		value-neutral alignment.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Should we have multiple GPTs with different values?}
+
+\vfill
+
+\textbf{Who is allowed to choose the values for alignment?}
+
+	\begin{itemize}
+		\item Political parties?
+		\item Governments?
+		\item Extremist organizations?
+                \item Criminals?
+                \item Uncensored models:
+                \href{https://erichartford.com}{Eric Hartford}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\endlecture
+\end{document}
