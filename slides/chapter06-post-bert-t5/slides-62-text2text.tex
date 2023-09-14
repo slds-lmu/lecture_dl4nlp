@@ -37,7 +37,7 @@ about language and the world through MLM training on large corpora
 
 \vfill
 
-*\scriptsize{In what follows we will use BERT as a representative for this class of language models and only talk about BERT -- but the discussion includes RoBERTa, Albert, XLNet etc.}
+*\scriptsize{In what follows we will use BERT as a representative for this class of language models, i.e. models with a custom classification layer of each task, and only talk about BERT -- but the discussion includes RoBERTa, Albert, XLNet etc.}
 
 \end{frame}
 
@@ -154,6 +154,23 @@ data actually encountered in real application can be large
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{Problems with BERT -- summary}
+
+\vfill
+
+  \begin{itemize}
+		\item No true multitask learning
+		\item Differs from the way humans learn
+		\item No possibility/necessity to make use of a description of the task
+		\item Overfitting
+  \end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
 \begin{frame}{revisiting text-to-text tasks}
 
 \vfill
@@ -178,11 +195,22 @@ data actually encountered in real application can be large
 % ------------------------------------------------------------------------------
 
 \begin{frame}{revisiting fine-tuning of bert}
+
+\vfill
+
 	\begin{figure}
 	\centering
-		\includegraphics[width = 10cm]{../chapter04-bert/figure/bert-finetune.png}\\ 
+		\includegraphics[width = 8cm]{../chapter04-bert/figure/bert-finetune.png}\\ 
 	\citebutton{Source: Devlin et al., 2019}{https://aclanthology.org/N19-1423.pdf}
 	\end{figure}
+	
+\begin{itemize}
+	\item \textit{First row:} (sequence-level) classification
+	\item \textit{Second row:} sequence tagging = token-level classification
+\end{itemize}
+
+\vfill
+
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -255,7 +283,8 @@ data actually encountered in real application can be large
 				\item[] $\to$ Could be pretty new/exotic terms the model is not familiar with after pre-training
 				\item[] $\to$ It will learn to output them during fine-tuning when ``triggered`` accordingly (i.e. with the right task description)
 				\item \textit{Task descriptions:} 
-				\item[] $\to$ \ques Same intuition here?!
+				\item[] $\to$ Might be possible that the the model already saw some task descriptions during pre-training and has a meaningful representation for them.
+				\item[] $\to$ On the other hand: Others might also be pretty new/exotic.
 			\end{itemize}
 \end{itemize}
 
@@ -269,8 +298,33 @@ data actually encountered in real application can be large
 
 \vfill
 
+For sentiment classification, I can just provide it with 1000s of training samples like 
+
+		\begin{center}
+				{\small
+					(``\texttt{<sentiment classification>: <input sample>}`` ; ``\texttt{<positive/negative>}``)
+				}
+		\end{center}
+		
+The model will ..
+
 \begin{itemize}
-	\item \ques If I want the model to do sentiment classification, can I just provide it with 1000s of training samples like 
+	\item .. utilize already present knowledge about the task description.
+	\item .. learn to associate the task description precisely with this label set
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{fine-tuning + text-to-text?}
+
+\vfill
+
+\begin{itemize}
+	\item \ques If I want the model to do sentiment classification, can I also just provide it with 1000s of training samples like 
 \end{itemize}
 
 		\begin{center}
@@ -280,15 +334,17 @@ data actually encountered in real application can be large
 		\end{center}
 				
 \begin{itemize}
-	\item[] ?
-	\item[] (\textit{khaleesi}* just used as some random fantasy word here)
-	\item \textit{Intuition:} Yes! It basically does not matter, \textbf{as long as the model is fine-tuned on this data}
+	\item[] ? 
+	\item[] (\textit{khaleesi}$^1$ just used as some random fantasy word here)
+	\pause
+	\item \textit{Intuition:} Yes! It basically does not matter, \textbf{as long as the model is fine-tuned on this data}$^2$
 	\item Fine-tuning important for the model to pick up on this ``signal`` and output according text (corresponding the appropriate classes)
 \end{itemize}
 
 \vfill
 
-*\footnotesize{Khaleesi is a Dothraki title referring to the wife of the khal (cf. Game of Thrones).}
+$^1$\footnotesize{Khaleesi is a Dothraki title referring to the wife of the khal (cf. Game of Thrones).}\\
+$^2$\footnotesize{Of course, using ``good`` task descriptions (as shown on the previous slide) that are also meaningful to human readers make more sense as the model might learn quicker because they diverge less from the pre-training distribution.}
 
 \end{frame}
 
@@ -316,7 +372,7 @@ data actually encountered in real application can be large
 
 \begin{itemize}
 	\item \ques If the model can learn to link task descriptions to label sets, can it learn to perform multiple tasks at once?
-	\item Yes, through fine tuning each task description will be linked to its label set:
+	\item Yes, through fine tuning each task description$^1$ will be linked to its label set:
 			\begin{itemize}
 				\item \texttt{<task description a>} $\to$ \texttt{\{positive, negative\}}
 				\item \texttt{<task description b>} $\to$ \texttt{\{world, sports, business, sci/tech\}} \citebutton{Example from AG News}{http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html}
@@ -327,6 +383,7 @@ data actually encountered in real application can be large
 
 \vfill
 
+$^1$\footnotesize{\texttt{<task description a>} (and so on) are just placeholders here.}
 \end{frame}
 
 % ------------------------------------------------------------------------------

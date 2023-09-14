@@ -28,9 +28,9 @@
 
 \begin{itemize}
 				\item Existence of computationally expensive, cumbersome ensemble models
-				\item Accuracy/Performance not everything the should be taken into account
+				\item Accuracy/Performance not everything that should be taken into account (also interpretability and deployability)
 				\item Time and space requirements also of importance
-				\item \textit{Model Compression} to ``to obtain fast, compact yet highly accurate models``
+				\item \textit{Model Compression} aims ``to obtain fast, compact yet highly accurate models``
 				\item The fast and compact model should approximate the function learned by the slower and larger model
 \end{itemize}
 
@@ -92,6 +92,19 @@
 
 \begin{frame}{Model distillation}
 
+\textbf{Motivation:}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/53-distilbert-motivation}\\ 
+		\citebutton{Source: Sanh et al., 2019}{https://arxiv.org/pdf/1910.01108.pdf}
+	\end{figure}
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Model distillation}
+
 \vfill
 
 \textbf{Types of targets} 
@@ -125,6 +138,7 @@
 \textbf{Temperature:}\\$$q_i = \frac{\exp(z_i/T)}{\sum_j \exp(z_j/T)}$$
 
 \begin{itemize}
+	\item \textit{Why?} Produce a softer probability distribution over classes
 	\item $z_i$/$z_j$ are the raw logits
 	\item Parameter $T$ controls to smoothness of the distribution
 		\begin{itemize}
@@ -166,19 +180,6 @@
 
 \begin{frame}{distilbert}
 
-\textbf{Motivation:}
-	\begin{figure}
-		\centering
-		\includegraphics[width = 10cm]{figure/53-distilbert-motivation}\\ 
-		\citebutton{Source: Sanh et al., 2019}{https://arxiv.org/pdf/1910.01108.pdf}
-	\end{figure}
-	
-\end{frame}
-
-% ------------------------------------------------------------------------------
-
-\begin{frame}{distilbert}
-
 \vfill
 
 \textbf{Characteristics of the student architecture:}
@@ -186,7 +187,7 @@
 \begin{itemize}
 	\item Half the number of layers compared to BERT$^1$ (6 instead of 12)
 	\item Remove segment embeddings$^2$ (required for NSP objective)
- 	\item Half of the size of BERT, but retains up to 97\% of the performance
+ 	\item Half of the size of BERT, but retains up to 97\% of the performance on GLUE
 	\item Initialize from BERT (taking one out of two hidden layers)
 	\item Same pre-training data as BERT (Wiki + BooksCorpus)
 \end{itemize}
@@ -210,7 +211,7 @@ $^2$ Sanh et al. call them ``token-type embeddings`` in their paper}
 \begin{itemize}
 	\item \textit{Soft targets:}\\Distillation loss $L_{ce} = \sum_i t_i \cdot \log(s_i)$
 	\item \textit{Hard targets:}\\Masked language modeling loss $L_{mlm}$ (cf. BERT)
-	\item \textit{Alignment:}\\Cosine-Embedding-Loss $L_{cos}$\\
+	\item \textit{Alignment:}\\Cosine-Embedding-Loss $L_{cos} = 1 - \frac{\vec w^{(i)T}\vec w^{(j)}}{\lVert \vec w^{(i)} \rVert_2 \cdot \lVert \vec w^{(j)}\lVert_2}$\\
 				(\textit{Rationale:} Keep DistilBERT's embeddings close to BERT's)
 \end{itemize}
 
@@ -360,6 +361,23 @@ $^2$ Sanh et al. call them ``token-type embeddings`` in their paper}
 				\item $p(x)$ is the to-be-pruned model prediction distribution,
 				\item and \texttt{stopgrad} is used to stop back-propagating gradients
 			\end{itemize}
+\end{itemize}
+
+\vfill
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{summary}
+
+\vfill
+
+\begin{itemize}
+	\item Model compression/distillation against growing model sizes
+	\item DistilBERT as a powerful, small alternative to BERT
+	\item Other approaches (pruning) that allow for a more targeted ``deactivation`` of individual heads (and might thus also improve interpretability)
+	\item Quantization as an approach to \textit{significantly} reduce the memory requirements of large models
 \end{itemize}
 
 \vfill

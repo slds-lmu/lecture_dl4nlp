@@ -117,16 +117,16 @@
 \begin{itemize}
 		\item Additional objective:
 					\begin{align*}
-						L_2(\{x^1, \hdots, x^m\}) = \sum_{x,y} \log(P(y | x^1, \hdots, x^m))
+						L_2(\{w_1, \hdots, w_n\}) = \sum_{x,y} \log(P(y | w_1, \hdots, w_n))
 					\end{align*}		
 					where 
 				\begin{itemize}
-					\item $P(y | x^1, \hdots, x^m) = softmax(h_l^m W_y)$ and 
-					\item $\{x^1, \hdots, x^m\}$ is a \textit{labeled} sequence of tokens
+					\item $P(y | w_1, \hdots, w_n) = softmax(h_l^m W_y)$ and 
+					\item $\{w_1, \hdots, w_n\}$ is a \textit{labeled} sequence of tokens
 				\end{itemize}
 		\item Combining both objectives: 
 					\begin{align*}
-						L_3(\{x^1, \hdots, x^m\}) = L_2(\{x^1, \hdots, x^m\}) + \lambda \cdot L_1(\{x^1, \hdots, x^m\})
+						L_3(\{w_1, \hdots, w_n\}) = L_2(\{w_1, \hdots, w_n\}) + \lambda \cdot L_1(\{w_1, \hdots, w_n\})
 					\end{align*}
 \end{itemize}
 
