@@ -2,20 +2,22 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\titlefigure}{figure/73-gpt3.jpg}
+
 \newcommand{\learninggoals}{
-\item Recap GPT and the ideas behind standard language modelling
-\item Understand the difference between fine-tuning and X-shot learning}
+\item Overview on relevant tasks and benchmarks
+\item GPT-3's performance in X-shot settings}
+
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{GPT Performance}
+\title{Generative Pre-Trained Transformers}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{GPT \&  Benchmarks}
+\lecturechapter{GPT-3: Tasks \& Performance}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
@@ -26,7 +28,8 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/lambadaformat.png}
+		\includegraphics[width=10cm]{figure/lambadaformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -41,7 +44,8 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/lambadaperf.png}
+		\includegraphics[width=10cm]{figure/lambadaperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -50,13 +54,14 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{``Closed book'' question answering (QA) task}
+\begin{vbframe}{``Closed book'' question answering (QA)}
 
 \vfill
 			
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/triviaformat.png}
+		\includegraphics[width=10cm]{figure/triviaformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 	
 \vfill
@@ -65,13 +70,14 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Performance on closed-book QA task}
+\begin{vbframe}{Performance on the closed-book QA}
 
 \vfill
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/triviaperf.png}
+		\includegraphics[width=10cm]{figure/triviaperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -86,7 +92,8 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/mtperf.png}
+		\includegraphics[width=10cm]{figure/mtperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -101,7 +108,8 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/winogradformat.png}
+		\includegraphics[width=10cm]{figure/winogradformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -117,7 +125,8 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/winogradperf.png}
+		\includegraphics[width=10cm]{figure/winogradperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -131,9 +140,15 @@
 
 \vfill
 
+\begin{itemize}
+	\item Multipe-Choice questions from 3rd to 9th grad scince exams
+	\item \textit{Challenge} version: Filtered to questions which simple statistical or information retrieval methods are unable to correctly answer
+\end{itemize}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=10cm]{figure/arcformat.png}
+		\includegraphics[width=10cm]{figure/arcformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
@@ -165,7 +180,7 @@
 
 	\begin{figure}
 		\centering
-		\includegraphics[height=8cm]{figure/raceformat,h.png}
+		\includegraphics[width=8cm]{figure/raceformat,h.png}
 	\end{figure}
 	
 \vfill

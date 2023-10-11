@@ -2,121 +2,167 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\titlefigure}{figure/73-gpt3.jpg}
+
 \newcommand{\learninggoals}{
-\item Recap GPT and the ideas behind standard language modelling
+\item Recap GPT and the ideas behind standard language modeling
 \item Understand the difference between fine-tuning and X-shot learning}
+
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{Intro to GPT \& X-shot learning}
+\title{Generative Pre-Trained Transformers}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{GPT \&  Benchmarks}
+\lecturechapter{GPT-3 (2020) \& X-shot learning}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT}
+\begin{frame}{GPT recap}
 
 \vfill
 
   \begin{itemize}
-\item Like BERT, GPT is a language model.
-\item But not MLM, but a conventional language model: it predicts
-the next word (or subword).
-\item Like BERT, GPT is trained on a huge corpus,
-actually an even huger corpus.
-\item Like BERT, GPT is a transformer architecture.
-\item Difference 1: GPT is a \myblue{single model}
-that aims to solve \myblue{all tasks}.  
+\item Like BERT, GPTs are called ``language models``.
+\item Like BERT, GPTs are trained on huge corpora, actually on even huger (closed-source) corpora.
+\item Like BERT, GPTs are based on the transformer architecture.
+\item Unlike GPTs, BERT is \textit{not} a language model in the conventional sense, i.e. not an ARLM
+\item BERT instead relies on the cloze taks, i.e. it is an MLM
+\item GPTs are conventional ARLMs: they are just trained on predicting the next word (or subword).
+    \end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{GPT recap}
+
+\vfill
+
+  \begin{itemize}
+\item Difference 1: GPTs rely on the transformer decoder
+\item[] $\to$ They are called ``\textit{generative}`` Large Language Models (LLM)
+\item[] $\to$ BERT relies on the encoder, hence not perfectly suited for generation
+\item Difference 2: GPT is a \myblue{single model} that aims to solve \myblue{all tasks}.  
   \begin{itemize}
     \item It can also switch back and forth between tasks and solve
     tasks within tasks, another human capability that is
     important in practice. \myblue{``fluidity''}
     \end{itemize}
-\item Difference 2: GPT leverages \myblue{task descriptions}.
-\item Difference 3: GPT is effective at
-\myblue{few-shot learning}.
+\item Difference 3: GPT leverages \myblue{task descriptions}.
+\item Difference 4: GPT is effective at \myblue{few-shot learning}.
     \end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT: In-context learning}
+\begin{frame}{in-context learning}
 
 \vfill
 
 \begin{figure}
 		\centering
-		\includegraphics[clip,trim=200px 0 0 0,width=\linewidth]{figure/twotypesoflearning.png}
+		\includegraphics[clip,trim=200px 0 0 0,width=\linewidth]{figure/twotypesoflearning.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
+\vfill
 
-\end{vbframe}
-
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}
+\begin{frame}{in-context learning}
 
-	\begin{figure}
+\vfill
+
+\begin{figure}
 		\centering
-		\includegraphics[height=8cm,width=6cm]{figure/gptnofinetuning.png}
-	\end{figure}
+		\includegraphics[width = 6cm]{figure/twotypesoflearning.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+\end{figure}
+
+\begin{itemize}
+	\item \textbf{Pre-training (Outer loop):}
+			\begin{itemize}
+				\item Model develops broad set of skills and abilities
+				\item Trained via gradient descent
+			\end{itemize}
+	\item \textbf{Inference (Inner loop):}
+			\begin{itemize}
+				\item It uses these abilities to rapidly adapt to a desired task\\(\textit{= in-context learning})
+				\item Just a single forward pass w/o any gradient updates
+			\end{itemize}
+\end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Zero-shot (no gradient update)}
-
-\vfill
-
-	\begin{figure}
-		\centering
-		\includegraphics[width=11cm]{figure/gptzeroshot.png}
-	\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{One-shot (no gradient update)}
-
-\vfill
-
-	\begin{figure}
-		\centering
-		\includegraphics[width=11cm]{figure/gptoneshot.png}
-	\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Few-shot (no gradient update)}
+\begin{frame}{learning in bert \& co.}
 
 \vfill
 
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{figure/gptfewshot.png}
+		\includegraphics[width=5cm]{figure/gptnofinetuning.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Zero-shot learning}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/gptzeroshot.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\begin{itemize}
+	\item No gradient updates
+	\item Learning happens ``on the fly``
+	\item Model has to ``understand`` the task description
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{One-shot learning}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/gptoneshot.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\begin{itemize}
+	\item No gradient updates
+	\item Model has to ``understand`` the task description
+	\item Understanding supported by \textit{one} demonstration
+\end{itemize}
 
 \vfill
 
@@ -124,18 +170,48 @@ that aims to solve \myblue{all tasks}.
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT: Effective in-context learning}
+\begin{vbframe}{Few-shot learning}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=8cm]{figure/gptfewshot.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\begin{itemize}
+	\item No gradient updates
+	\item Model has to ``understand`` the task description
+	\item Understanding supported by \textit{few} demonstrations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{effective in-context learning*}
 	
-	\vfill
+\vfill
 	
-	\begin{figure}
+\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{figure/incontextlearning.png}
-	\end{figure}
-	\vfill
-	
-\end{vbframe}
+		\includegraphics[width=10cm]{figure/incontextlearning.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+\end{figure}
 
+\begin{itemize}
+	\item Number/Selection of demonstrations = Hyperparameter
+	\item Larger model $\to$ Better in-context learning capabilities
+\end{itemize}
+
+\vfill
+
+\scriptsize{*on an artificial, simple word scrambling/manipulation task}
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -143,15 +219,21 @@ that aims to solve \myblue{all tasks}.
 
 \vfill
 
+\begin{itemize}
+	\item Various sizes released; GPT-3 usually refers to largest one
+	\item Both width ($d_{model}$) and depth ($n_{layers}$) are scaled
+	\item Number of heads adjusted to $d_{model}$
+\end{itemize}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{figure/gptarch.png}
+		\includegraphics[width=11cm]{figure/gptarch.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
 
 \end{vbframe}
-
 
 % ------------------------------------------------------------------------------
 
@@ -159,30 +241,42 @@ that aims to solve \myblue{all tasks}.
 
 \vfill
 
+\begin{itemize}
+	\item BERT: 3.3B words (rougly 4B -- 6B tokens)
+	\item GPT-3: 499B tokens
+	\item Increased by two orders of magnitude within < 2yrs
+	\item Content: Mostly the internet (incl. test sets of popular benchmarks)
+\end{itemize}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{figure/traincorp.png}
+		\includegraphics[width=11cm]{figure/traincorp.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 \vfill
 
 \end{vbframe}
 
-
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{X-shot comparison and effect of larger corpora}
+\begin{vbframe}{X-shot comparison}
 	
 	\vfill
 	
+\begin{itemize}
+	\item 42 accuracy-denominated benchmarks
+	\item Few-shot performance increases faster than zero-shot
+\end{itemize}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=11cm]{figure/xshotlargecorpora.png}
+		\includegraphics[width=9cm]{figure/xshotlargecorpora.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 	
 	\vfill
 	
 \end{vbframe}
-
 
 % ------------------------------------------------------------------------------
 
@@ -190,15 +284,19 @@ that aims to solve \myblue{all tasks}.
 
 \vfill
 
+\textbf{Power-law trend}
+
 	\begin{figure}
 		\centering
-		\includegraphics[width=9cm]{figure/losscompute.png}
+		\includegraphics[width=8cm]{figure/losscompute.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
 	\end{figure}
 
 \vfill
 
 \end{vbframe}
 
+% ------------------------------------------------------------------------------
 
 \endlecture
 \end{document}
