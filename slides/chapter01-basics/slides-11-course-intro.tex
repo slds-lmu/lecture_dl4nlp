@@ -4,7 +4,6 @@
 \newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
 \usepackage{qtree} %parse tree
 
-\newcommand{\titlefigure}{figure/tasks.png}
 \newcommand{\learninggoals}{
 \item Understand the scope of the course
 \item Answers to all open question
@@ -21,6 +20,35 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{people}
+
+\vfill
+
+\textbf{Lecturers and tutors:}
+
+	\begin{itemize}
+		\item Prof. Dr. Hinrich Schütze (weeks 7 \& 9-12)
+		\item Dr. Matthias Aßenmacher (weeks 1-6, \& 8)
+		\item M.Sc. Leonie Weißweiler (exercise sessions)
+		\item Ingo Ziegler (tutoring session)
+		\item Marwin Härttrich (exercise correction)
+	\end{itemize}
+
+\textbf{Time:}
+
+	\begin{itemize}
+		\item Lecture: Wednesday, 9.00 - 11.00
+		\item Exercise: Wednesday, 11.00 - 12.00
+		\item MTutoring: Thursday, 14.00 - 16.00
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{structure of the course}
 
 \vfill
@@ -30,13 +58,14 @@
 	\begin{itemize}
 		\item Basic concepts (2 weeks)
 		\item Transformer in-depth (1 week)
-		\item BERT and subsequent models (2 weeks)
-		\item T5 (1 week)
+		\item BERT (1 week)
+		\item BERTology, BERT's successors and distillation (1 week)
+		\item Other encoder models \& T5 (1 week)
 		\item GPT series and Prompting (2 weeks)
-		\item More LLMs (1 week)
+		\item Generative LLMs \& RLHF (1 week)
 		\item Multilinguality (1 week)
 		\item Math behind training LLMs (1 week)
-		\item Current topics in research (1 week)
+		\item Evaluation (1 week)
 	\end{itemize}
 
 \vfill
@@ -45,19 +74,39 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{structure of the course}
+\begin{vbframe}{structure of the exercise}
 
 \vfill
 
-\textbf{Central building blocks of the exercise}
+\textbf{Assignments:}
+
+	\begin{itemize}
+		\item Training RNNs (week 2 -- 3)
+		\item Transformer (week 4 -- 5)
+		\item Fine-tuning BERT \& T5 (week 6 -- 7)
+		\item Inner wrokings \& Decoding (week 8 -- 9)
+		\item LLama-2 \& Prompting (week 10 -- 11)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{structure of the exercise}
+
+\vfill
+
+\textbf{Central other building blocks of the exercise:}
 
 	\begin{itemize}
 		\item Python essentials (week 1)
-		\item Training an LSTM (week 2 -- 3)
-		\item Transformer (week 4 -- 5)
-		\item Fine-tuning T5 (week 6 -- 7)
-		\item GPT (week 8 -- 9)
-		\item ChatGPT / Multilinguality (week 10 -- 11)
+		\item PyTorch logic (week 3)
+		\item Debugging (week 5)
+		\item Huggingface universe (week 7)
+		\item tbd (week 9)
+		\item tbd (week 11)
 	\end{itemize}
 
 \vfill
@@ -80,7 +129,7 @@
 				- classification vs. regression\\
 				- backpropagation and gradient descent\\
 				- simple neural networks (MLPs)
-				\item Great resource: \href{https://slds-lmu.github.io/i2ml/}{I2ML course}
+				\item Great resource: \href{https://slds-lmu.github.io/i2ml/}{\textit{I2ML course}}
 		\end{itemize}
 
 \vfill
@@ -122,13 +171,70 @@
 
 	\begin{itemize}
 		\item A prompt engineering course
+		\item Riding the hypetrain
+		\item Only the latest state-of-the-art LLMs (you also need to know the relevant basics to understand what is going on)
 		\item Low workload and easy exercises (you will only learn this thoroughly be investing some time)
-		\item Only the latest state-of-the-art LLMs (you also need to know the basics)
 	\end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Managing expections}
+
+\vfill
+
+\textbf{Honesty}
+
+	\begin{itemize}
+		\item No intention to overload you with (unnecessary) work
+		\item Building up proper skills requires \textbf{time investment}
+		\item Coding assignments freshly created, we put a lot of work into creating creative and helpful content for you to acquire necessary skills to succeed in this field
+		\item Up-front communication of what is going to be required
+	\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Managing expections}
+
+\vfill
+
+\textbf{Workload}
+
+	\begin{itemize}
+		\item This is a 6 ECTS course
+		\item 1 ECTS := 30h (i.e. this course = 180h)
+		\item 13 weeks $\times$ 3h presence $\approx$ 40h
+		\item 140h for preparation, self-study, \textbf{working on assignments} 
+		\item 140h / 14 weeks = \textbf{10h / week} (\textit{additionally to in-class time})
+	\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{your turn}
+
+\vfill
+
+\centering \Huge{\bf Any Questions?}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
 
 % ------------------------------------------------------------------------------
 
@@ -180,20 +286,3 @@
 \vfill
 
 \end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{your turn}
-
-\vfill
-
-\centering \Huge{\bf Any Questions?}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\endlecture
-\end{document}
