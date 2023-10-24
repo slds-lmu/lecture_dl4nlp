@@ -265,7 +265,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking}
+\begin{vbframe}{task-specific evaluation: ranking (1)}
 
 \vfill
 
@@ -293,7 +293,100 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking}
+\begin{vbframe}{task-specific evaluation: ranking (2)}
+
+\vfill
+
+\textbf{MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (3)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex1.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (4)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex2.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (5)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex3.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (6)}
+
+\vfill
+
+\textbf{MAP:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+$$MAP = \dfrac{1}{|Q|} \sum_{q \in Q} Ap_q@k,\; with\; Q = \text{set of queries}$$
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex4.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (7)}
 
 \vfill
 
@@ -301,23 +394,8 @@
 %https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
 
 $$RR = \dfrac{1}{\text{rank of first relevant item}}$$
-$$MRR = \dfrac{1}{Q} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
+$$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
-\begin{itemize}
-		\item Use Cases:
-				\begin{itemize}
-					\item Retrieval systems output a ranking of relevant documents
-					\item Search engines return top $k$ results
-					\item ...
-				\end{itemize}
-		\item Ranking evaluation metrics
-				\begin{itemize}
-					\item Mean average precision (MAP)
-					\item Mean reciprocal rank (MRR)
-					\item Precision@k / Recall@k
-					\item ...
-				\end{itemize}
-\end{itemize}
 \vfill
 
 \end{vbframe}
