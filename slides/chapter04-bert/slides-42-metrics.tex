@@ -167,15 +167,15 @@
 \begin{itemize}
 	\item Metrics based on N-gram-overlap
 			\begin{itemize}
-				\item BLEU (cf. Chap. 3.1)
-				\item ROUGE
-				\item METEOR
+				\item BLEU (cf. Chap. 3.1) \citebutton{Papineni et al., 2002}{https://aclanthology.org/P02-1040/}
+				\item ROUGE \citebutton{Lin, 2004}{https://aclanthology.org/W04-1013/}
+				\item METEOR \citebutton{Banerjee and Lavie, 2005}{https://aclanthology.org/W05-0909/}
 			\end{itemize}
-	\item Metrics based pre-trained models
+	\item Metrics based pre-trained (neural) models
 			\begin{itemize}
-				\item BertScore
-				\item RLEURT
-				\item METEOR
+				\item BertScore \citebutton{Zhang et al., 2019}{https://arxiv.org/abs/1904.09675}
+				\item BLEURT \citebutton{Sellam et al., 2020}{https://aclanthology.org/2020.acl-main.704/}
+				\item COMET \citebutton{Rei et al., 2020}{https://aclanthology.org/2020.emnlp-main.213/}
 			\end{itemize}
 \end{itemize}
 
@@ -186,6 +186,35 @@
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{evaluating generated text (3)}
+
+\vfill
+
+\begin{itemize}
+	\item BLEU, ROUGE, METEOR:
+			\begin{itemize}
+				\item "Bilingual evaluation understudy", originally for machine translation
+				\item Measures overlap of words, and longer word sequences of different sizes
+				\item BLEU: unreliable per-example, but correlates with human judgments on an aggregate level \citebutton{Reiter, 2018}{https://aclanthology.org/J18-3002/}
+			\end{itemize}
+	\item BERTScore (based on pre-trained BERT model)
+			\begin{itemize}
+				\item Also able to consider contextual similarities
+				\item Correlates better with human judgements
+			\end{itemize}
+	\item BLEURT
+			\begin{itemize}
+				\item Better per-example quality estimation by fine-tuning on examples with judgements
+				\item But: potential bias if tested systems are very different than training examples
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (4)}
 
 \vfill
 
@@ -209,7 +238,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation}
+\begin{vbframe}{task-specific evaluation: classification}
 
 \vfill
 
@@ -229,6 +258,65 @@
 	\item Micro- / Macro-averaged F1
 	\item Class-specific accuracies
 	\item ...
+\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking}
+
+\vfill
+
+\textbf{Ranking:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+\begin{itemize}
+		\item Use Cases:
+				\begin{itemize}
+					\item Retrieval systems output a ranking of relevant documents
+					\item Search engines return top $k$ results
+					\item ...
+				\end{itemize}
+		\item Ranking evaluation metrics
+				\begin{itemize}
+					\item Mean average precision (MAP)
+					\item Mean reciprocal rank (MRR)
+					\item Precision@k / Recall@k
+					\item ...
+				\end{itemize}
+\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking}
+
+\vfill
+
+\textbf{MRR:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+$$RR = \dfrac{1}{\text{rank of first relevant item}}$$
+$$MRR = \dfrac{1}{Q} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
+
+\begin{itemize}
+		\item Use Cases:
+				\begin{itemize}
+					\item Retrieval systems output a ranking of relevant documents
+					\item Search engines return top $k$ results
+					\item ...
+				\end{itemize}
+		\item Ranking evaluation metrics
+				\begin{itemize}
+					\item Mean average precision (MAP)
+					\item Mean reciprocal rank (MRR)
+					\item Precision@k / Recall@k
+					\item ...
+				\end{itemize}
 \end{itemize}
 \vfill
 
