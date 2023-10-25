@@ -5,9 +5,10 @@
 
 \newcommand{\titlefigure}{figure/metrics.png}
 \newcommand{\learninggoals}{
-\item Metrics for text output
 \item Task-specific metrics
-\item Task-agnostic model evaluation}
+\item Metrics for text output
+\item How to evaluate retrieval
+\item Subtle aspects of evaluation}
 
 \title{BERT}
 % \author{}
@@ -17,6 +18,33 @@
 \begin{document}
 \lecturechapter{Measuring Performance}
 \lecture{Deep Learning for NLP} % stays constant
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: classification}
+
+\vfill
+
+\textbf{(Binary) Document-level Classification}
+
+\begin{itemize}
+	\item Accuracy
+	\item Recall / Precision
+	\item F1-Score
+	\item ROC-Curve / AUC
+	\item ...
+\end{itemize}
+
+\textbf{(Multi-Class) Document-level classification}
+
+\begin{itemize}
+	\item Micro- / Macro-averaged F1
+	\item Class-specific accuracies
+	\item ...
+\end{itemize}
+\vfill
+
+\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -44,6 +72,7 @@
 \vfill
 
 \begin{itemize}
+	\item Natural choice for evaluating generated text
 	\item Well-defined for ARLMs; trickier for MLMs
 	\item Intuitively: \textit{Amount of the model's surprisal when confronted with a sequence} (higher value means higher ``surprisal``)
 	\item More technically: Measure of uncertainty of a probabilistic model
@@ -135,12 +164,38 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{arlm perplexity (5)}
+
+\vfill
+
+\ques\\ Is a language model with lower perplexity always a ``better`` model?
+
+\vspace{.5cm}
+
+\textbf{(Dis)Advantages of perplexity:}
+
+\begin{itemize}
+	\item \textbf{Pro:} Straight-forward applicable
+	\item \textbf{Pro:} Does not depend on ``external`` labels
+	\item ...
+	\item \textbf{Con:} Not clear what value can be considered ``good``
+	\item \textbf{Con:} Corpus-/language-specific measure
+	\item ...
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{evaluating generated text (1)}
 
 \vfill
 
 \begin{itemize}
-	\item \ques How can we evaluate the quality of generated text?
+	\item \ques How else can we evaluate the quality of generated text?
+	\item[]
 	\item \textit{Use cases:} 
 			\begin{itemize}
 				\item Machine translation
@@ -196,8 +251,22 @@
 				\item Measures overlap of words, and longer word sequences of different sizes
 				\item BLEU: unreliable per-example, but correlates with human judgments on an aggregate level \citebutton{Reiter, 2018}{https://aclanthology.org/J18-3002/}
 			\end{itemize}
-	\item BERTScore (based on pre-trained BERT model)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (3)}
+
+\vfill
+
+\begin{itemize}
+	\item BERTScore
 			\begin{itemize}
+				\item Based on pre-trained BERT model
 				\item Also able to consider contextual similarities
 				\item Correlates better with human judgements
 			\end{itemize}
@@ -229,7 +298,7 @@
 				\item Engagement
 				\item ...
 			\end{itemize}
-	\item Human evaluation?!
+	\item Human evaluation?! (cf. next slide)
 \end{itemize}
 
 \vfill
@@ -238,27 +307,31 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: classification}
+\begin{vbframe}{human evaluatoin}
 
 \vfill
 
-\textbf{(Binary) Document-level Classification}
+\textbf{Pros}
 
 \begin{itemize}
-	\item Accuracy
-	\item Recall / Precision
-	\item F1-Score
-	\item ROC-Curve / AUC
+	\item Possible where simply using metrics fails (esp. generated texts)
+	\item Probably gold standard (given trained human evaluator)
+	\item \textit{Strong} learning signal for models (cf. RLHF, chapter 9)
 	\item ...
 \end{itemize}
 
-\textbf{(Multi-Class) Document-level classification}
+\vspace{.3cm}
+
+\textbf{Pros}
 
 \begin{itemize}
-	\item Micro- / Macro-averaged F1
-	\item Class-specific accuracies
+	\item Manual, tedious work
+  \item Costs and working conditions
+	\item Subjectiveness
+	\item Ambiguity
 	\item ...
 \end{itemize}
+
 \vfill
 
 \end{vbframe}
