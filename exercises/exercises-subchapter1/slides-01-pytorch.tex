@@ -208,33 +208,35 @@ tensor(3., grad_fn=<DotBackward>)
 
 % \end{vbframe}
 	
-\begin{vbframe}{Disabling automatic differentiation}
-
-\center{\begin{tikzpicture}
-\node (x) [draw, circle, thick] at (0,0.6) {$\mathbf{x}$};
-\node (w) [draw, circle, thick] at (0,1.4) {$\mathbf{w}$};
-\node (dot) [draw, ellipse, thick] at (2,1) {$\hat{y} = \mathbf{x}^T \mathbf{w}$};
-\node [right=5mm of dot] {$ \nabla_{\mathbf{w}} \hat{y} = \mathbf{x} ; \qquad \nabla_{\mathbf{x}} \hat{y} = \mathbf{w}$};
-\draw [->, >=stealth, thick] (x) -- (dot);
-\draw [->, >=stealth, thick] (w) -- (dot);
-\end{tikzpicture}}
+\begin{frame}[fragile]
+\frametitle{Disabling automatic differentiation}
 \begin{itemize}
-	\item When we apply operations to tensors, pytorch implicitly builds a computation graph
-	\item When backpropagation is invoked at a scalar tensor, the gradients of that tensor are computed via automatic differentiation
-	\item The gradients are stored in the $\texttt{grad}$ attribute of the input tensors:
+	\item Automatic differentiation is expensive:
+	\begin{itemize}
+	\item We have to store the content of all intermediate tensors
+	\item After backpropagation, we have to store the gradients
+	\end{itemize}
+	\item Disabling automatic differentiation:
+	\begin{itemize}
+	\item Use \texttt{requires\_grad=False} for tensors that do not require gradients (e.g., ``frozen'' parameters)
+	\item When you don't intend to do gradient updates (e.g., during evaluation), use \texttt{torch.no\_grad()} context 
+	\end{itemize}
 \end{itemize}
-\begin{minted}[fontsize=\footnotesize,fontfamily=courier]{python}
->>> x = torch.tensor([1., 2., 3.], requires_grad=True)
+\begin{minted}[fontsize=\scriptsize]{python}
+>>> x = torch.tensor([1., 2., 3.], requires_grad=False)
 >>> w = torch.tensor([0., 0., 1.], requires_grad=True)
+>>> with torch.no_grad(): 
+>>>   y_hat = x.dot(w)
+>>>   y_hat.backward()  # no_grad context -> no backpropagation
+RuntimeError
 >>> y_hat = x.dot(w)
->>> y_hat
-tensor(3., grad_fn=<DotBackward>)
->>> y_hat.backward()
->>> (w.grad, x.grad)
-(tensor([1., 2., 3.]), tensor([0., 0., 1.]))
+>>> y_hat.backward() 
+>>> (w.grad, x.grad) # gradients only for tensors with requires_grad=True
+(torch.tensor([1., 2., 3.]), None)
 \end{minted}
-
-\end{vbframe}
+\end{frame}
+	
+	
 
 \begin{vbframe}{Automatic differentiation via chain rule: Feed-Forward Net}
 \vspace{-1cm}
