@@ -4,7 +4,8 @@
 
 \newcommand{\titlefigure}{figure/gpt2-title.png}
 \newcommand{\learninggoals}{
-\item Get a first idea about prompting
+\item 
+Understand language models as universal task solvers
 \item Understand the implications of such models}
 
 \title{Generative Pre-Trained Transformers}
@@ -96,13 +97,20 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Capabilities -- Language Modeling}
+\begin{frame}{Language models as multitask learners}
 
 \vfill
 
 \begin{itemize}
-	\item Authors state that ``\textit{language provides a flexible way to specify tasks, inputs, and outputs all as a sequence of symbols}``:
-	\item[] \texttt{(translate to french, english text, french text)}
+
+\item[] ``But as exemplified in McCann et al. (2018), language
+	provides a flexible way to specify tasks, inputs,
+	and outputs all as a sequence of symbols.
+
+\item[] For
+	example, a translation training
+	example can be written as the sequence (translate to
+	french, english text, french text).''
 	\item Model benefits from seeing ``natural`` occurrences of task demonstrations during pre-training on large-scale web corpora
 	\item[] $\to$ Related rationale to T5 (\textit{literal task descriptions}), but slightly different (\textit{acquired on the fly already during pre-training}).
 \end{itemize}
@@ -119,30 +127,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Capabilities -- Language Modeling}
 
-\vfill
-
-\begin{itemize}
-	\item Language modeling performance measured via perplexity / bits-per-character (lower is better) on held-out corpora
-	\item Other data sets (accuracy):
-			\begin{itemize}
-				\item LAMBADA \citebutton{Paperno et al., 2016}{https://aclanthology.org/P16-1144/}: Sentence completion
-				\item Children's Book Test (CBT) \citebutton{Hill et al., 2015}{https://arxiv.org/abs/1511.02301v4}: Cloze-style task; predict correct one (among 10 alternatives for omitted word)
-			\end{itemize}
-\end{itemize}
-
-\begin{figure}
-\centering
-\includegraphics[width = 11cm]{figure/72-gpt2-lm-zeroshot.png}\\ 
-\citebutton{Source: Radford et al., 2019}{https://openai.com/research/better-language-models}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-% ------------------------------------------------------------------------------
 
 \begin{frame}{Capabilities -- Zero-Shot}
 
@@ -240,7 +225,9 @@
 	\item Available on huggingface: \url{https://huggingface.co/gpt2}
 	\item GPT-3 built on the foundation laid by GPT-2
 	\item (also ChatGPT happened)
-	\item Prompting models has become more and more common\\ (cf. next chapter)
+	\item GPT-2 (multi-task learning) extended to
+	GPT-3 (prompting)
+%        Prompting models has become more and more common\\ (cf. next chapter)
 	\item Few-/Zero-Shot capabilites of models have become more important (cf. next chapter)
 	\item Models of over $200\times$ the size of GPT-2 have been trained
 	\item Transformer still the backbone of (nearly) all of them
