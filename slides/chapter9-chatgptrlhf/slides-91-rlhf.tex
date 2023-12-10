@@ -172,6 +172,7 @@
                 \item Can we train an LLM that does not
 		suffer from hallucinations, harmful content,
 		bias, not being dialogic?
+\item (discuss at the end if there is time)
 	\end{itemize}
 
 \vfill
@@ -328,15 +329,17 @@
 
 \end{vbframe}
 
-\begin{vbframe}{Question}
+\begin{vbframe}{QUESTION}
 
 \vfill
 
 \textbf{Compare backflipper with LLM use cases}
 
 	\begin{itemize}
-		\item What's common?
-                \item Any differences?
+        \item Basic idea of applying RLHF to LLMs: ask human
+        to rank different answers to request.
+		\item What do they have in common?
+                \item How are they different?
 
 	\end{itemize}
 
@@ -778,6 +781,25 @@ model responses}
 \end{vbframe}
 
 
+\begin{vbframe}{QUESTION}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+        \item Why does PPO improve performance compared to
+        just using SFT?
+        \item PPO wins in 6 cases, SFT in 4: Is all the
+        investment in PPO worth it?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 \input{roadmap.tex}
@@ -978,7 +1000,8 @@ training data.
 \textbf{What we align to is determined by:}
 
 	\begin{itemize}
-		\item The labelers (from US and Southeast Asia)
+		\item The labelers (from US and Southeast
+		(South?) Asia)
 		\item OpenAI (through detailed directions
 		they give to labelers)
 		\item OpenAI customers and their end users
@@ -1007,6 +1030,10 @@ training data.
                 \item Criminals?
                 \item Uncensored models:
                 \href{https://erichartford.com}{Eric Hartford}
+                \item QUESTION: How can we prevent unaligned
+		LLMs from wreaking havoc? (through
+		legislation, community activism, what other
+		options are there?)
 	\end{itemize}
 
 \vfill
@@ -1015,6 +1042,23 @@ training data.
 
 
 
+\begin{vbframe}{QUESTION}
+
+\vfill
+
+\textbf{RLHF approach: create something flawed, then fix it}
+
+	\begin{itemize}
+		\item Can we create something instead that
+		is not so flawed?
+                \item Can we train an LLM that does not
+		suffer from hallucinations, harmful content,
+		bias, not being dialogic?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 
