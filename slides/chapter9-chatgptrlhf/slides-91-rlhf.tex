@@ -926,6 +926,34 @@ training data.
 \begin{figure}
 \centering
 \includegraphics[width = 7cm]{figure/attacksuffixes.png}
+\end{figure}
+
+\begin{itemize}
+\item Can ``aligned'' LLMs be made to produce bad content?
+\item Prior jailbreaks: brittle, require human ingenuity
+\item Attack suffix: automatic, robust across LLMs
+\item Method: Greedy Coordinate Descent
+	\item Seems to disable all guardrails?
+        \item Surprisingly: generalize across language
+        models?
+        \item So is RLHF methodology just a dark magic hack?
+        Instead we should be looking for principled solutions?
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Attack suffixes}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/attacksuffixes.png}
 \includegraphics[width = 7cm]{figure/attacksuffixex.png}
 \end{figure}
 
@@ -946,6 +974,7 @@ training data.
 \vfill
 
 \end{vbframe}
+
 
 
 \input{roadmap.tex}
