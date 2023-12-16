@@ -780,6 +780,31 @@ model responses}
 
 \end{vbframe}
 
+\begin{vbframe}{``Zero-shot'' instruction following}
+
+
+
+\begin{block}{RLHF works for unseen instructions?}
+We qualitatively probe InstructGPT’s capabilities, and find
+that it is able to follow instructions for summarizing code,
+answer questions about code, and sometimes follows
+instructions in different languages, \textbf{despite these
+instructions being very rare in the fine-tuning
+distribution}. In contrast, GPT-3 can perform these tasks but
+requires more careful prompting, and does not usually follow
+instructions in these domains. This result is exciting
+because it suggests that our models are able to \textbf{generalize
+the notion of “following instructions.”} They retain some
+alignment even on tasks for which they get very little
+direct supervision signal.
+\end{block}
+
+
+
+\end{vbframe}
+
+
+
 
 \begin{vbframe}{QUESTION}
 
