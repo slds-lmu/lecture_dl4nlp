@@ -27,6 +27,9 @@
 
 
 
+\input{roadmap.tex}
+
+
 \section{Motivation: Why do we need InstructGPT?}
 
 \begin{vbframe}{InstructGPT: Why?}
@@ -96,7 +99,7 @@
 		\item LLM training data: non-dialog text\\
                 (Wikipedia, news etc)
 		\item Our goal: a dialog model!
-		\item $\rightarrow$ We need to train/finetune the LLM on dialog
+		\item $\rightarrow$ We need to train/finetune the LLM on dialog.
 	\end{itemize}
 
 \vfill
@@ -149,10 +152,13 @@
 		\item Example 1: It is understood that
 		everything is uncertain. Only hedge if there
 		is a lot of uncertainty, otherwise don't hedge.
-		\item Example 2: What makes a good
-		conversationalist? Don't rudely attack even
-		if you disagree. On the other hand, don't
-		accept completely wrong premises. It's complicated!
+                \item Example 2: Don't
+		accept completely wrong premises. So
+		nonhelpfulness can actually also be helpful.
+		\item Example 3: What makes a good
+		conversationalist? It's complicated! E.g.,
+                don't rudely attack even
+		if you disagree.
 	\end{itemize}
 
 \vfill
@@ -164,7 +170,7 @@
 
 \vfill
 
-\textbf{Our approach: create something flawed, then fix it}
+\textbf{InstructGPT approach: create something flawed, then fix it}
 
 	\begin{itemize}
 		\item Can we create something instead that
@@ -188,7 +194,7 @@
 \textbf{What is hard about this?}
 
 	\begin{itemize}
-		\item Why don't we just finetune the model
+		\item QUESTION: Why don't we just finetune the model
 		on dialog data?
 	\end{itemize}
 
@@ -212,8 +218,8 @@
                       \item In contrast:
                     \item Writing good GPT answers for
                       training is hard.
-                    \item Describing what is good, bad,
-                      could be improved, is missing is hard.
+                    \item It is hard to describe what is good/bad,
+                      what could be improved.
 	\end{itemize}
 
 \vfill
@@ -309,20 +315,23 @@
 \textbf{}
 
 	\begin{itemize}
-		\item One step towards building safe AI
-		systems is to remove the need for humans to
-		write goal functions, since using a simple
+		\item Using a simple
 		proxy for a complex goal, or getting the
 		complex goal a bit wrong, can lead to
 		undesirable and even dangerous behavior.
+		\item So one step towards building safe AI
+		systems is to remove the need for humans to
+		write goal functions.
                 \item
-		We’ve developed an algorithm which can infer
+		RLHF: an algorithm that can infer
 		what humans want by being told which of two
 		proposed behaviors is better.
-\item Our algorithm needed 900 bits of feedback from a human
-		evaluator to learn to backflip -- a seemingly
-	simple task which is simple to judge but challenging
-	to specify.
+\item RLHF needed 900 bits of feedback from a human
+		evaluator to learn to backflip.
+                \item This works great because backflipping
+                is \textbf{a seemingly
+	simple task that is simple to judge but challenging
+	to specify.}
 	\end{itemize}
 
 \vfill
@@ -436,6 +445,7 @@
 \begin{itemize}
 	\item RM model is trained on ranked pairs, so the
 	actual size of the RM training set is much larger.
+	\item QUESTION: Are these small datasets or large datasets?
 \end{itemize}
 
 \vfill
@@ -448,12 +458,12 @@
 
 \begin{figure}
 \centering
-\includegraphics[width = 7cm]{figure/apipromptdataset.png}
+\includegraphics[width = 9cm]{figure/apipromptdataset.png}
 \end{figure}
 
 \begin{itemize}
 	\item Table 1: Use case categories in RM dataset
-        \item Example prompts (made up) submitted to
+        \item Prompts  submitted to
         InstructGPT model
 \end{itemize}
 
@@ -470,7 +480,7 @@
 
 \begin{figure}
 \centering
-\includegraphics[width = 7cm]{figure/instructgpttable3.png}
+\includegraphics[width = 8cm]{figure/instructgpttable3b.png}
 \end{figure}
 
 \begin{itemize}
@@ -617,9 +627,10 @@ model responses}
 \includegraphics[width = 10cm]{figure/labelerpromptexample.png}
 \end{figure}
 
-%\begin{itemize}
-%	\item So there is still work to do \ldots
-%\end{itemize}
+\begin{itemize}
+	\item (not perfect instruction following, but humans
+	don't either)
+\end{itemize}
 
 
 \vfill
@@ -631,7 +642,7 @@ model responses}
 
 \begin{figure}
 \centering
-\includegraphics[width = 6cm]{figure/threesteps.png}
+\includegraphics[width = 4cm]{figure/threesteps.png}
 \includegraphics[width = 4cm]{figure/rewardloss.png}
 \end{figure}
 
@@ -640,9 +651,11 @@ model responses}
 	\item Start with SFT model, final layer removed
         	\item Input: prompt+response, output: reward
         \item Only uses 6B model (not 175B)
-        \item The comparisons from $k$ responses to rank are
-        	highly correlated $\rightarrow$ put them in
-        	a single batch (prevents overfitting)
+        \item The comparisons of responses to rank for a
+        	given prompt are
+        	highly correlated.
+                \item $\rightarrow$ Put them in
+        	a single batch (prevents overfitting).
 \end{itemize}
 
 \vfill
@@ -656,14 +669,14 @@ model responses}
 \begin{figure}
 \centering
 \includegraphics[width = 6cm]{figure/threesteps.png}
-\includegraphics[width = 4cm]{figure/objectiveppo.png}
+
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
 \end{figure}
 
 
-\begin{itemize}
-	\item Start with SFT model?
-
-\end{itemize}
+%\begin{itemize}
+%	\item Start with SFT model?
+%\end{itemize}
 
 \vfill
 
@@ -713,7 +726,7 @@ model responses}
 
 \begin{itemize}
 	\item PPO models better than GPT throughout
-	\item SFT better than PPO on hallucinations
+	\item SFT better than PPO on hallucinations (why?)
 \end{itemize}
 
 \vfill
@@ -726,7 +739,7 @@ model responses}
 
 \begin{figure}
 \centering
-\includegraphics[width = 10cm]{figure/klrewardcoefficient.png}
+\includegraphics[width = 7cm]{figure/klrewardcoefficient.png}
 \end{figure}
 
 \vfill
@@ -744,10 +757,10 @@ model responses}
 \end{figure}
 
 \begin{itemize}
-	\item InstructGPT more reliably handles questions
-	about code as this example shows.
-        \item GPT3 requires more careful prompting
-	about code as this example shows.
+	\item Example shows: InstructGPT more reliably handles questions
+	about code;
+        GPT3 requires more careful prompting
+	about code.
         \item The training data contains almost no examples
 	of this,
  so it's surprising that this works!
@@ -845,6 +858,11 @@ direct supervision signal.
 \begin{vbframe}{Getting scolded}
 
 \vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/gettingscolded.png}
+\end{figure}
 
 \begin{itemize}
 \item Some LLMs sometimes scold the human.
