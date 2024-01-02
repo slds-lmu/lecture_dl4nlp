@@ -637,13 +637,13 @@ model responses}
 
 \end{vbframe}
 
-\begin{vbframe}{Reward model}
+\begin{vbframe}{Reward model (1)}
 
 
 \begin{figure}
 \centering
-\includegraphics[width = 4cm]{figure/threesteps.png}
-\includegraphics[width = 4cm]{figure/rewardloss.png}
+\includegraphics[width = 4cm]{figure/threesteps.png}\\
+\includegraphics[width = 10cm]{figure/rewardloss.png}
 \end{figure}
 
 
@@ -651,11 +651,34 @@ model responses}
 	\item Start with SFT model, final layer removed
         	\item Input: prompt+response, output: reward
         \item Only uses 6B model (not 175B)
-        \item The comparisons of responses to rank for a
+        \item Comparisons  for a
         	given prompt are
         	highly correlated.
                 \item $\rightarrow$ Put them in
         	a single batch (prevents overfitting).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Reward model (2)}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 4cm]{figure/threesteps.png}\\
+\includegraphics[width = 10cm]{figure/rewardloss.png}
+\end{figure}
+
+
+\begin{itemize}
+        \item Comparisons  for a
+        	given prompt are
+        	highly correlated.
+                \item $\rightarrow$ Put them in
+        	a single batch (prevents overfitting).
+\item QUESTION: Think through mechanics
 \end{itemize}
 
 \vfill
@@ -681,6 +704,26 @@ model responses}
 \vfill
 
 \end{vbframe}
+
+
+\begin{vbframe}{RLHF details}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/rlhfdetails.png}
+\end{figure}
+
+
+%\begin{itemize}
+%	\item Start with SFT model?
+%\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
 
 
 \input{roadmap.tex}
@@ -733,7 +776,8 @@ model responses}
 
 \end{vbframe}
 
-\begin{vbframe}{Important hyperparameter: KL reward coefficient}
+\begin{vbframe}{Important hyperparameter: KL reward
+	coefficient beta}
 
 \vfill
 
@@ -813,6 +857,13 @@ direct supervision signal.
 \end{block}
 
 
+\begin{itemize}
+	\item This can be said to be the central contribution
+	of the InstructGPT work!
+\end{itemize}
+
+\vfill
+
 
 \end{vbframe}
 
@@ -861,7 +912,7 @@ direct supervision signal.
 
 \begin{figure}
 \centering
-\includegraphics[width = 8cm]{figure/gettingscolded.png}
+\includegraphics[width = 12cm]{figure/gettingscolded.png}
 \end{figure}
 
 \begin{itemize}
@@ -885,7 +936,7 @@ direct supervision signal.
 
 \begin{figure}
 \centering
-\includegraphics[width = 10cm]{figure/falsepremises.png}
+\includegraphics[width = 11cm]{figure/falsepremises.png}
 \end{figure}
 
 \begin{itemize}
@@ -907,7 +958,7 @@ training data.
 
 \begin{figure}
 \centering
-\includegraphics[width = 10cm]{figure/hedging.png}
+\includegraphics[width = 12cm]{figure/hedging.png}
 \end{figure}
 
 \begin{itemize}
@@ -929,7 +980,8 @@ training data.
 		\item Write a summary in a specified number
 		of sentences
                 \item Multiple constraints: list 10 movies
-		in the 1930's set in France
+		in the 1930s set in France
+                \item QUESTION: Why is this difficult?
 	\end{itemize}
 
 \vfill
@@ -977,9 +1029,9 @@ training data.
 \item Attack suffix: automatic, robust across LLMs
 \item Method: Greedy Coordinate Descent
 	\item Seems to disable all guardrails?
-        \item Surprisingly: generalize across language
+        \item Surprisingly: generalizes across language
         models?
-        \item So is RLHF methodology just a dark magic hack?
+        \item So is RLHF methodology just a  hack, easy to undo?
         Instead we should be looking for principled solutions?
 \end{itemize}
 
@@ -996,7 +1048,7 @@ training data.
 
 \begin{figure}
 \centering
-\includegraphics[width = 7cm]{figure/extractmemory1.png}
+\includegraphics[width = 10cm]{figure/extractmemory1.png}
 \end{figure}
 
 
@@ -1111,9 +1163,10 @@ training data.
                 \item Uncensored models:
                 \href{https://erichartford.com}{Eric Hartford}
                 \item QUESTION: How can we prevent unaligned
-		LLMs from wreaking havoc? (through
-		legislation, community activism, what other
-		options are there?)
+		LLMs from wreaking havoc?
+                %(through
+		%legislation, community activism, what other
+		%options are there?)
 	\end{itemize}
 
 \vfill
