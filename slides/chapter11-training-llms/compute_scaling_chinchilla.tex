@@ -34,6 +34,8 @@
 
 \vfill
 
+\citebutton{Source: Kipply's Blog, 2023}{https://kipp.ly/transformer-param-count/}
+
 \begin{itemize}
     \item Model parameters are half-precision (bfloat16) numbers of 2 bytes
     \item One block (decoder unit) consists of:
@@ -59,9 +61,9 @@ Combining the above, for one layer/block we get this formula:
 \begin{equation*}
 \begin{array}{c}
 P_{layer} = 3 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 2 \cdot 4 \cdot {d_{model}}^2 \\ [8pt]
-P_{layer} = 4 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 8 \cdot {d_{model}}^2 \\ [8pt]
-P_{layer} = 4 \cdot d_{model} \cdot d_{model} + 8 \cdot {d_{model}}^2 \\ [8pt]
-P_{layer} = 12 \cdot {d_{model}}^2
+ = 4 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 8 \cdot {d_{model}}^2 \\ [8pt]
+ = 4 \cdot d_{model} \cdot d_{model} + 8 \cdot {d_{model}}^2 \\ [8pt]
+ = 12 \cdot {d_{model}}^2
 \end{array}
 \end{equation*}
 
@@ -118,15 +120,19 @@ What are we missing...?!
 
 \vfill
 
+Numeric illustration as in BERT-base \\ \vskip5mm
+
 \begin{itemize}
-    \item Word Embedding parameters
-    \item Position Embedding parameters
-	\item Token Type Embedding parameters
-	\item Embedding Layer Normalization, weight and Bias
-	\item Other model-specific parameters
+    \item Word Embedding parameters -- 30522 x 768 = 23440896
+    \item Position Embedding parameters -- 512 x 768 = 393216
+	\item Token Type Embedding parameters -- 2 x 768 = 1536
+	\item Embedding Layer Normalization, weight and Bias -- 768 + 768 = 1536
+	\item Other model-specific parameters...
 \end{itemize}
 
 \vskip5mm
+
+Total Embedding parameters = 23837184 \vskip3mm
 
 They do not scale with model size.
 
@@ -140,19 +146,37 @@ They do not scale with model size.
 
 \vfill
 
-$C \approx \tau T = 6 P D$  \newline
+\textbf{Basic equation: Cost to train a transformer (decoder) model:}
 
-where: \newline
+\vspace{1.5cm}
+
+$$C \approx \tau T = 6 P D$$ 
+
+\vspace{1.5cm}
+
+\centering \citebutton{Source: Quentin et al., 2023}{https://blog.eleuther.ai/transformer-math/}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Requirements}
+
+\vfill
+
+\textbf{where:}
 
 \begin{itemize}
-    \item $C$ is compute to train the model, in total floating point operations
-    \item $C = C_{forward} + C_{backward}$
+    \item $C$: No. of floating-point operations (FLOPs) to train the model:\\
+          $C = C_{forward} + C_{backward}$
 	\item $C_{forward} \approx 2 P D$
 	\item $C_{backward} \approx 4 P D$
 	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
 	\item $T$ is the time spent training the model, in seconds
 	\item $P$ is the number of parameters in the model
-	\item $D$ is the dataset size, in tokens
+	\item $D$ is the dataset size (in tokens)
 \end{itemize}
 
 \vfill
@@ -196,7 +220,7 @@ $C$  can be measured in different units:\newline
 	\item We need to decide about $P$ and $D$, so that we get the best performance withing the compute budget
 	\item The optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
-	    \item This is usually true for Chinchilla models, but not for all LLMs
+	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
 	\end{itemize}
 	\item Training a LLM for less than 200 billion tokens is not recommended
 	\item Rule of thumb: First determine the upmost inference cost, and then train the biggest model within that boundary.
@@ -228,6 +252,23 @@ Model size components: \newline
 	\item Optimizer states
 	\item Gradients
 	\item Activations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Number Representations}
+
+\vfill
+
+\begin{itemize}
+ 	\item Pure fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
+ 	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
+    \item bf16 or brain floating point 16, developed by Google Brain project, occupying 16 bits or 2 bytes
+	\item int8: integer from -128 to 127, occupying 8 bits or 1 byte
 \end{itemize}
 
 \vfill
@@ -372,90 +413,48 @@ In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significant
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{The $O(\MakeLowercase{n}^2)$ Problem of Transformer LLM\MakeLowercase{s}}
+\begin{vbframe}{Data Paralelism}
 
 \vfill
-
-\textbf{Quadratic time \& memory complexity of Self-Attention}
-\begin{itemize}
-    \item Inductive bias of Transformer models: Connect all tokens in a sequence to each other
-    \item \textbf{Pro:} Can (theoretically) learn contexts of arbitrary length
-    \item \textbf{Con:} Bad (quadratic )scalability limiting context size 
-\end{itemize}
-
-\vskip3mm
-
-\textbf{Resulting Problems:}
-\begin{itemize}
-    \item Several tasks require models to consume longer sequences
-	\begin{itemize}
-	    \item Text summarization of documents
-		\item Sentiment analysis of documents
-		\item Classification of EEG trace of thousand time steps
-		\item Classification of coding or non-coding genes
-		\item ... many more from biology/medicine
-	\end{itemize}
-    \item \textit{Efficiency:} Are there more efficient (e.g., linear) implementations which achieve similar or even better performance?
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Efficient Transformers}
-
-\vfill
-
-\textbf{Broad overview on so-called "X-formers":}
-
-\begin{itemize}
-	\item Efficient \& fast Transformer-based models\\
-				$\rightarrow$ Reduce complexity from $\mathcal{O}(n^2)$ to (up to) $\mathcal{O}(n)$
-	\item Claim on-par (or even) superior performance
-	\item Different techniques used:
-				\begin{itemize}
-					\item Fixed/Factorized/Random Patterns
-					\item Learnable Patterns (extension of the above)
-					\item Low-Rank approximations or Kernels
-					\item Recurrence (see e.g. \href{https://arxiv.org/pdf/1901.02860.pdf}{\beamergotobutton{Transformer-XL (Dai et al., 2019)}})
-					\item Memory modules
-				\end{itemize}
-\end{itemize}
-	
-	\vspace{.3cm}
-	
-\textbf{Side note:}
-
-\begin{itemize}
-	\item Most Benchmark data sets not explicitly designed for evaluating long-range abilities of the models.
-	\item Recently proposed: \href{https://arxiv.org/pdf/2011.04006.pdf}{\beamergotobutton{\textit{Longe Range Arena: A benchmark for efficient transformers} (Tay et al., 2020)}}
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Introducing Patterns}
-
-\vfill
-
-\textbf{Reasoning:} 
-
-\begin{itemize}
-	\item Making every token attend to every other token might be unnecessary
-	\item Introduce sparsity in the commonly dense attention matrix
-\end{itemize}
-
-\textbf{Example:}
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/bigbird-patterns.png} \\ 
-	{\footnotesize Source: \href{https://proceedings.neurips.cc//paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf}{Zaheer et al. (2020)}}
+	\includegraphics[width = 11cm]{./figure/data_parallel.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Paralelism}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/tensor_paralel.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Zero Redundancy Optimizer}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
+ \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
+  \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
+  
 \end{figure}
 
 \vfill
@@ -681,9 +680,8 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
-\href{https://arxiv.org/abs/2203.15556}{\beamergotobutton{Hoffmann et al. (2022)}}
 
-Given a fixed FLOPs budget, how should we trade-off model size and text size to optimize performance? 
+Given a fixed FLOPs budget, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 
 \vfill
 
@@ -697,7 +695,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 	\item Trained on 5\,B to 400\,B tokens
 	\end{itemize}
 
-	\item Different results from those of \href{https://arxiv.org/abs/2001.08361}{\beamergotobutton{Kaplan et al. (2020)}} 
+	\item Different results from those of \citebutton{Kaplan et al., 2020}{https://arxiv.org/abs/2001.08361} 
 	\item Results verified using Chinchilla
 	\begin{itemize}
 	\item Chinchilla has 70\,B parameters and is trained on 1.4\,T tokens
@@ -720,7 +718,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \begin{figure}
 	\centering
 	\includegraphics[width = 11cm]{./figure/chinchilla.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2203.15556}{Hoffmann et al. (2022)}}
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
 \vfill
@@ -736,13 +734,13 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \begin{figure}
 	\centering
 	\includegraphics[width = 11cm]{./figure/llm_params.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2203.15556}{Hoffmann et al. (2022)}}
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
 \begin{figure}
 	\centering
 	\includegraphics[width = 11cm]{./figure/chinchilla_gopher.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2203.15556}{Hoffmann et al. (2022)}}
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
 \vfill
@@ -758,7 +756,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \begin{figure}
 	\centering
 	\includegraphics[width = 8cm]{./figure/chinchilla_mmlu.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2203.15556}{Hoffmann et al. (2022)}}
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
 \vfill
@@ -774,7 +772,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \begin{figure}
 	\centering
 	\includegraphics[width = 12cm]{./figure/chinchilla_qa.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2203.15556}{Hoffmann et al. (2022)}}
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
 \vfill
