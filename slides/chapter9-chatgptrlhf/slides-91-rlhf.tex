@@ -19,6 +19,8 @@
 \lecturechapter{Reinforcement Learning from Human Feedback (RLHF)}
 \lecture{Deep Learning for NLP}
 
+
+
 \input{ackslide}
 % ------------------------------------------------------------------------------
 
@@ -1355,6 +1357,37 @@ consume but ultimately bad for the consumer.”
 \section{Epilogue}
 
 
+
+
+
+\begin{vbframe}{Reward model}
+
+\vfill
+
+\textbf{Clearer training signal through batching}
+
+\begin{tabular}{l|l|l}
+&\multicolumn{2}{c}{$x_1 <x_2<x_3$}\\\hline\hline
+&\begin{tabular}{l}
+one batch\\
+$x_1<x_2$\\
+$x_2<x_3$\\
+$x_1<x_3$
+\end{tabular}&
+\begin{tabular}{lll}
+batch 1&
+batch 2&
+batch 3\\
+$x_1<x_2$&
+$x_2<x_3$&
+$x_1<x_3$
+\end{tabular}\\\hline\hline
+$x_2$? & clear: ``don't move'' & confusing signals 
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
 
 
 \begin{vbframe}{ChatGPT}
