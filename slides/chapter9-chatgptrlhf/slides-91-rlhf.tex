@@ -1029,7 +1029,7 @@ training data.
 
 \begin{figure}
 \centering
-\includegraphics[width = 9cm]{figure/10happy2.png}
+\includegraphics[width = 8cm]{figure/10happy2.png}
 \end{figure}
 
 %\begin{itemize}
@@ -1109,6 +1109,26 @@ training data.
 \end{vbframe}
 
 
+\begin{vbframe}{Attack suffix: Example}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/attacksuffixex.png}
+\end{figure}
+
+\begin{itemize}
+\item QUESTION: Speculate why this may work.
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
 \begin{vbframe}{Word repetition attack}
 
 \vfill
@@ -1150,6 +1170,14 @@ training data.
 \vfill
 
 \begin{itemize}
+\item User study: 750 white-collar workers, three
+        conditions: no GPT, GPT with training, GPT without
+        training
+
+
+\item Brainstorming task: 40\% better with GPT, 20\% less time
+
+
 	\item
         On a task that required reasoning based on evidence,
         however, ChatGPT was not helpful at all. In this
@@ -1166,12 +1194,32 @@ training data.
 	Business School in Britain.
  
 
+
+
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{New York Times 2024-01-02: ChatGPT limitations}
+
+\vfill
+
+\begin{itemize}
+ 
+
 	\item
 “If you haven’t had an existential crisis about this tool,
 then you haven’t used it very much yet,” said another
 co-author, Ethan Mollick, a management professor at the
 Wharton School at the University of Pennsylvania.
 
+\item “GPT is like junk food: hard to resist, easy to
+consume but ultimately bad for the consumer.”
 
 
 \end{itemize}
@@ -1301,9 +1349,130 @@ Wharton School at the University of Pennsylvania.
 
 
 
+\input{roadmap.tex}
+
+
+\section{Epilogue}
 
 
 
+
+\begin{vbframe}{ChatGPT}
+
+\vfill
+
+\textbf{ChatGPT vs.\ InstructGPT (1)}
+
+	\begin{itemize}
+		\item \href{}{\beamergotobutton{OpenAI}}
+		\item
+                We trained this model using Reinforcement
+		Learning from Human Feedback (RLHF), using
+		the same methods as InstructGPT, but with
+		slight differences in the data collection
+		setup. We trained an initial model using
+		supervised fine-tuning: human AI trainers
+		provided conversations in which they played
+		both sides—the user and an AI assistant. We
+		gave the trainers access to model-written
+		suggestions to help them compose their
+		responses. We mixed this new dialogue
+		dataset with the InstructGPT dataset, which
+		we transformed into a dialogue format.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{ChatGPT}
+
+\vfill
+
+\textbf{ChatGPT vs.\ InstructGPT (2)}
+
+	\begin{itemize}
+		\item \href{}{\beamergotobutton{OpenAI}}
+		\item
+To create a reward model for reinforcement learning, we
+		needed to collect comparison data, which
+		consisted of two or more model responses
+		ranked by quality. To collect this data, we
+		took conversations that AI trainers had with
+		the chatbot. We randomly selected a
+		model-written message, sampled several
+		alternative completions, and had AI trainers
+		rank them. Using these reward models, we can
+		fine-tune the model using Proximal Policy
+		Optimization. \textbf{We performed several
+		iterations of this process.}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Limitations}
+
+\vfill
+
+\textbf{Reward hacking}
+
+	\begin{itemize}
+		\item \href{https://medium.com/@prdeepak.babu/reward-hacking-in-large-language-models-llms-c57abbc0cde7}{\beamergotobutton{Medium}}
+		\item
+``Reward hacking is a phenomenon observed in machine
+		learning where a model learns to exploit the
+		reward system to achieve high scores without
+		genuinely solving the intended problem. The
+		model identifies a shortcut within the
+		problem space that allows it to minimize the
+		loss function without truly learning the
+		crucial aspects of the problem. This issue
+		can lead to models that perform well on
+		training data but fail to deliver in
+		real-world scenarios.''
+                \item That's why we need to mix reward
+		objective with next-word and KL objectives.
+\item QUESTION: What negative property of ChatGPT
+		could be caused by reward hacking?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Limitations}
+
+\vfill
+
+\textbf{Reward hacking}
+
+	\begin{itemize}
+		\item
+                A reward is a single number without
+		``semantics'', i.e., there is zero
+		information about what exactly is good or
+		bad about a response, just a summary
+		assessment.
+                
+\item Hallucinations are most likely a result of reward
+		hacking: if a generation is fluent,
+	interesting, responsive, helpful, authoritative, but
+	contains an inaccuracy, the human may still give it a
+	high reward.
+        \item Divergence of the learned ``proxy award'' (the
+	reward model) and the true reward function (what
+	OpenAI wants)
+        \item Note that PPO is better than SFT on all
+	detailed measures, but not on hallucinations! (see
+	earlier evaluation chart)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 \endlecture
