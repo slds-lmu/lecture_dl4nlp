@@ -2,6 +2,10 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\def\qmark{\myblue{?!?}}
+
 %\newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
 \item Learn to calculate Transformer number of parameters
@@ -72,7 +76,7 @@ P_{layer} = 3 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + \cdot d_{model} \
 For a LLM of $n$ layers, we get:
 \begin{equation*}
 \begin{array}{c}
-P = 12 \cdot n_{layers} \cdot {d_{model}}^2
+\mbox{total \# parameters\ \ } P = 12 \cdot n_{layers} \cdot {d_{model}}^2
 \end{array}
 \end{equation*}
 
@@ -192,7 +196,7 @@ $$C \approx \tau T = 6 P D$$
 $C$  can be measured in different units:\newline
 
 \begin{itemize}
-    \item FLOP-seconds which is [Floating Point Ops / Second] x [Seconds]
+    \item FLOP-seconds which is [Floating Point Ops / Second]
 	\begin{itemize}
 	    \item We also use multiples GFLOP-seconds, TFLOP-seconds etc.
 		\item Other multiples like PFLOP-days are used in papers
@@ -217,8 +221,9 @@ $C$  can be measured in different units:\newline
 
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
-	\item We need to decide about $P$ and $D$, so that we get the best performance withing the compute budget
-	\item The optimal tradeoff between $P$ and $D$ is: $D = 20 P$
+	\item We need to decide about $P$ and $D$, so that we get the best performance within the compute budget
+	\item
+        Recommended tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
 	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
 	\end{itemize}
@@ -326,7 +331,7 @@ bitsandbytes (8-bit optimizer): $Mem_{AdamW} = 6 ~bytes/param \cdot N_{params}$
 
 \vskip3mm
 
-SGD: $Mem_{AdamW} = 8 ~bytes/param \cdot N_{params}$
+For AdamW, memory = $ 12 ~bytes/param \cdot N_{params}$
 \begin{itemize}
  	\item fp32 copy of parameters: 4 bytes/param
  	\item Momentum: 4 bytes/param
@@ -345,6 +350,7 @@ SGD: $Mem_{AdamW} = 8 ~bytes/param \cdot N_{params}$
 They are usually stored in the same datatype as the model parameters. \newline
 
 Their memory overhead contribution is: \newline
+
 
 \begin{itemize}
  	\item fp32: $Mem_{grad} = 4 ~bytes/param \cdot N_{params}$
@@ -596,17 +602,17 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\item Shape means: depth and width
 	\end{itemize}
 
-	\item Smooth power laws
+	\item Smooth power laws \qmark
 	\begin{itemize}
 	\item Performance has power-law relation with each factor $N$, $D$, $C$
 	\item When not bottlenecked by the other two 
 	\item Trend spanning more than six orders of magnitude
 	\end{itemize}
 
-	\item Universality of overfitting 
+	\item Universality of overfitting \qmark 
 	\begin{itemize}
 	\item Performance enters regime of diminishing returns if $N$ or $D$ held fixed while the other increases
-	\item Performance penalty depends on $N^{0.74} / D$
+	%\item Performance penalty depends on $N^{0.74} / D$
 	\end{itemize}
 
 \end{itemize}
@@ -623,20 +629,21 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{itemize}
 
-	\item Universality of training
+	\item Universality of training (see figure next
+	slide) \qmark
 	\begin{itemize}
 	\item Training curves follow predictable power-laws
 	\item Their parameters are roughly independent of model size
 	\item It is possible to predict by extrapolating the early part of the training curve
 	\end{itemize}
 
-	\item Transfer improves with test performance
+	\item Transfer improves with test performance \qmark
 	\begin{itemize}
 	\item When evaluating on text with different distribution from training text, results are strongly correlated to those on the validation set
 	\item Transfer to different distribution incurs a constant penalty but improves in line with performance on training set
 	\end{itemize}
 
-	\item Sample efficiency
+	\item Sample efficiency \qmark
 	\begin{itemize}
 	\item Large models are more sample-efficient than small models
 	\item They reach same performance with fewer optimization steps
@@ -648,6 +655,21 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \end{vbframe}
 
+
+\begin{vbframe}{Power law (gpt3 paper)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/losscompute}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Scaling Laws}
@@ -658,10 +680,13 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 	\item Convergence is inefficient
 	\begin{itemize}
-	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achived by training very large models and stopping significantly short of convergence  
+	\item When $C$ is fixed but $N$ and $D$ are not,
+	optimal performance is achieved by training very
+	large models and stopping significantly short of
+	convergence (QUESTION: why?)  
 	\end{itemize}
 
-	\item Optimal batch size
+	\item Optimal batch size \qmark
 	\begin{itemize}
 	\item Ideal size is a power of the loss only
 	\item It is $\sim$1-2 million tokens for the largest models we can train
@@ -672,6 +697,29 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vskip3mm
 
 \textbf{Larger language models will perform better and be more sample efficient than current models.} 
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Scaling law for next word prediction}
+
+\vfill
+
+\begin{itemize}
+
+
+\item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}}        + \frac{410.7}{D^{0.28}}$        
+
+\item $L(N,D)$ is cross entropy on new text.
+        
+	\end{itemize}
+
+
+\vskip3mm
+
+%\textbf{Larger language models will perform better and be more sample efficient than current models.} 
 
 \vfill
 
