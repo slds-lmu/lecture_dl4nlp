@@ -16,13 +16,14 @@
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{The Math Behind Transformer}
+%\title{LLMs: Parameters, Data, Hardware, Scaling}
+\title{}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
-\lecturechapter{Training Transformer LLMs}
+\lecturechapter{LLMs: Parameters, Data, Hardware, Scaling}
 \lecture{Deep Learning for NLP}
 
 
@@ -41,12 +42,15 @@
 \citebutton{Source: Kipply's Blog, 2023}{https://kipp.ly/transformer-param-count/}
 
 \begin{itemize}
-    \item Model parameters are half-precision (bfloat16) numbers of 2 bytes
+    \item Model parameters are half-precision (bfloat16), numbers of 2 bytes
     \item One block (decoder unit) consists of:
 		\begin{itemize}
-		\item $W_q, W_k, W_v$ matrices which are each $d_{model} \cdot n_{heads} \cdot d_{head}$ and project the input into the query, key, and value used in self-attention. 
-		\item A $W_0$ matrix which is also $d_{model} \cdot n_{heads} \cdot d_{head}$ used on the output of self-attention, before the MLP (feedforward) layer
-		\item MLP weights, which are two matrices each of ${d_{model}}^2 \cdot 4$. Here the 4 is based on calculations and means that the MLP is 4 times the size of the model embedding dimension. 
+		\item $W_q, W_k, W_v$ matrices which are
+    each $n_{heads} \cdot d_{model} \cdot  d_{head}$ and project the input into the queries, keys, and values used in self-attention. 
+		\item A $W_0$ matrix which is also $n_{heads} \cdot d_{model} \cdot d_{head}$ for the output of self-attention, before the MLP (feedforward) layer
+		\item MLP weights, which are two matrices
+    each of ${d_{model}}^2 \cdot 4$. Here
+    ``4''  means that the MLP is 4 times the size of the model embedding dimension. 
 		\end{itemize}
 	\item In most architectures, $d_{model} = n_{heads} \cdot d_{head}$
 \end{itemize}
@@ -110,9 +114,35 @@ n_{params} = 350\,M ~; n_{layers} = 24 ~; d_{model} = 1024 ~; n_{heads} = 16 ~; 
 
 Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\sim$302\,M parameters for GPT-3 Medium. 
 
-\vskip2mm
 
-What are we missing...?!
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{LLM Parameters}
+
+\vfill
+
+\textbf{GPT example}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/gptsize}
+\end{figure}
+
+\begin{itemize}
+\item Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\sim$302\,M parameters for GPT-3 Medium. 
+
+\item What are we missing...?!
+
+\end{itemize}
+
+
 
 \vfill
 
@@ -127,8 +157,8 @@ What are we missing...?!
 Numeric illustration as in BERT-base \\ \vskip5mm
 
 \begin{itemize}
-    \item Word Embedding parameters -- 30522 x 768 = 23440896
-    \item Position Embedding parameters -- 512 x 768 = 393216
+    \item Word Embedding parameters -- 30522 x 768 = 23,440,896
+    \item Position Embedding parameters -- 512 x 768 = 393,216
 	\item Token Type Embedding parameters -- 2 x 768 = 1536
 	\item Embedding Layer Normalization, weight and Bias -- 768 + 768 = 1536
 	\item Other model-specific parameters...
@@ -136,7 +166,7 @@ Numeric illustration as in BERT-base \\ \vskip5mm
 
 \vskip5mm
 
-Total Embedding parameters = 23837184 \vskip3mm
+Total Embedding parameters = 23,837,184 \vskip3mm
 
 They do not scale with model size.
 
@@ -181,6 +211,17 @@ $$C \approx \tau T = 6 P D$$
 	\item $T$ is the time spent training the model, in seconds
 	\item $P$ is the number of parameters in the model
 	\item $D$ is the dataset size (in tokens)
+\item $2PD$: ``2'' comes from the multiply-accumulate
+          operation used in
+          matrix multiplication
+          \item $4PD$: backward pass approximately twice
+          the compute of the forward pass
+          (in the backward pass at each
+          layer, gradients have to be calculated for the
+          weights at that layer and for the previous layer's
+          output, so that the gradient of the previous
+          layer's weights can be calculated)
+          
 \end{itemize}
 
 \vfill
@@ -329,13 +370,13 @@ bitsandbytes (8-bit optimizer): $Mem_{AdamW} = 6 ~bytes/param \cdot N_{params}$
 	\item Variance: 1 byte/param
 \end{itemize}
 
-\vskip3mm
-
-For AdamW, memory = $ 12 ~bytes/param \cdot N_{params}$
-\begin{itemize}
- 	\item fp32 copy of parameters: 4 bytes/param
- 	\item Momentum: 4 bytes/param
-\end{itemize}
+%\vskip3mm
+%
+%For AdamW, memory = $ 12 ~bytes/param \cdot N_{params}$
+%\begin{itemize}
+% 	\item fp32 copy of parameters: 4 bytes/param
+% 	\item Momentum: 4 bytes/param
+%\end{itemize}
 
 \vfill
 
@@ -405,12 +446,12 @@ In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significant
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
 	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
-	\begin{itemize}
-	 	\item ZeRO (Zero Redundancy Optimizer)
-		\item Requires low extra communication between GPUs
-	 	\item Decreases optimizer memory requirement
-		\item Improves training speed
-\end{itemize}
+%	\begin{itemize}
+%	 	\item ZeRO (Zero Redundancy Optimizer)
+%		\item Requires low extra communication between GPUs
+%	 	\item Decreases optimizer memory requirement
+%		\item Improves training speed
+%\end{itemize}
 \end{itemize}
 
 \vfill
@@ -451,21 +492,21 @@ In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significant
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Zero Redundancy Optimizer}
-
-\vfill
-
-\begin{figure}
-	\centering
-	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
- \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
-  \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
-  
-\end{figure}
-
-\vfill
-
-\end{vbframe}
+%\begin{vbframe}{Zero Redundancy Optimizer}
+%
+%\vfill
+%
+%\begin{figure}
+%	\centering
+%	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
+%%%%% \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
+%  \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
+%  
+%\end{figure}
+%
+%\vfill
+%
+%\end{vbframe}
 
 % ------------------------------------------------------------------------------
 
@@ -662,7 +703,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/losscompute}
+	\includegraphics[width = 9cm]{./figure/losscompute}
 \end{figure}
 
 \vfill
@@ -688,15 +729,16 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 	\item Optimal batch size \qmark
 	\begin{itemize}
-	\item Ideal size is a power of the loss only
-	\item It is $\sim$1-2 million tokens for the largest models we can train
+%	\item Ideal size is a power of the loss only
+	\item $\sim$1-2 million tokens for the largest models 
 	\end{itemize}
 
 \end{itemize}
 
 \vskip3mm
 
-\textbf{Larger language models will perform better and be more sample efficient than current models.} 
+\textbf{Larger language models will perform better and be
+	more sample efficient than current models. \qmark} 
 
 \vfill
 
@@ -759,7 +801,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
+\begin{vbframe}{Compute-Optimal LLMs}
 
 \vfill
 
@@ -768,6 +810,40 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 	\includegraphics[width = 11cm]{./figure/chinchilla.png} \\ 
 	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
+
+Given a fixed FLOPs budget,1 how should one trade-off model
+size and the number of training tokens? 
+We find that all three methods predict that current large
+models should be substantially smaller and therefore trained
+much longer than is currently done.
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Compute-Optimal LLMs (2)}
+
+
+Given a fixed FLOPs budget,1 how should one trade-off model
+size and the number of training tokens? 
+We find that all three methods predict that current large
+models should be substantially smaller and therefore trained
+much longer than is currently done.
+Based on our estimated compute-optimal frontier, we predict
+that for the compute budget used to train Gopher, an optimal
+model should be 4 times smaller, while being training on 4
+times more tokens. We verify this by training a more
+compute-optimal 70B model, called Chinchilla, on 1.4
+trillion tokens. Not only does Chinchilla outperform its
+much larger counterpart, Gopher, but its reduced model size
+reduces inference cost considerably and greatly facilitates
+downstream uses on smaller hardware. The energy cost of a
+large language model is amortized through its usage for
+inference an fine-tuning. The benefits of a more optimally
+trained smaller model, therefore, extend beyond the
+immediate benefits of its improved performance.
+
 
 \vfill
 
@@ -797,7 +873,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Chinchilla on MMLU}
+\begin{vbframe}{Chinchilla outperforms other LLMs: MMLU}
 
 \vfill
 
@@ -813,7 +889,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Chinchilla on QA}
+\begin{vbframe}{Chinchilla outperforms other LLMs: QA}
 
 \vfill
 
