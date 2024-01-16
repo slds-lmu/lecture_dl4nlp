@@ -42,12 +42,14 @@
 \citebutton{Source: Kipply's Blog, 2023}{https://kipp.ly/transformer-param-count/}
 
 \begin{itemize}
-    \item Model parameters are half-precision (bfloat16), numbers of 2 bytes
+    \item Model parameters are half-precision (bfloat16)
+    numbers,  2 bytes each
     \item One block (decoder unit) consists of:
 		\begin{itemize}
 		\item $W_q, W_k, W_v$ matrices which are
     each $n_{heads} \cdot d_{model} \cdot  d_{head}$ and project the input into the queries, keys, and values used in self-attention. 
-		\item A $W_0$ matrix which is also $n_{heads} \cdot d_{model} \cdot d_{head}$ for the output of self-attention, before the MLP (feedforward) layer
+		\item A $W_0$ matrix which is also
+    $n_{heads} \cdot d_{head} \cdot d_{model} $ for the output of self-attention, before the MLP (feedforward) layer
 		\item MLP weights, which are two matrices
     each of ${d_{model}}^2 \cdot 4$. Here
     ``4''  means that the MLP is 4 times the size of the model embedding dimension. 
@@ -68,7 +70,7 @@
 Combining the above, for one layer/block we get this formula:
 \begin{equation*}
 \begin{array}{c}
-P_{layer} = 3 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 2 \cdot 4 \cdot {d_{model}}^2 \\ [8pt]
+P_{layer} = 3 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + d_{model} \cdot n_{heads} \cdot d_{head} + 2 \cdot 4 \cdot {d_{model}}^2 \\ [8pt]
  = 4 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 8 \cdot {d_{model}}^2 \\ [8pt]
  = 4 \cdot d_{model} \cdot d_{model} + 8 \cdot {d_{model}}^2 \\ [8pt]
  = 12 \cdot {d_{model}}^2
@@ -161,12 +163,12 @@ Numeric illustration as in BERT-base \\ \vskip5mm
     \item Position Embedding parameters -- 512 x 768 = 393,216
 	\item Token Type Embedding parameters -- 2 x 768 = 1536
 	\item Embedding Layer Normalization, weight and Bias -- 768 + 768 = 1536
-	\item Other model-specific parameters...
+	\item There can be other model-specific parameters...
 \end{itemize}
 
 \vskip5mm
 
-Total Embedding parameters = 23,837,184 \vskip3mm
+Total additional parameters = 23,837,184 \vskip3mm
 
 They do not scale with model size.
 
@@ -180,7 +182,7 @@ They do not scale with model size.
 
 \vfill
 
-\textbf{Basic equation: Cost to train a transformer (decoder) model:}
+\textbf{Basic equation: Cost to train a transformer model:}
 
 \vspace{1.5cm}
 
@@ -196,7 +198,8 @@ $$C \approx \tau T = 6 P D$$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute Requirements}
+\begin{vbframe}{Compute Requirements: C = tau T = 6 P D}
+
 
 \vfill
 
@@ -207,21 +210,21 @@ $$C \approx \tau T = 6 P D$$
           $C = C_{forward} + C_{backward}$
 	\item $C_{forward} \approx 2 P D$
 	\item $C_{backward} \approx 4 P D$
-	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
-	\item $T$ is the time spent training the model, in seconds
-	\item $P$ is the number of parameters in the model
-	\item $D$ is the dataset size (in tokens)
 \item $2PD$: ``2'' comes from the multiply-accumulate
           operation used in
           matrix multiplication
           \item $4PD$: backward pass approximately twice
           the compute of the forward pass
-          (in the backward pass at each
+\item           In the backward pass at each
           layer, gradients have to be calculated for the
           weights at that layer and for the previous layer's
-          output, so that the gradient of the previous
-          layer's weights can be calculated)
-          
+          output.
+          \item So that the gradient of the previous
+          layer's weights can be calculated. 
+	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
+	\item $T$ is the time spent training the model, in seconds
+	\item $P$ is the number of parameters in the model
+	\item $D$ is the dataset size (in tokens)
 \end{itemize}
 
 \vfill
@@ -262,14 +265,19 @@ $C$  can be measured in different units:\newline
 
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
-	\item We need to decide about $P$ and $D$, so that we get the best performance within the compute budget
+	\item \textbf{We need to decide about $P$ and $D$, so that we get the best performance within the compute budget.}
 	\item
         Recommended tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
 	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
 	\end{itemize}
 	\item Training a LLM for less than 200 billion tokens is not recommended
-	\item Rule of thumb: First determine the upmost inference cost, and then train the biggest model within that boundary.
+	\item Rule of thumb: First determine the upmost
+	inference cost, and then train the biggest model
+	within that boundary.
+        \item Note: two different ways to determine P: based
+	on available data / compute budget or based on
+	inference time.
 \end{itemize}
 
 \vfill
@@ -315,6 +323,19 @@ Model size components: \newline
  	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
     \item bf16 or brain floating point 16, developed by Google Brain project, occupying 16 bits or 2 bytes
 	\item int8: integer from -128 to 127, occupying 8 bits or 1 byte
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{INT8 quantization}
+\href{https://de.mathworks.com/company/newsletters/articles/what-is-int8-quantization-and-why-is-it-popular-for-deep-neural-networks.html}{\beamergotobutton{mathworks}} 
+
+\vfill
+
+\begin{itemize}
+\item Real\_number = stored\_integer * scaling\_factor
 \end{itemize}
 
 \vfill
@@ -428,7 +449,7 @@ $Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 \vskip5mm
 
-In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
+%In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
 
 \vfill
 
@@ -445,7 +466,7 @@ In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significant
  	\item Avoiding OOM issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
-	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
+%	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
 %	\begin{itemize}
 %	 	\item ZeRO (Zero Redundancy Optimizer)
 %		\item Requires low extra communication between GPUs
@@ -616,7 +637,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\end{itemize}
 	\item Towards IO-Aware Deep Learning
 	\begin{itemize}
-		\item Extending beyonde attention
+		\item Extending beyond attention
 	\end{itemize}
 	\item Multi-GPU IO-Aware Methods
 	\begin{itemize}
@@ -630,6 +651,24 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Number of parameters: Notation}
+
+\vfill
+
+\begin{itemize}
+
+	\item Up to now: number of parameters = $P$
+	\item From now on: number of parameters = $N$
+
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
 \begin{vbframe}{Scaling Laws}
 \href{https://arxiv.org/abs/2001.08361}{\beamergotobutton{Kaplan et al. (2020)}} 
 
@@ -637,7 +676,8 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{itemize}
 
-	\item Performance depends strongly on scale, weakly on model shape
+	\item Performance depends strongly on scale, weakly
+	on model shape \qmark
 	\begin{itemize}
 	\item Scale means: parameters $N$, data $D$, and compute $C$
 	\item Shape means: depth and width
@@ -729,8 +769,14 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 	\item Optimal batch size \qmark
 	\begin{itemize}
-%	\item Ideal size is a power of the loss only
-	\item $\sim$1-2 million tokens for the largest models 
+\item ``Optimal batch size: The ideal batch size for training these
+	models is roughly a power of the loss only, and
+	continues to be determinable by measuring the
+	gradient noise scale [MKAT18]; it is roughly 1-2
+	million tokens at convergence for the largest models
+	we can train.''
+        \item gradient noise scale = a measure of the signal-to-noise
+	ratio of gradient across training examples
 	\end{itemize}
 
 \end{itemize}
@@ -743,6 +789,22 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}{Optimal batch size}
+\href{https://arxiv.org/pdf/1812.06162.pdf}{\beamergotobutton{Kaplan et al. (2018)}} 
+
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width =11cm]{./figure/optimalbatchsize}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
 
 
 \begin{vbframe}{Scaling law for next word prediction}
@@ -790,7 +852,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 	\begin{itemize}
 	\item Chinchilla has 70\,B parameters and is trained on 1.4\,T tokens
 	\item 4x less parameters and 4x more tokens than Gopher
-	\item Chinchilla outruns Gopher and has reduced memory footprint and inference cost 
+	\item Chinchilla outperforms Gopher and has reduced memory footprint and inference cost 
 	\end{itemize}
 
 \end{itemize}
@@ -801,17 +863,17 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute-Optimal LLMs}
+\begin{vbframe}{Compute-Optimal LLMs: Are GPT3 etc  too large?}
 
 \vfill
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/chinchilla.png} \\ 
+	\includegraphics[width = 9cm]{./figure/chinchilla.png} \\ 
 	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
 
-Given a fixed FLOPs budget,1 how should one trade-off model
+Given a fixed FLOPs budget, how should one trade-off model
 size and the number of training tokens? 
 We find that all three methods predict that current large
 models should be substantially smaller and therefore trained
@@ -825,7 +887,7 @@ much longer than is currently done.
 \begin{vbframe}{Compute-Optimal LLMs (2)}
 
 
-Given a fixed FLOPs budget,1 how should one trade-off model
+Given a fixed FLOPs budget, how should one trade-off model
 size and the number of training tokens? 
 We find that all three methods predict that current large
 models should be substantially smaller and therefore trained
@@ -840,7 +902,7 @@ much larger counterpart, Gopher, but its reduced model size
 reduces inference cost considerably and greatly facilitates
 downstream uses on smaller hardware. The energy cost of a
 large language model is amortized through its usage for
-inference an fine-tuning. The benefits of a more optimally
+inference and fine-tuning. The benefits of a more optimally
 trained smaller model, therefore, extend beyond the
 immediate benefits of its improved performance.
 
