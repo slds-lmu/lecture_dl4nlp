@@ -92,7 +92,7 @@ For a LLM of $n$ layers, we get:
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{LLM Parameters: Example}
+\begin{vbframe}{LLM Parameters: GPT}
 
 \vfill
 
@@ -123,24 +123,24 @@ Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\s
 \end{vbframe}
 
 
-\begin{vbframe}{LLM Parameters}
+\begin{vbframe}{LLM Parameters: GPT}
 
-\vfill
+%\vfill
 
-\textbf{GPT example}
+%\textbf{GPT example}
 
 
 \vfill
 
 \begin{figure}
 \centering
-\includegraphics[width = 8cm]{figure/gptsize}
+\includegraphics[width = 11cm]{figure/gptsize}
 \end{figure}
 
 \begin{itemize}
 \item Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\sim$302\,M parameters for GPT-3 Medium. 
 
-\item What are we missing...?!
+\item What are we missing?
 
 \end{itemize}
 
@@ -481,7 +481,7 @@ $Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Data Paralelism}
+\begin{vbframe}{Data Parallelism (animated gif!)}
 
 \vfill
 
@@ -497,7 +497,7 @@ $Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tensor Paralelism}
+\begin{vbframe}{Tensor Parallelism (animated gif!)}
 
 \vfill
 
@@ -831,7 +831,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
+\begin{vbframe}{Compute-Optimal LLMs}
 
 Given a fixed FLOPs budget, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 
@@ -872,13 +872,6 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 	\includegraphics[width = 9cm]{./figure/chinchilla.png} \\ 
 	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{figure}
-
-Given a fixed FLOPs budget, how should one trade-off model
-size and the number of training tokens? 
-We find that all three methods predict that current large
-models should be substantially smaller and therefore trained
-much longer than is currently done.
-
 
 \vfill
 
