@@ -42,7 +42,7 @@
 \citebutton{Source: Kipply's Blog, 2023}{https://kipp.ly/transformer-param-count/}
 
 \begin{itemize}
-    \item Model parameters are half-precision (bfloat16)
+    \item Model parameters are half-precision (bf16 = bfloat16)
     numbers,  2 bytes each
     \item One block (decoder unit) consists of:
 		\begin{itemize}
@@ -245,11 +245,11 @@ $C$  can be measured in different units:\newline
 	    \item We also use multiples GFLOP-seconds, TFLOP-seconds etc.
 		\item Other multiples like PFLOP-days are used in papers
 		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
+		\item Actual FLOPs are always lower than the advertised theoretical FLOPs
 	\end{itemize}
-	\item GPU-hours which is [No. GPUs] x [Hours]
+	\item GPU-hours
 	\begin{itemize}
-	    \item GPU model is also required, since they have different compute capacities
-		\item For any GPU model, its Actual FLOPs are always lower than the advertised theoretical FLOPs
+	    \item GPU model is also required since they have different compute capacities
 	\end{itemize}
 \end{itemize}
 
@@ -275,9 +275,9 @@ $C$  can be measured in different units:\newline
 	\item Rule of thumb: First determine the upmost
 	inference cost, and then train the biggest model
 	within that boundary.
-        \item Note: two different ways to determine P: based
-	on available data / compute budget or based on
-	inference time.
+        \item Different ways to determine P: based
+	on available data, compute budget or
+	inference time
 \end{itemize}
 
 \vfill
@@ -322,6 +322,10 @@ Model size components: \newline
  	\item Pure fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
  	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
     \item bf16 or brain floating point 16, developed by Google Brain project, occupying 16 bits or 2 bytes
+\begin{itemize}
+\item gives more bits to exponent (vs.\ significand/mantissa)
+\end{itemize}
+
 	\item int8: integer from -128 to 127, occupying 8 bits or 1 byte
 \end{itemize}
 
@@ -384,7 +388,7 @@ AdamW: $Mem_{AdamW} = 12 ~bytes/param \cdot N_{params}$
 
 \vskip3mm
 
-bitsandbytes (8-bit optimizer): $Mem_{AdamW} = 6 ~bytes/param \cdot N_{params}$
+bitsandbytes: $Mem_{AdamW} = 6 ~bytes/param \cdot N_{params}$
 \begin{itemize}
  	\item fp32 copy of parameters: 4 bytes/param
  	\item Momentum: 1 byte/param
@@ -439,13 +443,14 @@ Their memory overhead contribution is: \newline
 
 \vskip5mm
 
-Total memory when training \textbf{without} activations: \newline
-$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
+Total memory when training \textbf{using} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 \vskip5mm
 
-Total memory when training \textbf{using} activations: \newline
-$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
+
+Total memory when training \textbf{without} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
 
 \vskip5mm
 
@@ -462,10 +467,10 @@ $Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 \vfill
 
 \begin{itemize}
- 	\item Training LLMs faster on many GPUs
  	\item Avoiding OOM issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
-	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
+	\item \textbf{Tensor parallellism:} split model parameters across GPUs
+ 	\item Training LLMs faster on many GPUs
 %	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
 %	\begin{itemize}
 %	 	\item ZeRO (Zero Redundancy Optimizer)
@@ -633,7 +638,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\begin{itemize}
 		\item A new CUDA kernel for each new attention implementation
 		\item CUDA is lower-level than PyTorch
-		\item Implementation may not be transferable accross GPUs
+		\item Implementation may not be transferable across GPUs
 	\end{itemize}
 	\item Towards IO-Aware Deep Learning
 	\begin{itemize}
@@ -641,7 +646,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\end{itemize}
 	\item Multi-GPU IO-Aware Methods
 	\begin{itemize}
-		\item FlashAttention computation may be parallelizable accross multiple GPUs
+		\item FlashAttention computation may be parallelizable across multiple GPUs
 	\end{itemize}
 \end{itemize}
 
@@ -713,7 +718,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\item Universality of training (see figure next
 	slide) \qmark
 	\begin{itemize}
-	\item Training curves follow predictable power-laws
+	\item Training curves follow predictable power laws
 	\item Their parameters are roughly independent of model size
 	\item It is possible to predict by extrapolating the early part of the training curve
 	\end{itemize}
@@ -798,8 +803,27 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{figure}
 	\centering
-	\includegraphics[width =11cm]{./figure/optimalbatchsize}
+	\includegraphics[width =9cm]{./figure/optimalbatchsize}
 \end{figure}
+
+\vfill
+
+\begin{itemize}
+
+	\item Estimate gradient as accurately as possible
+        $\rightarrow$ large batch
+        \item Increase training speed as much as possible
+        $\rightarrow$ large step size
+        \item Based on the estimated gradient, choose a step
+        size such that the cost of the landing position does not deviate
+        too much from the cost of the ideal landing position
+        $\rightarrow$ small step size
+        \item Exploit stochasticity (epoch batches would not
+        be a good thing even if we could compute them efficiently)
+        $\rightarrow$ small step size
+
+\end{itemize}
+
 
 \vfill
 
@@ -833,7 +857,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{vbframe}{Compute-Optimal LLMs}
 
-Given a fixed FLOPs budget, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+Given a fixed FLOPs budget, how should we trade off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 
 \vfill
 
@@ -880,7 +904,7 @@ Given a fixed FLOPs budget, how should we trade-off model size and text size to 
 \begin{vbframe}{Compute-Optimal LLMs (2)}
 
 
-Given a fixed FLOPs budget, how should one trade-off model
+Given a fixed FLOPs budget, how should one trade off model
 size and the number of training tokens? 
 We find that all three methods predict that current large
 models should be substantially smaller and therefore trained
