@@ -867,7 +867,7 @@ We qualitatively probe InstructGPT’s capabilities, and find
 that it is able to follow instructions for summarizing code,
 answer questions about code, and sometimes follows
 instructions in different languages, \textbf{despite these
-instructions being very rare in the fine-tuning
+instructions being very rare in the finetuning
 distribution}. In contrast, GPT-3 can perform these tasks but
 requires more careful prompting, and does not usually follow
 instructions in these domains. This result is exciting
@@ -1354,7 +1354,7 @@ consume but ultimately bad for the consumer.”
 \input{roadmap.tex}
 
 
-\section{Epilogue}
+\section{Epilog}
 
 
 
@@ -1397,21 +1397,21 @@ $x_2$? & clear: ``don't move'' & confusing signals
 \textbf{ChatGPT vs.\ InstructGPT (1)}
 
 	\begin{itemize}
-		\item \href{}{\beamergotobutton{OpenAI}}
+		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
 		\item
                 We trained this model using Reinforcement
 		Learning from Human Feedback (RLHF), using
 		the same methods as InstructGPT, but with
 		slight differences in the data collection
 		setup. We trained an initial model using
-		supervised fine-tuning: human AI trainers
+		supervised finetuning: human AI trainers
 		provided conversations in which they played
 		both sides—the user and an AI assistant. We
 		gave the trainers access to model-written
 		suggestions to help them compose their
-		responses. We mixed this new dialogue
+		responses. \textbf{We mixed this new dialog
 		dataset with the InstructGPT dataset, which
-		we transformed into a dialogue format.
+		we transformed into a dialog format.}
 	\end{itemize}
 
 \vfill
@@ -1425,7 +1425,7 @@ $x_2$? & clear: ``don't move'' & confusing signals
 \textbf{ChatGPT vs.\ InstructGPT (2)}
 
 	\begin{itemize}
-		\item \href{}{\beamergotobutton{OpenAI}}
+		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
 		\item
 To create a reward model for reinforcement learning, we
 		needed to collect comparison data, which
@@ -1436,7 +1436,7 @@ To create a reward model for reinforcement learning, we
 		model-written message, sampled several
 		alternative completions, and had AI trainers
 		rank them. Using these reward models, we can
-		fine-tune the model using Proximal Policy
+		finetune the model using Proximal Policy
 		Optimization. \textbf{We performed several
 		iterations of this process.}
 	\end{itemize}
@@ -1457,9 +1457,9 @@ To create a reward model for reinforcement learning, we
 		\item
 ``Reward hacking is a phenomenon observed in machine
 		learning where a model learns to exploit the
-		reward system to achieve high scores without
-		genuinely solving the intended problem. The
-		model identifies a shortcut within the
+		reward system to \textbf{achieve high scores without
+		genuinely solving the intended problem.} The
+		model identifies a \textbf{shortcut} within the
 		problem space that allows it to minimize the
 		loss function without truly learning the
 		crucial aspects of the problem. This issue
@@ -1500,8 +1500,61 @@ To create a reward model for reinforcement learning, we
 	OpenAI wants)
         \item Note that PPO is better than SFT on all
 	detailed measures, but not on hallucinations! (see
-	earlier evaluation chart)
+	earlier evaluation chart: page 45)
 	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\section{Administrivia}
+
+
+\begin{vbframe}{Retake policy}
+
+\vfill
+
+	\begin{itemize}
+\item
+For CL, you will
+only be admitted to the retake exam if you register for the
+first exam, show up for it and make a serious attempt
+to pass the exam.
+\item This applies only to  students in the CL programs.
+\item Why?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{HiWi for DL4NLP WiSe 24/25}
+
+\vfill
+
+	\begin{itemize}
+\item We're looking for a HiWi for the class next year.
+\item If you are interested, please contact me.
+\item Email
+address:
+first name (hinrich) at hotmail.com
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Last regular lecture on Jan 24}
+
+\vfill
+
+	\begin{itemize}
+\item Round robin: topics
+\item Vote
+\end{itemize}
 
 \vfill
 
