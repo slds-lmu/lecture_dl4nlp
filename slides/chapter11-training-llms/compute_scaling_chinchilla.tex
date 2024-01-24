@@ -457,18 +457,19 @@ It is practically common to use mixed representations: \newline
 
 \vfill
 
-AdamW: $Mem_{AdamW} = 12 ~bytes/param \cdot N_{params}$
+%AdamW: $Mem_{AdamW} = 12 ~bytes/param \cdot N_{params}$
+AdamW: $Mem_{AdamW} = 8 ~bytes/param \cdot N_{params}$
 \begin{itemize}
- 	\item fp32 copy of parameters: 4 bytes/param
- 	\item Momentum: 4 bytes/param
-	\item Variance: 4 bytes/param
+ 	%\item fp32 copy of parameters: 4 bytes/param
+ 	\item Momentum: 4 bytes/param (fp32)
+	\item Variance: 4 bytes/param (fp32)
 \end{itemize}
 
 \vskip3mm
 
-bitsandbytes: $Mem_{AdamW} = 6 ~bytes/param \cdot N_{params}$
+bitsandbytes: $Mem_{AdamW} = 2 ~bytes/param \cdot N_{params}$
 \begin{itemize}
- 	\item fp32 copy of parameters: 4 bytes/param
+% 	\item fp32 copy of parameters: 4 bytes/param
  	\item Momentum: 1 byte/param
 	\item Variance: 1 byte/param
 \end{itemize}
