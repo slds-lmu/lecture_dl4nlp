@@ -239,7 +239,7 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 	\item Log-probability of i-th token given context: $\log(p_\theta(w_i|w_{<i}))$
 	\item[] more ``certain`` model $\to$ higher log-probability
 	\item Aggregate$^1$ over the whole sequence:
-				$$PPL = \exp\left(\frac{1}{t} \sum_{i=1}^t \log(p_\theta(w_i|w_{<i}))\right)$$
+				$$PPL = \exp\left(- \frac{1}{t} \sum_{i=1}^t \log(p_\theta(w_i|w_{<i}))\right)$$
 \end{itemize}
 
 \vfill
