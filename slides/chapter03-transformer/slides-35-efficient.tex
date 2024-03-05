@@ -1,0 +1,221 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item Understand the efficiency problems and shortcomings of transformer-based models
+\item Learn about some strategies to alleviate them}
+
+\title{Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Efficient Transformers}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+
+\begin{frame}{The $\mathcal{O}(n^2)$ problem}
+
+\vfill
+
+\textbf{Quadratic time \& memory complexity of Self-Attention}
+
+\begin{itemize}
+	\item \textit{Inductive bias of Transformer models:}\\
+				Connect all tokens in a sequence to each other
+	\item \textbf{Pro:} Can (theoretically) learn contexts of arbitrary length
+	\item \textbf{Con:} Bad scalability limiting (feasible) context size
+\end{itemize}
+
+\vspace{.3cm}
+
+\textbf{Resulting Problems:}
+
+\begin{itemize}
+	\item Several tasks require models to consume longer sequences
+	\item \textit{Efficiency:} Are there more efficient modifications which achieve similar or even better performance? 
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Efficient Transformers}
+
+\vfill
+
+\textbf{Broad overview on so-called "X-formers"} \beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020a}}
+
+\begin{itemize}
+	\item Efficient \& fast Transformer-based models\\
+				$\rightarrow$ Reduce complexity from $\mathcal{O}(n^2)$ to (up to) $\mathcal{O}(n)$
+	\item Claim on-par (or even) superior performance
+	\item Different techniques used:
+				\begin{itemize}
+					\item Fixed/Factorized/Random Patterns
+					\item Learnable Patterns (extension of the above)
+					\item Low-Rank approximations or Kernels
+					\item Recurrence (see e.g. \beamergotobutton{\href{https://arxiv.org/pdf/1901.02860.pdf}{Dai et al., 2019}})
+					\item Memory modules
+				\end{itemize}
+\end{itemize}
+	
+	\vspace{.3cm}
+	
+\textbf{Side note:}
+
+\begin{itemize}
+	\item Most Benchmark data sets not explicitly designed for evaluating long-range abilities of the models.
+	\item Recently proposed: \textit{Longe Range Arena: A benchmark for efficient transformers} \beamergotobutton{\href{https://arxiv.org/pdf/2011.04006.pdf}{Tay et al., 2020b}}
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{efficient transformers}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/tay-xformers.png}\\ 
+		\beamergotobutton{\href{https://arxiv.org/pdf/2009.06732.pdf}{Tay et al., 2020a}}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{efficient transformers - example}
+
+\vfill
+
+\textbf{Reasoning:} 
+
+\begin{itemize}
+	\item Making every token attend to every other token might be unnecessary
+	\item Introduce sparsity in the commonly dense attention matrix
+\end{itemize}
+
+\textbf{Example:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/bigbird-patterns.png}\\ 
+		\beamergotobutton{\href{https://proceedings.neurips.cc//paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf}{Source: Zaheer et al., 2020}}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{efficient transformers - tradeoff}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Quality:} How well can we approximate the results we would get when applying full attention?
+	\item[]
+	\item \textit{Speed:} Can we reduce the computational complexity from quadratic to (nearly) linear?
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{a primer on flash attention}
+
+\vfill
+
+\textbf{Compute-bound vs. Memory-bound operations:}
+
+\begin{itemize}
+	\item Wall-clock time not (necessarily) a function of FLOPs
+	\item Most of these ``Efficient Transformers`` focus on FLOP reduction
+	\item[] $\to$ This ignores existing memory overheads
+	\item \textit{Compute-bound operations:} ($\approx$ FLOPs)
+			\begin{itemize}
+				\item Matrix Multiplication
+			\end{itemize}
+	\item \textit{Memory-bound operations:} ($\approx$ data transfer)
+			\begin{itemize}
+				\item Attention
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{a primer on flash attention}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/memory-hierarchy2.png}\\ 
+		%\beamergotobutton{\href{https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad}{Source: Gordic, 2023}}
+		\beamergotobutton{\href{https://www.youtube.com/watch?v=gMOAud7hZg4}{Source: Talk by Tri Dao, 2023}}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{a primer on flash attention}
+
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width = 5cm]{figure/flash-attn.png}\\ 
+		%\beamergotobutton{\href{https://gordicaleksa.medium.com/eli5-flash-attention-5c44017022ad}{Source: Gordic, 2023}}
+		\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+\begin{minipage}[c]{.49\textwidth}
+	\begin{itemize}
+	\item \textit{Compute-bound operations:} 
+			\begin{itemize}
+				\item Matmul
+			\end{itemize}
+	\item \textit{Memory-bound operations:}
+			\begin{itemize}
+				\item Mask
+				\item Dropout
+				\item Softmax
+			\end{itemize}
+	\item[] $\to$ Reducing memory-bound operations most effective for reducing wall-clock time
+	\end{itemize}
+\end{minipage}
+
+\textit{Note: More on this in lecture 11 on transformer math.}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

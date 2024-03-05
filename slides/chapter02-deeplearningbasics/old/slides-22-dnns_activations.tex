@@ -1,0 +1,275 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item High level understanding of feed forward networks,
+\item and the role and choices of activations}
+
+\title{Deep Learning basics}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Deep Feedforward Networks}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Deep Feedforward Networks}
+
+\vfill
+
+\begin{itemize}
+\item Function approximation: find good mapping $\vec{\hat y} = f(\vec x; \vec \theta)$ (or more exactly $f(\vec x; \hat{\vec \theta})$,
+     but we omit the hat in future).
+\item \emph{Network}: Composition of functions $f^{(1)}, f^{(2)},f^{(3)}$ with multi-dimensional input and output
+\item Each $f^{(i)}$ represents one \emph{layer}
+$f(\vec x) = f^{(1)}( f^{(2)}(f^{(3)}(\vec x))))$
+
+\item \emph{Feedforward}: 
+
+\begin{itemize}
+\item Input $\rightarrow$ intermediate representation $\rightarrow$ output
+\item No feedback connections
+\item Cf. \emph{recurrent} networks
+\end{itemize}
+\end{itemize}
+\begin{center}
+%\includegraphics[width = 0.5\textwidth]{./}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Deep Feedforward Networks: Training}
+
+\vfill
+
+\begin{itemize}
+\item Loss function defined on output layer, e.g. $(y - f(\vec x; \vec \theta))^2$
+\item Quality criterion on other layers not directly defined.
+\item Training algorithm must decide how to use those layers most effectively (w.r.t. loss on output layer)
+\item Non-output layers can be viewed as providing a feature function $\phi(\vec x)$ of the input, that is to be learned.
+\end{itemize}
+\begin{center}
+%\includegraphics[width = 0.5\textwidth]{./}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{\emph{``Neural''} Networks}
+
+\vfill
+
+\begin{itemize}
+\item Inspired by biological neurons (nerve cells)
+\item Neurons are connected to each other, and receive and send electrical pulses.
+\item \emph{``If the [input] voltage changes by a large enough amount, an all-or-none electrochemical pulse called an action potential is generated, which travels rapidly along the cell's axon, and activates synaptic connections with other cells when it arrives.''} (Wikipedia)
+\end{itemize}
+
+\begin{center}
+\includegraphics[width = 0.5\textwidth]{./figure/neuron_anatomy}
+\end{center}
+
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Activation Functions with Non-Linearities}
+
+\vfill
+
+\begin{itemize}
+\item Linear Functions are limited in what they can express.
+\item Famous example: XOR
+\item Simple layered non-linear functions can represent XOR.
+\end{itemize}
+\begin{center}
+\includegraphics[width = 0.5\textwidth]{./figure/xor}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Design Choices for Output Units}
+
+\vfill
+
+\begin{itemize}
+\item Can typically be interpreted as probabilities.
+\begin{itemize}
+\item Logistic sigmoid
+\item Softmax
+\item mean and variance of a Gaussian, ...
+\end{itemize}
+\item Trained with negative log-likelihood.
+\end{itemize}
+\begin{center}
+%\includegraphics[width = 0.5\textwidth]{./}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Softmax}
+
+\vfill
+
+\begin{itemize}
+\item Logistic sigmoid \\
+\begin{itemize}
+\item Vector $\vec y$ of binary outcomes, with no contraints on how many can be 1.
+\item Bernoulli distribution.
+\end{itemize}
+\item Softmax
+\begin{itemize}
+\item Exactly one element of $\vec y$ is 1.
+\item Multinoulli (categorical) distribution.
+$$p(Y = i| \vec{\phi}(\vec x))$$
+$$\sum_i p(Y = i| \vec{\phi}(\vec x)) = 1$$
+$$softmax(\vec z)_i = \frac{exp(z_i)}{\sum_j exp(z_j)}$$
+\end{itemize}
+\end{itemize}
+\begin{center}
+%\includegraphics[width = 0.5\textwidth]{./}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parametrizing a Gaussian Distribution}
+
+\vfill
+
+\begin{itemize}
+\item Use final layer to predict parameters of Gaussian mixture model.
+\item Weight of mixture component: softmax.
+\item Means: no non-linearity.
+\item Precisions ($\frac{1}{\sigma^2}$) need to be positive: softplus
+$$softplus(z) = ln(1+exp(z))$$
+\end{itemize}
+\begin{center}
+\includegraphics[width = 0.7\textwidth]{./figure/gaussian_mixture_samples}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Design Choices for Hidden Units}
+
+\vfill
+
+\begin{itemize}
+\item Rectified Linear Unit:
+$$relu(z) = max(0,z)$$
+$$z = \vec x^T\vec w + b$$
+\begin{center}
+\includegraphics[width = 0.5\textwidth]{./figure/relu}
+\end{center}
+\item Consistent gradient of 1 when unit is \emph{active} (i.e. if there is an error to propagate).
+\item Default choice for hidden units.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{A Simple ReLU Network to Solve XOR}
+
+\vfill
+
+$$f(\vec x; \vec W, \vec c, \vec w) = \vec w^T max(0, \vec W^T\vec x + \vec c)$$
+
+\[\vec W = 
+\begin{bmatrix}
+ 1 & 1 \\
+ 1 & 1
+\end{bmatrix} 
+\]
+
+\[\vec c = 
+\begin{bmatrix}
+ 0 \\
+ -1
+\end{bmatrix} 
+\]
+
+\[\vec w = 
+\begin{bmatrix}
+ 1 \\
+ -2
+\end{bmatrix} 
+\]
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Other Choices for Hidden Units}
+
+\vfill
+
+\begin{itemize}
+\item A good activation function aids learning, and provides large gradients.
+\item Sigmoidal functions (logistic sigmoid)
+\begin{itemize}
+ \item have only a small region before they flatten out in either direction.
+ \item Practice shows that this seems to be ok in conjunction with Log-loss objective.
+ \item But they don't work as well as hidden units.
+ \item ReLU are better alternative since gradient stays constant.
+\end{itemize}
+\item Other hidden unit functions:
+\begin{itemize}
+ \item maxout: take maximum of several values in previous layer.
+ \item purely linear: can serve as low-rank approximation.
+\end{itemize}
+\end{itemize}
+\begin{center}
+%\includegraphics[width = 0.5\textwidth]{./}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}

@@ -1,0 +1,158 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/71-gpt_sq.png}
+\newcommand{\learninggoals}{
+\item use of the transformer decoder
+\item input modifications (and how this is useful)}
+
+\title{Generative Pre-Trained Transformers}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT-1 (2018)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{GPT-1}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 12cm]{figure/71-gpt}\\
+		\citebutton{Source: Radford et al., 2018}{https://openai.com/blog/language-unsupervised/}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Architectural details}
+
+\vfill
+
+	\begin{itemize}
+		\item Transformer \textit{decoder} as backbone of the architecture
+			\begin{itemize}
+				\item 12-layer-decoder with masked self-attention mechanism
+				\item Hidden dimension $H = 768$, $A = 12$ Attention heads
+				\item BPE vocabulary w/ 40k merges
+				\item Learned positional embeddings (as opposed to fixed, sinusoidal ones in the original Transformer)
+			\end{itemize}
+		\item With $U = (w_{t-k}, \hdots, w_{t-1})$
+\begin{align*}
+	\vec h_0 &= \vec U \vec W_e + \vec W_p \\
+	\vec h_l &= Trafo(\vec h_{l-1}) \forall l \in [1,n]\\
+	P(w_t) &= softmax(\vec h_n \vec W_e^\top)
+\end{align*}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Pre-Training GPT}
+
+\vfill
+
+\begin{itemize}
+		\item Standard LM objective
+
+\begin{align*}
+	L_1(\{w_1, \hdots, w_n\}) = \sum_i \log(P(w_t | w_{t-k}, \hdots, w_{t-1}; \Theta))
+\end{align*}
+					
+					where $\{w_1, \hdots, w_n\}$ is an \textit{unlabeled} sequence of tokens
+
+		\item \textit{Resource:} BooksCorpus 
+			\begin{itemize}
+				\item > 7k unpublished books from various genres
+				\item contains long texts and thus allows learning long range dependencies
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-Tuning GPT}
+
+\vfill
+			
+\begin{itemize}
+		\item Linear output layer with softmax activation on top
+		\item Auxiliary language modeling objective during fine-tuning\\
+					$\rightarrow$ Improves generalization\\
+					$\rightarrow$ Accelerates convergence
+		\item Task-specific input transformations
+					\begin{itemize}
+						\item \textit{Entailment:} \\ Concatenation of premise ($p$) \& hypothesis ($h$): $[p; \$; h]$
+						\item \textit{Similarity:} Use both orderings and concatenate resulting representations: $[s_1; \$; s_2]$ and $[s_2; \$; s_1]$
+						\item \textit{Q\&A and Commensense Reasoning:} \\ Concatenate context ($z$), question ($q$) and each possible answer ($a_k$): $[z; q; \$, a_k]$
+					\end{itemize}
+		\item Fine-tuning is rather quick, 3 epochs were sufficient
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-Tuning GPT}
+
+\vfill
+
+\begin{itemize}
+		\item Additional objective:
+					\begin{align*}
+						L_2(\{w_1, \hdots, w_n\}) = \sum_{x,y} \log(P(y | w_1, \hdots, w_n))
+					\end{align*}		
+					where 
+				\begin{itemize}
+					\item $P(y | w_1, \hdots, w_n) = softmax(h_l^m W_y)$ and 
+					\item $\{w_1, \hdots, w_n\}$ is a \textit{labeled} sequence of tokens
+				\end{itemize}
+		\item Combining both objectives: 
+					\begin{align*}
+						L_3(\{w_1, \hdots, w_n\}) = L_2(\{w_1, \hdots, w_n\}) + \lambda \cdot L_1(\{w_1, \hdots, w_n\})
+					\end{align*}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{SOTA results}
+
+\vfill
+
+	\textbf{Performance on different benchmarks:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/gpt-sota.png}\\ 
+		\citebutton{Source: Radford et al., 2018}{https://openai.com/blog/language-unsupervised/}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

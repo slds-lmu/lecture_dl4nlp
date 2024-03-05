@@ -1,0 +1,546 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
+\newcommand{\learninggoals}{
+\item changes to the pre-traing objectives
+\item dynamic masking
+\item details of BERT \& Co.}
+
+\title{Post-BERT Era}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{BERT-based architectures}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Sucessors of BERT}
+\hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=1]{figure/transfer_learning_timeline3_nlp.pdf}}
+\end{frame}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
+\hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=2]{figure/transfer_learning_timeline3_nlp.pdf}}
+\end{frame}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
+\hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=3]{figure/transfer_learning_timeline3_nlp.pdf}}
+\end{frame}
+\begin{frame}[noframenumbering]{Sucessors of BERT}
+\hbox{\hspace{-0.5em} \includegraphics[width=12cm,page=4]{figure/transfer_learning_timeline3_nlp.pdf}}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{roberta -- pre-training improvements}
+
+\vfill
+
+\textbf{R}obustly \textbf{o}ptimizied \textbf{BERT} \textbf{a}pproach \citebutton{Liu et al., 2019}{https://arxiv.org/abs/1907.11692}\\ \medskip\medskip
+
+\textbf{Short summary:}
+
+	\begin{itemize}
+		\item Change of the \texttt{MASK}ing strategy  \\
+					$\to$ BERT masks the sequences once before pre-training  \\
+					$\to$ RoBERTa uses dynamic \texttt{MASK}ing  \\
+					$\to$ RoBERTa sees the same sequence \texttt{MASK}ed differently
+		\item RoBERTa \textbf{does not use} the additional NSP objective during pre-training
+		\item Authors claim that BERT is seriously "undertrained"
+			\begin{itemize}
+				\item 160 GB pre-training corpus instead of 13 GB
+				\item Pre-training is performed with larger batch sizes (8k)
+			\end{itemize}
+		\item Training on full-length sequences only (512 tokens)
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{roberta -- the architecture}
+
+\textbf{Architectural differences:}
+
+\begin{itemize}
+\item Architecture (layers, heads, embedding size) identical to BERT
+\item 50k token BPE vocabulary instead of 30k
+\item Model size differs (due to the larger embedding matrix)\\
+			$\Rightarrow$ $\sim$ 125M (360M) for the BASE (LARGE) variant 
+\end{itemize}
+
+\textbf{Performance differences:}
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/52-roberta-sota.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\scriptsize
+\textit{Note:} Liu et al. (2019) report the accuracy for QQP while Devlin et al. (2019) report the F1 score (cf. results displayed in chapter 6.2.3); XLNet: see next Chapter.
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
+
+	\textbf{Static Masking (BERT):}
+
+	\begin{itemize}
+		\item Apply \texttt{MASK}ing procedure to pre-training corpus once
+		\item (additional for BERT: Modify the corpus for NSP)
+		\item Train for approximately 40 epochs
+	\end{itemize}
+
+\vspace{.3cm}
+
+	\textbf{Dynamic Masking (RoBERTa):}
+
+	\begin{itemize}
+		\item Duplicate the training corpus \textit{ten} times
+		\item Apply \texttt{MASK}ing procedure to each duplicate of the pre-training corpus
+		\item Train for 40 epochs
+		\item Model sees each training instance in ten different "versions"\\
+					(each version four times) during pre-training
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
+
+\begin{itemize}
+	\item \normalsize \textbf{BERT:}
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \begin{center}$\vdots$\end{center}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+\end{itemize}
+
+\vspace{.75cm}
+
+\begin{itemize}
+	\item \normalsize \textbf{RoBERTa:}
+			\footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & quick & brown & \cellcolor{blue!65}\texttt{[MASK]} & jumps & over & the & \cellcolor{blue!65}\texttt{[MASK]} & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+The & \cellcolor{blue!65}\texttt{[MASK]} & brown & fox & \cellcolor{blue!65}\texttt{[MASK]} & over & the & lazy & dog & . \\
+\hline
+\end{tabular}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+\cellcolor{blue!65}\texttt{[MASK]} & quick & \cellcolor{blue!65}\texttt{[MASK]} & fox & jumps & over & the & lazy & dog & . \\
+\hline
+\end{tabular}
+	\item[] \begin{center}$\vdots$\end{center}
+	\item[] \footnotesize
+\begin{tabular}{|cccccccccc|}
+\hline
+\cellcolor{blue!65}\texttt{[MASK]} & quick & brown & fox & jumps & over & the & lazy & \cellcolor{blue!65}\texttt{[MASK]} & . \\
+\hline
+\end{tabular}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Dynamic vs. Static Masking}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/52-roberta-dynamic.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{no next sentence prediction}
+
+\vfill
+
+	\begin{itemize}
+		\item Described as important part of the pre-training process in BERT
+		\item \citebutton{Liu et al., 2019}{https://arxiv.org/abs/1907.11692} report that it hurts performance
+		\item[$\to$] Especially for QNLI, MNLI, and SQuAD 1.1
+		\item Conduct experiments in multiple settings: 
+			\begin{itemize}
+				\item SEGMENT-PAIR+NSP
+				\item[] \textit{(Exactly like BERT)}
+				\item SENTENCE-PAIR+NSP
+				\item[] \textit{(Like BERT, but with natural sentences)}
+				\item FULL-SENTENCES
+				\item[] \textit{(No NSP, inputs may cross document boundaries)}
+				\item DOC-SENTENCES
+				\item[] \textit{(No NSP, only sentences from one document)}
+			\end{itemize}
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{no next sentence prediction}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/52-roberta-nsp.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\scriptsize
+\textit{Note:} XLNet: see next Chapter.
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{batch size}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/52-roberta-undertrained.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{further changes in pre-training}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/52-roberta-undertrained2.png}\\ 
+\citebutton{Source: Liu et al., 2019}{https://arxiv.org/abs/1907.11692}
+\end{figure}
+
+\vfill
+
+\scriptsize
+\textit{Note:} XLNet: see next Chapter.
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{albert}
+
+\vfill
+
+\textbf{A} \textbf{L}ite \textbf{BERT} \citebutton{Lan et al., 2019}{https://arxiv.org/abs/1909.11942}\\ \medskip\medskip
+
+\textbf{Short summary:}
+
+	\begin{itemize}
+		\item Major change to the architecture \\
+					$\to$ Size of embedding layer independent from hidden layer\\
+					(rember in Transformer/BERT: $E = H$)\\
+					$\to$ Saves memory and compute
+		\item Parameter sharing across layers	
+		\item Substitution of the NSP objective during pre-training
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{architectural changes}
+
+\vfill
+
+	\textbf{Disentanglement of $E$ and $H$}
+
+	\begin{itemize}
+		\item	WordPiece-Embeddings (size $E$) 
+			\begin{itemize}
+				\item first layer of the model
+				\item each token is initially mapped to this embedding
+				\item context-independent
+			\end{itemize}
+		\item In Transformer/BERT: 
+			\begin{itemize}
+				\item $H = E$
+				\item down-project $E$ to keys, queries and values of size $H/A$
+				\item concatenate resulting embeddings from all $A$ heads
+				\item results in hidden layer representation of size $H$
+			\end{itemize}
+		\item \ques What are the implications?
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{architectural changes}
+
+\vfill
+
+\textbf{Thoughts / Implications}
+
+	\begin{itemize}
+		\item	WordPiece-Embeddings (size $E$) 
+			\begin{itemize}
+				\item required representational capacity?
+				\item probably could be limited w/o loosing much
+			\end{itemize}
+		\item Hidden-Layer-Embedding (size $H$)
+			\begin{itemize}
+				\item required representational capacity?
+				\item depending on how polysemous a word/token might be
+				\item difficult to say "one size fits all"
+				\item probably might be better to rather increase this, compared to the WordPiece embeddings
+			\end{itemize}
+	\end{itemize}
+	
+\vspace{.5cm}
+
+$\to$ \textit{Setting $E = H$ does not allow us to pursue these considerations}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{architectural changes}
+
+\vfill
+
+\textbf{Disentanglement solves this}
+
+	\begin{itemize}
+		\item Hidden-Layer-Embeddings (size $H$) context-dependent\\
+					$\to$ providing more capacity makes more sense here
+		\item Setting $H >> E$ enlargens model capacity in the hidden layers without increasing the size of the embedding matrix
+		\item $O(V \times H) > O(V \times E +  E \times H)$ if $H >> E$
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Cross-Layer parameter sharing}
+
+\vfill
+
+	\begin{itemize}
+		\item Pre-trained transformer-based models are deep stacks of identically parametrized layers and thus have many parameters
+		\item Sharing them as a way to gain parameter efficiency
+		\item Two different places in the network, where sharing can be done
+			\begin{itemize}
+				\item Attention parameters
+				\item FFN parameters
+			\end{itemize}
+		\item Ablation studies: 
+			\begin{itemize}
+				\item both
+				\item both individually
+				\item none
+			\end{itemize}
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Cross-Layer parameter sharing}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/52-albert-param-sharing.png}\\ 
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
+	\end{figure}
+
+	\begin{itemize}
+		\item (Drastic) reduction of model size (more for sharing FFN weights)
+		\item Sharing parameters hurts performance
+			\begin{itemize}
+				\item Worse for models with larger $E$
+				\item Worse for sharing FNN compared to Attention weights
+		\item \ques \textbf{Why? What is the intuition here?}
+			\end{itemize}
+	\end{itemize}
+
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Cross-Layer parameter sharing}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/52-albert-param-sharing2.png}\\ 
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
+	\end{figure}
+	
+\begin{itemize}
+	\item Distince/Similarity of input and output embeddings per layer
+	\item Smoother transitions for ALBERT models
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Changes in pre-training}
+
+\vfill
+
+	\textbf{Substitution of the NSP objective}
+		
+	\begin{itemize}
+			\item Previous works questioned the usefulness of NSP
+			\item[$\to$] Lan et al. assume that this is due to lacking difficulty
+			\item Introduction of \textit{Sentence-Order Prediction} (SOP) as a new pre-training task
+			\item Positive examples created alike to those from NSP (take two consecutive sentences from the same document)
+			\item Negative examples: Just swap the ordering of sentences
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Changes in pre-training}
+
+\vfill
+
+	\textbf{Illustration:}
+		
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/52-albert-sop.png}\\ 
+		\citebutton{Source: Amit Chaudhary}{https://amitness.com/2020/02/albert-visual-summary/}
+	\end{figure}
+
+	\textbf{Effectiveness:}
+		
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/52-albert-sop-ablation.png}\\ 
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Changes in pre-training}
+
+\vfill
+
+	\textbf{$n-gram$ masking for the MLM task}
+		
+	\begin{itemize}
+			\item During pre-training BERT single tokens are masked
+			\item Lan et al. mask up to three consecutive tokens
+			\item Choice of $n$:\\
+						\begin{center}
+							\includegraphics[width = 6cm]{figure/52-albert-choice-n.png}
+						\end{center}
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{performance}
+
+	\textbf{Performance differences:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/52-albert-sota.png}\\ 
+		\citebutton{Source: Lan et al., 2019}{https://arxiv.org/pdf/1909.11942.pdf}
+	\end{figure}
+
+	\textbf{Notes:}
+
+	\begin{itemize}
+		\item In General: Smaller model size (because of parameter sharing)
+		\item Nevertheless: Scale model up to almost similar size\\(\texttt{xxlarge} version)
+		\item Strong performance compared to BERT
+	\end{itemize}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

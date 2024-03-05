@@ -1,0 +1,203 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/transformer_sq.png}
+\newcommand{\learninggoals}{
+\item Understand the initial use of the Transformer
+\item Grasp the other application fields since then}
+
+\title{Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{A universal deep learning architecture}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Machine Translation}
+
+\vfill
+
+\begin{itemize}
+	\item Sequence-to-sequence task
+	\item Already served as a motivation for introducing the "ordinary" Attention-mechanism \beamergotobutton{\href{https://arxiv.org/abs/1409.0473}{Bahdanau et al., 2015}}
+	\item Crucial, that the decoder has access to the whole input sequence \\
+				$\to$ This is very well solved by cross-attention
+	\item Good contextualization in the encoder improves translation quality
+		\begin{itemize}
+			\item (Bidirectional) RNNs/LSTMs are only (concatenated) unidirectional architectures
+			\item Transformer-Encoder layers are bidirectional by construction
+			\item Stacking them on top of each other makes this bidirectional contextualization even "deeper"
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{WMT 2014 EN-to-DE and EN-to-FR}
+
+\vfill
+
+\textbf{Parallel training data:}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.9\textwidth]{figure/wmt14}
+\end{figure}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{The BLEU Score}
+
+\vfill
+
+\begin{itemize}
+	\item Based on n-gram overlap from candidate and reference sentence
+	\item Precision (for each n-gram) calculated as follows:
+\end{itemize}
+
+\begin{equation}
+            P_{n} = \frac{\sum_{C \in\{\text { Candidates }\}} \sum_{n-g r a m \in C} \text { Count }_{\text {clip }}(n-\text { gram })}{\sum_{C^{\prime} \in\{\text { Candidates }\}}{\sum_{n-g r a m^{\prime} \in C^{\prime}} \text { Count }\left(n-\text { gram }^{\prime}\right)}}  \nonumber
+\end{equation}
+
+\begin{itemize}
+	\item Finally, the BLEU score can be computed as
+\end{itemize}
+
+\begin{equation}
+            \texttt{BLEU} = BP \cdot \exp\left(\sum_{n=1}^{N} w_n \cdot \log(P_n)\right), \nonumber
+\end{equation}
+
+\begin{itemize}
+	\item where $BP$ is a "brevity penalty" to penalize short generations, $N$ is the number of n-grams \& $w_n$ the weight for each $P_n$ (usually $\frac{1}{N}$)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for MT}
+
+\vfill
+
+The Transformer .. 
+
+\begin{itemize}
+	\item .. outperforms the previous SOTA models
+	\item .. at a lower number of required training FLOPs
+\end{itemize}
+
+\vspace{.3cm}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.9\textwidth]{figure/trafo-wmt}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1706.03762}{Source: Vaswani et al., 2017}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for computer vision}
+
+\vfill
+
+\textbf{Vision Transformer}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.7\textwidth]{figure/vision-transformer.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/2010.11929}{Source: Dosovitskiy et al., 2020}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for multimodal learning}
+
+\vfill
+
+\textbf{CLIP}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.7\textwidth]{figure/clip1.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/2103.00020}{Source: Radford et al., 2021}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for multimodal learning}
+
+\vfill
+
+\textbf{CLIP}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.7\textwidth]{figure/clip2.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/2103.00020}{Source: Radford et al., 2021}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for multimodal learning}
+
+\vfill
+
+\textbf{FLAMINGO}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.8\textwidth]{figure/flamingo.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/pdf/2204.14198.pdf}{Source: Alayrac et al., 2022}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Transformer for multimodal learning}
+
+\textbf{GPT-4}
+
+\begin{figure}
+	\centering
+		\includegraphics[width=.7\textwidth]{figure/gpt4.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/pdf/2303.08774.pdf}{Source: OpenAI, 2023}}
+\end{figure}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

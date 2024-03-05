@@ -1,0 +1,81 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/babel.png}
+\newcommand{\learninggoals}{
+\item Understand why we need multilingual models
+\item Understand the challenges
+\item Brainstorm solutions
+}
+
+\title{Multilinguality}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{}
+\lecture{Multilinguality}
+
+
+
+\input{ackslide}
+% ------------------------------------------------------------------------------
+
+
+
+
+
+
+\input{roadmap.tex}
+
+
+\section{Motivation: Bali slides 1--30}
+
+\section{Discussion}
+
+\begin{vbframe}{What would you do?}
+
+\vfill
+
+	\begin{itemize}
+\item Given: the Glot500 dataset
+	\begin{itemize}
+        \item Data for 500 languages, a lot for some, only
+        30 000 sentences for others
+\end{itemize}
+\item Goal: Create (an) autoregressive language model(s) for
+        all 500 languages
+\item Question: What is the best approach?
+\item Work in groups
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{OpenAI's take on LLM optimization}
+
+\vfill
+
+\textbf{Can this help?}
+
+\textbf{\href{https://www.youtube.com/watch?v=ahnGLM-RC1Y}{\beamergotobutton{OpenAI's
+                current take}}}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/openai,llm,optimization.png}
+\end{figure}
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}
+

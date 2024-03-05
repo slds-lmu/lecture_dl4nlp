@@ -1,0 +1,243 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/gpt2-title.png}
+\newcommand{\learninggoals}{
+\item 
+Understand language models as universal task solvers
+\item Understand the implications of such models}
+
+\title{Generative Pre-Trained Transformers}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT-2 (2019)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Starting with a controversy}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/72-gpt2-release.png}\\ 
+\citebutton{Source: OpenAI Blog}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Capabilities -- Storytelling}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/72-gpt2-story.png}\\ 
+\citebutton{Source: OpenAI Blog}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Capabilities -- Storytelling}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/72-gpt2-story.png}\\ 
+\citebutton{Source: OpenAI Blog}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\begin{itemize}
+	\item \textbf{In 2019:} Great achievement as the model is able to continue a made up story \textit{in a coherent way} by making up its own facts
+	\item[] Sill: Not very consistent (``\texttt{four-horned [...] unicorns}``)
+	\item \textbf{In 2023:} Nowadays this phenomenon is known as \textbf{hallucination} and a lot of research effort is put into mitigating this behaviour
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{The architecture}
+
+\vfill
+
+\begin{itemize}
+	\item Transformer decoder pre-trained on AR language modeling
+	\item Custom web scrape (not publicly available) of all outbound links from Reddit
+	\item[$\to$] 8M documents / 40GB of text
+	\item Byte-level BPE for tokenization
+	\item Increased context size: $512 \to 1024$
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/72-gpt2-size.png}\\ 
+\citebutton{Source: Radford et al., 2019}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Language models as multitask learners}
+
+\vfill
+
+\begin{itemize}
+
+\item[] ``But as exemplified in McCann et al. (2018), language
+	provides a flexible way to specify tasks, inputs,
+	and outputs all as a sequence of symbols.
+
+\item[] For
+	example, a translation training
+	example can be written as the sequence (translate to
+	french, english text, french text).''
+	\item Model benefits from seeing ``natural`` occurrences of task demonstrations during pre-training on large-scale web corpora
+	\item[] $\to$ Related rationale to T5 (\textit{literal task descriptions}), but slightly different (\textit{acquired on the fly already during pre-training}).
+\end{itemize}
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/72-gpt2-demo-wild.png}\\ 
+\citebutton{Source: Radford et al., 2019}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+
+
+\begin{frame}{Capabilities -- Zero-Shot}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Zero-shot} refers to solving a task which the model was not previously explicitly trained on, just providing it with a description of the task but no demonstrations, i.e. input/output pairs.
+	\item \textit{Few-shot} would be a relaxation of this setting, allowing for also providing the models with demonstrations (but still no training/gradient updates).
+	\item Radford et al. show GPT-2's zero-shot capabilities on a range of different tasks, paving the way for the developments that came with GPT-3.
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Capabilities -- Zero-Shot}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/72-gpt2-zeroshot.png}\\ 
+\citebutton{Source: Radford et al., 2019}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\footnotesize{(Note: The numbers correspond to the last row of the Table on slide 6)}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Capabilities -- Factual knowledge}
+
+\vfill
+
+\textbf{Natural Questions} \citebutton{Kwiatkowski et al., 2019}{https://aclanthology.org/Q19-1026/}
+
+\begin{itemize}
+	\item Testing the \textit{factual knowledge} that is present in the pre-trained model
+	\item Smallest model (117M): $< 1\%$
+	\item GPT-2 (1542M): $4.1\%$
+	\item[] $\to$ Model capacity as a major factor
+	\item Calibration: High accuracy (63.1\%) on the 1\% most confident answers
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Capabilities -- Factual knowledge}
+
+\vfill
+
+\textbf{The 30 most confident answers:}
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/72-gpt2-qa.png}\\ 
+\citebutton{Source: Radford et al., 2019}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{In the meantime}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/72-gpt2-release2.png}\\ 
+\citebutton{Source: OpenAI Blog}{https://openai.com/research/better-language-models}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{In the meantime}
+
+\vfill
+
+\begin{itemize}
+	\item Available on huggingface: \url{https://huggingface.co/gpt2}
+	\item GPT-3 built on the foundation laid by GPT-2
+	\item (also ChatGPT happened)
+	\item GPT-2 (multi-task learning) extended to
+	GPT-3 (prompting)
+%        Prompting models has become more and more common\\ (cf. next chapter)
+	\item Few-/Zero-Shot capabilites of models have become more important (cf. next chapter)
+	\item Models of over $200\times$ the size of GPT-2 have been trained
+	\item Transformer still the backbone of (nearly) all of them
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

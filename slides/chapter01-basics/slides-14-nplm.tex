@@ -1,0 +1,190 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+\newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
+\usepackage{qtree} %parse tree
+
+\newcommand{\titlefigure}{figure/bengio03.png}
+\newcommand{\learninggoals}{
+\item grasp importance of the ``look-up table`` a.k.a. embedding layer
+\item understand computational implications of language modeling}
+
+\title{Basics}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Neural Probabilistic Language Model}
+\lecture{Deep Learning for NLP} % stays constant
+
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{What is a language model?}
+\vspace{.5cm}
+\begin{block}{Wikipedia says:}
+    \begin{center}
+    "A statistical language model is a probability distribution over sequences of words"
+    \end{center}
+\end{block}
+\begin{block}{This means (a) assigning a probability to a sequence of words, e.g.}
+    \[
+    P(\mbox{\it "we are all interested in NLP"})
+    \]
+\end{block}
+\begin{block}{and (b) assigning a probability to the likelihood of a word given a sequence of words, e.g.}
+    \[
+    P(\mbox{\it "NLP"} | \mbox{\it "we are all interested in"})
+    \]
+\end{block}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{cf. previous chapter}
+	
+\vfill
+
+\textbf{Predict the next token:}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 11cm]{figure/language-modeling.png}\\ 
+		\includegraphics[width = 11cm]{figure/language-modeling2.png}\\
+	\beamergotobutton{\href{https://thegradient.pub/understanding-evaluation-metrics-for-language-models/}{Source: The Gradient}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Making use of the Markov-Assumption}
+
+\vfill
+
+\begin{block}{The Markov-Assumption}
+    \begin{itemize}
+        \item "The future is independent of the past given the present"
+        \item In NLP context:\\
+        $\rightarrow$ Next word only depends on the $k$ previous words\\
+        $\rightarrow$ $k$th order markov assumption with k to be chosen manually
+    \end{itemize}
+\end{block}
+\begin{block}{"Traditional" count-based models}
+    \begin{itemize}
+        \item Good baselines, but severe shortcomings
+        \item Lacking the ability to generalize
+    \end{itemize}
+\end{block}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{What are potential problems?}
+
+\vfill
+
+\begin{block}{Curse of dimensionality}
+    \begin{itemize}
+        \item Linear increase in context size leads to an exponential increase in the number of parameters
+        \item Considering a vocabulary of size $|V| = 100,000$:\\
+        $\rightarrow$ Already for bi-grams: $|V|^2 = 10^{10}$ possible combinations
+    \end{itemize}
+\end{block}
+\begin{block}{Sparsity}
+    \begin{itemize}
+        \item Again, considering $|V| = 1.000.000$ \& bi-grams as context
+        \item Unlikely to observe all of them bi-gram combinations
+        \begin{enumerate}[(a)]
+            \item ever
+            \item often
+        \end{enumerate}
+    \end{itemize}
+\end{block}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{A Neural Probabilistic Language Model}
+
+\vfill
+
+\begin{block}{Idea}
+        \begin{itemize}
+        \item Using a neural network induces non-linearity and overcomes the shortcomings of traditional models
+        \begin{enumerate}[(a)]
+            \item Linear increase in $\#$parameters with increasing context size
+            \item Better generalization
+        \end{enumerate}
+        \item \textbf{Input:} {\it Context of $(n-1)$ words} \hfill $[w_{(t-n+1):(t-1)}]$
+        \item \textbf{In between:} 
+        \begin{itemize}
+            \item {\it Look-up table} \hfill $[\vec w^{({w_{t-n+1}})}; .. ; \vec w^{({w_{t-2}})}; \vec w^{({w_{t-1}})}]$
+            \item[]
+            \item {\it Non-linearity} \hfill e.g. tanh, ReLU
+        \end{itemize}
+        \item \textbf{Output:}\\{\it Probability distribution over the next word} \hfill $P(w_t|w_{(t-n+1):(t-1)})$
+        \end{itemize}
+\end{block}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Graphical illustration}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{figure/bengio03.png}\\
+		\beamergotobutton{\href{https://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf}{Source: Bengio et al., 2003}}
+\end{figure}
+
+\scriptsize{\textit{Note: C($\cdot$) replaced by $\vec w^{(\cdot)}$ on the previous slide.}}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{What could be problematic?}
+
+\vfill
+
+\begin{block}{Computational cost}
+    \begin{itemize}
+        \item Vanilla softmax is expensive
+        \item Proposed solution(s): 
+        \begin{enumerate}
+            \item Hierarchical softmax \beamergotobutton{\href{https://www.iro.umontreal.ca/~lisa/pointeurs/hierarchical-nnlm-aistats05.pdf}{Morin and Bengio, 2005}}
+            \item Sampling Approaches (next chapter)
+        \end{enumerate}
+    \end{itemize}
+\end{block}
+\begin{block}{Still relying on the markov assumption}
+    \begin{itemize}
+        \item Context window has to be specified manually
+    \end{itemize}
+\end{block}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

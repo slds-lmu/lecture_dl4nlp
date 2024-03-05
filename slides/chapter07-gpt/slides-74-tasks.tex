@@ -1,0 +1,518 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/73-gpt3.jpg}
+
+\newcommand{\learninggoals}{
+\item Overview on relevant tasks and benchmarks
+\item GPT-3's performance in X-shot settings}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Generative Pre-Trained Transformers}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{GPT-3: Tasks \& Performance}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Lambada task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/lambadaformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on lambada}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/lambadaperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{``Closed book'' question answering (QA)}
+
+\vfill
+			
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/triviaformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on the closed-book QA}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/triviaperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on machine translation}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/mtperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Winograd task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/winogradformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on Winograd task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/winogradperf.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ARC task}
+
+\vfill
+
+\begin{itemize}
+	\item Multipe-Choice questions from 3rd to 9th grad science exams
+	\item \textit{Challenge} version: Filtered to questions that simple statistical or information retrieval methods are unable to correctly answer
+\end{itemize}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/arcformat.png}\\
+		\citebutton{Source: Brown et al., 2020}{https://arxiv.org/abs/2005.14165}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on ARC task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/arcperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{RACE task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=8cm]{figure/raceformat,h.png}
+	\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on RACE task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/raceperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on SuperGLUE task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/superglueperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{SuperGLUE}
+
+\vfill
+
+  \begin{itemize}
+\item BoolQ
+\item CB (true/false/neither)
+\item COPA
+\item RTE (similar to natural language inference)
+\item WiC 
+\item WSC
+\item MultiRC (true/false)
+\item ReCoRD 
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BoolQ (Boolean Question) task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/boolqtask.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{WiC (Word in Context) task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/wicperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{COPA task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/copaperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{WSC (Winograd Schema Challenge) task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/wscformat.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ReCoRD task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/recordformat.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ANLI task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/anliformat.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on ANLI task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/anliperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{SAT Analogies task}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/satformat.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance on SAT Analogies}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/satperf.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{GPT3 can correct grammar}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/correctgrammar.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Generation of news articles}
+
+\vfill
+
+  \begin{itemize}
+\pause\item Context given to gpt3:
+  \begin{itemize}
+\pause\item Three ``training'' articles to condition gpt3
+\pause\item Title and subtitle of a 4th article
+    \end{itemize}
+\pause\item gpt3 then has to generated the body of the 4th article
+\pause\item Evaluation: Humans are presented the
+human-generated original article and the gpt3-generated
+article and are asked to identify which is fake.
+    \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Humans cannot distinguish human generated vs GPT-3 generated}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/humanvsmachine.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Hard to identify as fake}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/hardtoidentify.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Easier to identify as fake}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/easytoidentify.png}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Summary}
+
+\vfill
+
+  \begin{itemize}
+\item The average person has difficulty distinguishing
+human-generated and gpt3-generated news.
+\item However, the non-average person probably can
+distinguish them quite well.
+\item It is unclear whether  machines
+are able to distinguish
+human-generated from gpt3-generated news.
+\item This has great significance for preventing abuse
+of AI technology.
+  \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}

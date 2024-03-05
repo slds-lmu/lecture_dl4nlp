@@ -1,0 +1,396 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+\newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
+\usepackage{qtree} %parse tree
+
+\newcommand{\titlefigure}{figure/paradigms-title.png}
+\newcommand{\learninggoals}{
+\item Understand the different learning paradigms
+\item Relate type of learning to amount of labeled data required}
+
+\title{Basics}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Learning Paradigms}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{categorization of learning}
+
+\vfill
+
+\textbf{Disclaimer:}
+
+	\begin{itemize}
+		\item This categoriazation is rather coarse
+		\item The list of paradigms is extendable
+		\item Not everything is unambiguous, there might be overlap
+	\end{itemize}
+	
+\vspace{.3cm}
+
+\textbf{Connection to tasks/data:}
+
+	\begin{itemize}
+		\item Given the task, some paradigms are more suitable
+		\item Given the amount of data, a specific paradigm might be preferrable
+		\item Presence/Absence of labels makes certain paradigms (in)feasible
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{categorization of learning}
+
+\vfill
+
+\textbf{Distinction between:}
+
+	\begin{itemize}
+		\item Embedding texts
+		\item Pre-training \& fine-tuning a model
+		\item Prompting
+		\item Interaction \& Generation
+		\item Agents
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{embedding}
+
+\vfill
+
+\textbf{Problem statement}
+
+\begin{itemize}
+	\item Words are discrete units composed of characters
+	\item We can represent them (high-dimensional) one-hot vectors
+	\item This makes it difficult/impossible to e.g. capture similarity between synonyms
+	\item Documents can be represented as a vector of word occurrences (bag-of-words)
+\end{itemize}
+	
+\begin{exampleblock}{Example (one-hot)}
+	\begin{align*}
+			\vec w^{({\text{football}})} = [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0]\\\vec w^{({\text{basketball}})} = [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0]
+	\end{align*}
+\end{exampleblock}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{embedding}
+
+\vfill
+
+\textbf{Problems of one-hot embeddings}
+
+\begin{itemize}
+	\item high dimensionality
+	\item not possible to measure similarity
+\end{itemize}
+
+\begin{exampleblock}{Example (dense embedding)}
+	\begin{align*}
+				\vec w^{({\text{football}})} &= \begin{bmatrix}
+            0.359 \\
+           -0.174 \\
+            0.701 \\
+           \vdots \\
+            0.445 \\
+           -0.123 \\
+            0.509 
+         \end{bmatrix}
+	\end{align*}
+\end{exampleblock}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{embedding}
+	
+\vfill
+
+\textbf{Measuring similarity}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 11cm]{figure/linear-relationships.png}\\ 
+	\beamergotobutton{\href{https://developers.google.com/machine-learning/crash-course/embeddings/translating-to-a-lower-dimensional-space}{Source: Google}}
+\end{figure}
+
+\vfill
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{embedding}
+	
+\vfill
+
+\textbf{Document retrieval}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/retrieval.png}\\ 
+	\beamergotobutton{\href{https://www.analyticsvidhya.com/blog/2022/02/search-engines-using-deep-learning/}{Source: Analytics Vidhya}}
+\end{figure}
+
+\vfill
+
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-train/fine-tune}
+
+\vfill
+
+\textbf{Problem statement}
+
+\begin{itemize}
+	\item The larger the models, the more data is needed to train them
+	\item (Labeled) Data is scarce and expensive!
+	\item Many languages in the world are highly underrepresented in terms of existing resources\\
+				Often: \textit{Number of speakers} $\neq$ \textit{Amount of available written text}
+	\item Unlabeled (English) text data is ubiquitous
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-train/fine-tune}
+
+\vfill
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 7cm]{figure/transfer_learning_taxonomy-1.png}\\ 
+	\beamergotobutton{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{(Source: Ruder, 2019)}}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{pre-train/fine-tune}
+
+\vfill
+
+\textbf{Pre-training:}
+
+	\begin{itemize}
+		\item Using unlabeled corpora in conjunction with self-supervised objectives 
+					is commonly referred to as \textit{Pre-Training} the model
+		\item Generation of samples for pre-training basically effortless, exploiting 
+					the inherent structure of the text
+		\item Construction of different self-supervised objectives, which are assumed
+			\begin{itemize}
+				\item to cover different phenomena better than the others
+				\item to work more efficiently for learning
+			\end{itemize}
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{pre-train/fine-tune}
+
+\vfill
+
+\textbf{Fine-tuning:}
+
+	\begin{itemize}
+		\item The second phase of transfer learning, i.e. adapting the pre-trained model
+					to a labeled data set for a specific downstream task is referred to as \textit{Fine-Tuning}
+		\item Far less labeled data required compared to a scenario w/o pre-training
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{prompting}
+
+\vfill
+
+\textbf{Accessing pre-trained models:}
+
+	\begin{itemize}
+		\item Fine-tune them
+		\item Also possible: No fine-tuning, but .. 
+			\begin{itemize}
+				\item \textit{Zero-Shot Transfer} w/o ANY labeled data
+				\item \textit{Few-Shot Transfer} w/ FEW labeled data points
+			\end{itemize}
+		\item In both of the latter cases, good pre-training becomes even more important
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{prompting}
+
+\vfill
+
+\textbf{Definition(s):}
+
+	\begin{itemize}
+		\item \textit{GPT-3 paper:}\\ "Task Description" (accompanied by samples + labels)
+		\item \textit{Prompt:} Describing the task the model is expected to perform
+		\item \textit{Prompt Engineering:}\\ Finding the best prompt(s) for one (or across multiple) task(s)
+		\item \textit{Prompt Tuning:}\\ Add trainable weights ("soft prompt") to inputs and fine-tune
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{prompting}
+
+\vfill
+	
+\textbf{Differences:}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/prompts.png}\\ 
+	\beamergotobutton{\href{https://ai.googleblog.com/2022/02/guiding-frozen-language-models-with.html}{Source: Google}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{chatting / generation}
+
+\vfill
+	
+\textbf{Interacting with the model}
+
+\begin{itemize}
+	\item Larger model sizes, reduced latency and improved training regimes enable conversations with the models
+	\item Enables the user to .. \\
+	- .. have multi-turn conversations, with the model "remembering" previous inputs\\
+	- .. refine the prompt in case of unsatisfactory output\\
+	- .. used increased context sizes for the prompts
+	\item Still: Static, pre-trained model with "knowledge" 
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{chatting / generation}
+
+\vfill
+	
+\textbf{Interacting with the model}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 5cm]{figure/persona-chat.jpg}\\ 
+	\beamergotobutton{\href{https://paperswithcode.com/task/code-generation}{Source: Papers with code (example for \texttt{Persona-Chat)}}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{chatting / generation}
+
+\vfill
+	
+\textbf{Code generation}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/code-generation.png}\\ 
+	\beamergotobutton{\href{https://paperswithcode.com/task/code-generation}{Source: Papers with code}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{chatting / generation}
+
+\vfill
+	
+\textbf{(Multi-)Document summarization}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 7cm]{figure/mds-diagram.png}\\ 
+	\beamergotobutton{\href{https://aylien.com/blog/multi-document-summarisation-and-the-wcep-dataset}{Source: Aylien}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Outlook}
+
+\vfill
+
+\textbf{Agents}
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/agent-bench.png}\\ 
+	\beamergotobutton{\href{https://arxiv.org/pdf/2308.03688.pdf}{Source: Liu et al., 2023}}
+\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

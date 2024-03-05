@@ -1,0 +1,643 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/trafo-enc-sq.png}
+\newcommand{\learninggoals}{
+\item Understand Self-Attention and the role of position embeddings
+\item Understand subtleties of parallelized multi-head attention}
+
+\title{Transformer}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{The Encoder}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{The Transformer architecture}
+
+\begin{center}
+\begin{tikzpicture}[->, >=stealth, thick, font=\scriptsize]
+\node (transformer) at (0,0) {\includegraphics[width=.4\textwidth]{figure/transformer.png}};
+\node (enc) [left=2mm of transformer, rotate=90] {encoder};
+\node (dec) [right=2mm of transformer, rotate=270] {decoder};
+\node (x) [above left=1cm of transformer.south west] {$X$ (source)};
+\node (y) [above right=1cm of transformer.south east] {$Y$ (target)};
+\draw (x) -- ([yshift=5mm, xshift=1cm] transformer.south west);
+\draw (y) -- ([yshift=5mm, xshift=-1cm] transformer.south east);
+\node (nll) [draw, circle] at ([yshift=-5mm] transformer.north east) {NLL};
+\draw [bend right=55] (y.north east) to (nll);
+\draw ([xshift=-1cm, yshift=-5mm] transformer.north east) to (nll);
+\node at (-3, 2) [align=left] {(For simpler problems (e.g., \\ classification, tagging), \\ you would simply use \\ the encoder.)};
+\end{tikzpicture}\\ 
+	\beamergotobutton{\href{https://arxiv.org/abs/1706.03762}{Source: Vaswani et al., 2017}}
+\end{center}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{attention in the transformer}
+
+\vfill
+
+\begin{itemize}
+\item We can use attention on many different ``things'', including: 
+\begin{itemize}
+\item The pixels of images
+\item The nodes of knowledge graphs
+\item The words of a vocabulary
+\end{itemize}
+\item Here, we focus on scenarios where the query, key and value vectors represent tokens (e.g., words, characters, etc.) in sequences (e.g., sentences, paragraphs, etc.).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{attention in the transformer}
+
+\vfill
+
+\textbf{Cross-Attention:}
+\begin{itemize}
+\item Let $X = (x_1 \ldots x_{J_x}), Y = (y_1 \ldots y_{J_y})$ be two sequences (e.g., source and target in a sequence-to-sequence problem)
+\item The query vectors represent tokens in $Y$ and the key/value vectors represent tokens in $X$ (``$Y$ attends to $X$'')
+\end{itemize}
+
+\medskip\medskip
+
+\textbf{Self-Attention:}
+\begin{itemize}
+\item There is only one sequence $X = (x_1 \ldots x_J)$
+\item The query, key and value vectors represent tokens in $X$ (``$X$ attends to itself'')
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{cross-attention (1)}
+
+\vfill
+
+\begin{itemize}
+	\item We start by describing cross-attention, self-attention can easily be derived by assuming $\vec X = \vec Y$. 
+	\item Let $\vec X \in \mathbb{R}^{J_x \times d_x}, \vec Y \in \mathbb{R}^{J_y \times d_y}$ be representations of $X, Y$ (e.g., stacked word embeddings, or the outputs of a previous layer)
+	\item Let $\theta = \{\vec W^{(q)} \in \mathbb{R}^{d_y \times d_q}, \vec W^{(k)} \in \mathbb{R}^{d_x \times d_k}, \vec W^{(v)} \in \mathbb{R}^{d_x \times d_v}\}$\\ be trainable weight matrices
+	\item We transform $\vec Y$ into a matrix of query vectors:
+	$$ \vec Q = \vec Y \vec W^{(q)} $$
+	\item We transform $\vec X$ into matrices of key and value vectors:
+	$$ \vec K = \vec X \vec W^{(k)} ; \qquad \vec V =  \vec X \vec W^{(v)}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{cross-attention (2)}
+
+\vfill
+
+\begin{itemize}
+	\item To calculate the $e$ scores, Vaswani et al. use a parameter-less scaled dot product instead of Bahdanau's complicated FFN\medskip\medskip
+	\item Step 1 of the basic recipe: \textit{Scores}
+	$$ e_{j,j'} = a(\vec q_j, \vec k_{j'}) = \frac{\vec q_j^T \vec k_{j'}}{\sqrt{d_k}} $$
+	\item Note: This requires that $d_q = d_k$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{cross-attention (3)}
+
+\vfill
+
+\begin{itemize}
+	\item Attention weights and outputs are defined like before\medskip\medskip
+	\item Step 2 of the basic recipe: \textit{Weights}
+	$$ \alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j'' = 1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+	\item Step 3 of the basic recipe: \textit{Outputs}
+	$$ \vec o_j = \sum_{j'=1}^{J_x} \alpha_{j,j'} \vec v_{j'}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{cross-attention (4)}
+
+\vskip-2mm
+\begin{tikzpicture}[->, >=stealth]
+\foreach \x in {1,2,3}{
+\node (x\x) [vec] at (\x, -.5) {$\vec x_\x$};
+\node (k\x) [vec] at (\x, 1.5) {$\vec k_\x$};
+\node (v\x) [vec] at (\x, 3.5) {$\vec v_\x$};
+}
+\foreach \y in {1,2}{
+\node (y\y) [vec] at (\y+3.5, -.5) {$\vec y_\y$};
+\node (q\y) [vec] at (\y+3.5,1.5) {$\vec q_\y$};
+\node (o\y) [vec] at (\y+3.5,5.5) {$\vec o_\y$};
+\node (alpha\y) [vec, rectangle split, rectangle split parts=3] at (\y+3.5,3.5) {\nodepart{one} $\alpha_{\y,1}$ \nodepart{two} $\alpha_{\y,2}$ \nodepart{three} $\alpha_{\y,3}$};
+}
+
+\foreach \y in {1,2}{
+\draw (alpha\y.north) -- (o\y.south);
+\draw (q\y.north) -- (alpha\y.south);
+\draw (y\y.north) -- (q\y.south);
+\foreach \x in {1,2,3}{
+\draw (v\x.north) -- (o\y.south);
+\draw (k\x.north) -- (alpha\y.south);
+}}
+\foreach \x in {1,2,3}{
+\draw (x\x.north) -- (k\x.south);
+\draw [bend left=20] (x\x.north west) to (v\x.south west);
+}
+\node at (3.2, -1.5) {Cross-attention};
+\end{tikzpicture}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{self-attention}
+
+\vskip-2mm
+\hfill
+\begin{tikzpicture}[->, >=stealth]
+\foreach \x in {1,2,3}{
+\node (x\x) [vec] at (\x, -.5) {$\vec x_\x$};
+\node (k\x) [vec] at (\x, 1.5) {$\vec k_\x$};
+\node (v\x) [vec] at (\x, 3.5) {$\vec v_\x$};
+}
+\foreach \y in {1,2,3}{
+\node (q\y) [vec] at (\y+3,1.5) {$\vec q_\y$};
+\node (o\y) [vec] at (\y,5.5) {$\vec o_\y$};
+\node (alpha\y) [vec, rectangle split, rectangle split parts=3] at (\y+3,3.5) {\nodepart{one} $\alpha_{\y,1}$ \nodepart{two} $\alpha_{\y,2}$ \nodepart{three} $\alpha_{\y,3}$};
+}
+
+\foreach \y in {1,2,3}{
+\draw (alpha\y.north) -- (o\y.south);
+\draw (q\y.north) -- (alpha\y.south);
+\draw (x\y.north east) -- (q\y.south west);
+\foreach \x in {1,2,3}{
+\draw (v\x.north) -- (o\y.south);
+\draw (k\x.north) -- (alpha\y.south);
+}}
+\foreach \x in {1,2,3}{
+\draw (x\x.north) -- (k\x.south);
+\draw [bend left=20] (x\x.north west) to (v\x.south west);
+}
+\node at (3.2, -1.5) {Self-attention};
+\end{tikzpicture}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{self-attention formalized}
+
+\vfill
+
+\begin{itemize}
+\item Let $\vec X \in \mathbb{R}^{J_x \times d_x}$ be a representation of $X$ (e.g., stacked word embeddings, or the outputs of a previous layer)
+\item Let $\theta = \{\vec W^{(q)} \in \mathbb{R}^{d_x \times d_q}, \vec W^{(k)} \in \mathbb{R}^{d_x \times d_k}, \vec W^{(v)} \in \mathbb{R}^{d_x \times d_v}\}$\\ be trainable weight matrices
+\item We transform $\vec X$ into a matrix of query vectors:
+$$ \vec Q = \vec X \vec W^{(q)} $$
+\item And we transform $\vec X$ into matrices of key and value vectors:
+$$ \vec K = \vec X \vec W^{(k)} ; \qquad \vec V =  \vec X \vec W^{(v)}$$
+\item Execute Steps 1 -- 3 of the basic recipe 
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+	\item Hypothetical model:
+			\begin{itemize}
+				\item simple word embedding lookup layer
+				\item self-attention layer 
+				%\item (For simplicity, we only consider one head, but this applies to multi-head attention as well.)
+			\end{itemize}
+	\item Let $\blu{X^{(1)}}$, $\org{X^{(2)}}$ be two sentences of the same length $J$, which contain the same words, but in a different order
+	\item Example: \blu{``john loves mary''} vs. \org{``mary loves john''}
+\end{itemize}
+\begin{center}
+	\includegraphics[width=.6\textwidth]{figure/mary_loves_john}
+\end{center}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item Definition of $\vec o_j$:
+$$\vec o_j = \sum_{j'=1}^J \alpha_{j,j'} \vec v_{j'}$$
+\item Since addition is commutative, and the permutation is bijective, it is sufficient to show that:
+$$\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{\alpha^{(1)}_{j,j'} \vec v^{(1)}_{j'}} = \org{\alpha^{(2)}_{g_j,g_{j'}} \vec v^{(2)}_{g_{j'}}}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item Step 1: Let's show that $\forall_{j} \blu{\vec v^{(1)}_{j}} = \org{\vec v^{(2)}_{g_{j}}}$
+\item Definition of $\vec v_j$:
+$$\vec v_j = \vec W^{(v)T} \vec x_j$$
+\item Then:
+$$\blu{\vec x^{(1)}_{j}} = \org{\vec x^{(2)}_{g_{j}}} \implies \vec W^{(v)T} \blu{\vec x^{(1)}_{j}} = \vec W^{(v)T} \org{\vec x^{(2)}_{g_{j}}} \implies \blu{\vec v^{(1)}_j} = \org{\vec v^{(2)}_{g_j}}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item Step 2: Let's show that $\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{\alpha^{(1)}_{j, j'}} = \org{\alpha^{(2)}_{g_j, g_{j'}}}$
+\item Definition of $\alpha_{j,j'}$:
+$$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^J \mathrm{exp}(e_{j,j''})}$$
+\item Since the sum in the denominator is commutative, and the permutation is bijective, it is sufficient to show that
+$$\forall_{j \in \{1,...,J\}, j' \in \{1,...,J\}} \blu{e^{(1)}_{j,j'}} = \org{e^{(2)}_{g_j, g_{j'}}}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item Definition of $e_{j,j'}$:
+$$e_{j,j'} = \frac{1}{\sqrt{d_k}} \vec q_{j}^T \vec k_{j'} = \frac{1}{\sqrt{d_k}} (\vec W^{(q)T} \vec x_{j})^T (\vec W^{(k)T} \vec x_{j'})$$
+\item Then:
+$$
+\begin{aligned}
+& \blu{\vec x^{(1)}_j} = \org{\vec x^{(2)}_{g_j}} \land \blu{\vec x^{(1)}_{j'}} = \org{\vec x^{(2)}_{g_{j'}}} \\
+\implies{} & \vec W^{(q)T} \blu{\vec x^{(1)}_j} = \vec W^{(q)T} \org{\vec x^{(2)}_{g_j}} \land \vec W^{(k)T} \blu{\vec x^{(1)}_{j'}} = \vec W^{(k)T} \org{\vec x^{(2)}_{g_{j'}}} \\
+\implies{} & \blu{\vec q^{(1)}_j} = \org{\vec q^{(2)}_{g_j}} \land \blu{\vec k^{(1)}_{j'}} = \org{\vec k^{(2)}_{g_{j'}}} \\
+\implies{} & \blu{\vec q^{(1)T}_j \vec k^{(1)}_{j'}} = \org{\vec q^{(2)T}_{g_j} \vec k^{(2)}_{g_{j'}}} \\
+\implies{} & \frac{1}{\sqrt{d_k}} \blu{\vec q^{(1)T}_j \vec k^{(1)}_{j'}} =  \frac{1}{\sqrt{d_k}}  \org{\vec q^{(2)T}_{g_j} \vec k^{(2)}_{g_{j'}}} \\
+\implies & \blu{e^{(1)}_{j,j'}} = \org{e^{(2)}_{g_j, g_{j'}}}
+\end{aligned}
+$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item So, $\forall_j \blu{\vec o^{(1)}_j} = \org{\vec o^{(2)}_{g_j}}$
+\item In other words: The representation of \blu{mary} is identical to that of \org{mary}, and the representation of \blu{john} is identical to that of \org{john}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Can self-attention model word order?}
+
+\vfill
+
+\begin{itemize}
+\item \ques Can the other layers in the Transformer architecture (feed-forward net, layer normalization) help with the problem?
+\begin{itemize}
+\item No, because they are apply the same function to all positions.
+\end{itemize}
+\item \ques Would it help to apply more self-attention layers?
+\begin{itemize}
+\item No. Since the representations of identical words are still identical in $\vec O$, the next self-attention layer will have the same problem.
+\end{itemize}
+\item So... does that mean the Transformer is unusable?
+\item Luckily not. We just need to ensure that input embeddings of identical words at different positions are not identical. 
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Position embeddings}
+
+\vfill
+
+\begin{itemize}
+\item Add to every input word embedding a position embedding $\vec {p} \in \mathbb{R}^d$:
+\item Input embedding of word ``mary'' in position $j$: $\vec {x}_j = \vec {w}_{\mathcal{I}(\text{mary})} + \mathbf{p}_j$
+$$\vec {w}_{\mathcal{I}(\text{mary})} + \vec {p}_j \neq \vec{w}_{\mathcal{I}(\text{mary})} + \vec {p}_{j'} \text{ if } j \neq j'$$
+\item Option 1 \beamergotobutton{\href{https://arxiv.org/abs/1706.03762}{Source: Vaswani et al., 2017}}\\ 
+(Deterministic) Sinusoidal position embeddings: 
+$$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \text{ if } i \text{ is even} \\ \mathrm{cos}\big(\frac{j}{10000^\frac{i-1}{d}}\big) & \text{ if } i \text{ is odd}  \end{cases}$$
+\item Option 2 \beamergotobutton{\href{https://aclanthology.org/N19-1423.pdf}{Source: Devlin et al., 2019}}\\
+Trainable position embeddings: $\vec {P} \in \mathbb{R}^{J^\mathrm{max} \times d}$\\
+(Disadvantage: Cannot deal with sentences longer than $J^\mathrm{max}$)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized attention}
+
+\vfill
+
+\begin{itemize}
+\item We want to apply our attention recipe to every query vector $\vec q_j$
+\item We could simply loop over all time steps $1 \leq j \leq J_x$ (or $J_y$) and calculate each $\vec o_j$ independently.
+\item Then stack all $\vec o_j$ into an output matrix $\vec O \in \mathbb{R}^{J_x \times d_v}$ (or $\mathbb{R}^{J_y \times d_v}$)
+\item But a loop does not use the GPU's capacity for parallelization,\\ so it might be unnecessarily slow
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized Self-attention}
+
+\vfill
+
+\begin{itemize}
+\item Do some inputs (e.g., $\vec q_j$) depend on previous outputs (e.g., $\vec o_{j-1}$)? If not, we can parallelize the loop into a single function:
+$$\vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta)$$
+\item Attention in Transformers is usually parallelizable, unless we are doing autoregressive inference (more on that later).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized Self-attention}
+
+\vfill
+
+\begin{itemize}
+\item By the way: The Bahdanau model is not parallelizable in this way, because $s_i$ (a.k.a. the query of the $i+1$'st step) depends on $c_i$ (a.k.a. the attention output of the $i$'th step), see last lecture:
+\begin{center}
+\includegraphics[width=.9\textwidth]{figure/bahdanau3}
+\end{center}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized Self-attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 1}: The parallel application of the scaled dot product to all query-key pairs can be written as:
+$$\vec {E} = \frac{ \vec {Q} \vec {K}^T}{\sqrt{d_k}}; \quad \vec E \in \mathbb{R}^{J_x \times J_x}$$
+$$ \frac{1}{\sqrt{d_k}}
+\begin{bmatrix} 
+- & \vec q_1  & -  \\
+& \vdots & \\
+-  & \vec q_{J_x}  &  -  \\
+\end{bmatrix}  
+\begin{bmatrix} 
+\lvert &  & \lvert  \\
+\vec k_1 & \ldots & \vec k_{J_x} \\
+\lvert &  & \lvert  \\
+\end{bmatrix}
+= 
+\begin{matrix} \downarrow \\ queries \\ \downarrow \\ \end{matrix} \overset{\rightarrow keys \rightarrow}{
+\begin{bmatrix}
+e_{1,1} & \ldots & e_{1,J_x} \\
+\vdots & \ddots & \vdots \\
+e_{J_x,1} & \ldots & e_{J_x,J_x} \\
+\end{bmatrix}}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized scaled dot product Self-attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 2}: Softmax with normalization over the second axis (key axis): 
+$$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+\item Let's call this new normalized matrix $\vec A \in (0,1)^{J_x \times J_x}$
+\item The rows of $\vec A$, denoted $\vec \alpha_j$, are probability distributions\\ (one $\vec \alpha_j$ per $\vec q_j$)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parallelized scaled dot product Self-attention}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Step 3}: Weighted sum
+$$\vec {O} = \vec {A} \vec {V}; \vec O \in \mathbb{R}^{J_x \times d_v}$$
+
+$$
+\begin{bmatrix} 
+- & \boldsymbol \alpha_1  & -  \\
+& \vdots & \\
+-  & \boldsymbol \alpha_{J_x}  &  -  \\
+\end{bmatrix}  
+\begin{bmatrix} 
+\lvert &  & \lvert  \\
+\vec {v}_{:,1} & \ldots & \vec {v}_{:,d_v} \\
+\lvert &  & \lvert  \\
+\end{bmatrix}
+=
+\begin{matrix} \downarrow \\ queries \\ \downarrow \end{matrix}
+	\overset{\rightarrow d_v \text{(value dims)} \rightarrow}{
+\begin{bmatrix}
+o_{1,1} & \ldots & o_{1,d_v} \\
+\vdots & \ddots & \vdots \\
+o_{J_x,1} & \ldots & o_{J_x,d_v} \\
+\end{bmatrix}}
+$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{... as a one-liner}
+
+\vfill
+
+\large
+$$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta) = \mathrm{softmax}\Big(\frac{(\vec X\vec W^{(q)} ) (\vec X\vec W^{(k)} )^T}{\sqrt{d_k}}\Big)(\vec X\vec W^{(v)} ) $$
+\begin{itemize}
+\item GPUs like matrix multiplications\\$\rightarrow$ usually a lot faster than RNN!
+\item But: The memory requirements of $\vec E$ and $\vec A$ are $\mathcal{O}(J_x^2)$
+\item Sequence lengths are an important issue.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Add-On: Changes for Cross Attention}
+
+\vfill
+
+\begin{itemize}
+	  \item \textbf{Step 1}: Scaled dot-product $$\vec {E} = \frac{ \vec {Q} \vec {K}^T}{\sqrt{d_k}}; \quad \vec E \in \mathbb{R}^{J_y \times J_x}$$
+	  \item \textbf{Step 2}: Softmax $$\alpha_{j,j'} = \frac{\mathrm{exp}(e_{j,j'})}{\sum_{j''=1}^{J_x} \mathrm{exp}(e_{j,j''})}$$
+		\item \textbf{Step 3}: Output $$\vec {O} = \vec {A} \vec {V}; \vec O \in \mathbb{R}^{J_y \times d_v}$$
+		\item As one-liner: $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta) = \mathrm{softmax}\Big(\frac{(\vec Y\vec W^{(q)} ) (\vec X\vec W^{(k)} )^T}{\sqrt{d_k}}\Big)(\vec X\vec W^{(v)} ) $$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Layer Attention}
+
+\vfill
+
+\begin{itemize}
+\item Sequential application of several attention layers, with separate parameters $\{\theta^{(1)} \ldots \theta^{(N)}\}$ 
+\item In Transformer: sequential application of Transformer blocks
+\item There are some additional position-wise layers inside the Transformer block, i.e., $\vec O^{(n)}$ undergoes some additional transformations before becoming the input to the next Transformer block $n+1$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Head Attention}
+
+\vfill
+
+\begin{itemize}
+\item Application of several attention layers (``heads'') in parallel
+\item $M$ sets of parameters $\{\theta^{(1)}, \ldots, \theta^{(M)}\}$, with $\theta^{(m)} = \{\vec {W}^{(m,q)}, \vec {W}^{(m,k)}, \vec {W}^{(m,v)}\}$
+\item For every head, compute in parallel:
+$$ \vec O^{(m)} = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta^{(m)}) $$
+\item Choice of dimensionality: $d_k = d_v = d_{x}/M$ 
+\item Concatenate all $\vec {O}^{(m)}$ along their last axis; then down-project the concatenation with an additional parameter matrix $\vec W^{(o)} \in \mathbb{R}^{Md_v \times d_v}$:
+$$ \vec O = [\vec O^{(1)}; \ldots;  \vec O^{(M)}] \vec W^{(o)}$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Multi-Head Attention}
+
+\vfill
+
+\begin{itemize}
+\item Conceptually, multi-head attention is to single-head attention like a filter bank is to a single filter (CNNs)
+\item Division of labor: different heads model different kinds of inter-word relationships
+\end{itemize}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/heads.png}\\ 
+		\beamergotobutton{\href{https://aclanthology.org/W19-4828/}{Source: Clark et al., 2019}}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{model size}
+
+\vfill
+
+\begin{itemize}
+\item Embedding size: $d_x = 512$
+\item Number of heads: $M = 8$
+\item Embedding size \textit{per head}: $d_k = d_v = 512/8 = 64$\\\medskip
+			$\to$ $\vec W^{(q)} \in \mathbb{R}^{512 \times 64}$, $\vec W^{(k)} \in \mathbb{R}^{512 \times 64}$, $\vec W^{(v)} \in \mathbb{R}^{512 \times 64}$
+\item Projection matrix after multi-head attention: $\vec W^{(o)} \in \mathbb{R}^{512 \times 512}$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

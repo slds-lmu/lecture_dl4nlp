@@ -1,0 +1,188 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/ulmfit_sq.png}
+\newcommand{\learninggoals}{
+\item Understand the paradigm of fine-tuning for Transfer Learning
+\item Get the intuition of the subtleties of training ULMFiT}
+
+\title{Transfer Learning}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{ULMFiT (Howard \& Ruder, 2018)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-tuning approach}
+
+\vfill
+
+\textbf{Shortcomings of ELMo:}
+
+	\begin{itemize}
+		\item No adaption of the Embeddings to target domain/task
+			\begin{itemize}
+				\item Source \& target domain/task might be pretty different
+				\item No good representations for domain-/task-specific words
+			\end{itemize}
+		\item Sequential nature of LSTMs:
+			\begin{itemize}
+				\item Not fully parallelizable (compared to Transformers, see next chapter)
+				\item Fails to capture long-range dependency during contextualization
+			\end{itemize}
+	\end{itemize}
+
+	\vspace{.3cm}
+	
+	\textbf{Alleviations/Alternatives:}
+
+	\begin{itemize}
+		\item ULMFiT \href{https://www.aclweb.org/anthology/P18-1031.pdf}{\beamergotobutton{Howard and Ruder, 2018}} is a uni-directional LSTM which is fine-tuned as a whole model on data from the target domain/task.
+		\item GPT \href{https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf}{\beamergotobutton{Radford et al., 2018}} is a Transformer (decoder) which is fine-tuned as a whole model on data from the target domain/task.
+	\end{itemize}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ULMFiT \href{https://www.aclweb.org/anthology/P18-1031.pdf}{\beamergotobutton{Howard and Ruder, 2018}}}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/ulmfit-overview-new}\\ 
+		\footnotesize{Source:} \href{https://slds-lmu.github.io/seminar_nlp_ss20/transfer-learning-for-nlp-i.html}{\footnotesize \it Carolin Becker}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Architectural Details}
+
+\vfill
+
+\begin{itemize}
+	\item AWD-LSTMs \href{https://arxiv.org/pdf/1708.02182.pdf}{\beamergotobutton{Merity et al., 2017}} as backbone of the architecture
+		\begin{itemize}
+			\item DropConnect \href{http://proceedings.mlr.press/v28/wan13.pdf}{\beamergotobutton{Wan et al., 2013}}
+			\item Averaged stochastic gradient descent (ASGD) for optimiziation
+		\end{itemize}
+	\item Embedding layer 
+		\begin{itemize}
+			\item $E = 400$
+			\item Some word-level tokenization (not entirely clear) 
+		\end{itemize}
+	\item Three LSTM layers ($H = 1150$) + Softmax Layer
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LM Pre-Training Details}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Corpus: Wikitext-103}
+		\begin{itemize}
+			\item 28.595 Wikipedia articles
+			\item $\approx$ 103M words
+		\end{itemize}
+	\item \textit{Objective:} Language Modeling
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LM Fine-tuning Details}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Discriminative fine-tuning}
+		\begin{itemize}
+			\item Different learning rates for each layer
+			\item First choose learning rate for the last layer
+			\item Use this to determine the learning rates for lower layers
+		\end{itemize}
+	\item \textit{Slanted triangular learning rates}
+		\begin{figure}
+		\centering
+		\includegraphics[width = 5cm]{figure/slanted.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1801.06146.pdf}{\footnotesize \it Howard and Ruder (2018)}
+	\end{figure}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Classifier fine-tuning}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Concat Pooling}
+		\begin{itemize}
+			\item Consider not only last hidden state for classification
+			\item $\textbf{h}_c = [\textbf{h}_T, \texttt{maxpool}(\textbf{H}), \texttt{meanpool}(\textbf{H})]$ \\
+						with $\textbf{H} = \{\textbf{h}_1, \hdots, \textbf{h}_T\}$
+		\end{itemize}
+	\item \textit{Gradual unfreezing}
+		\begin{itemize}
+			\item Minimizing risk of 'catastrophic forgetting'
+			\item Gradually make layers eligible for gradient updates (from top to bottom)
+		\end{itemize}
+	\item \textit{BPT3C}
+		\begin{itemize}
+			\item Divide documents in chunks of pre-defined length (here: 70)
+			\item Initialize model with the final hidden state of previous chunk
+		\end{itemize}
+	\item \textit{Bidirectionality}
+		\begin{itemize}
+			\item Same procedure for a backward model
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance}
+
+\vfill
+			
+	\begin{figure}
+		\centering
+		\includegraphics[width = 10cm]{figure/ulmfit-sota.png}\\ 
+		\footnotesize{Source:} \href{https://arxiv.org/pdf/1801.06146.pdf}{\footnotesize \it Howard and Ruder (2018)}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\endlecture
+\end{document}

@@ -12,6 +12,12 @@
 }
 \makeatother
 
+\newcommand{\citebutton}[2]{%
+\beamergotobutton{\href{#2}{#1}}%
+}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
 \newcommand{\blu}[1]{\textcolor{blue}{#1}}
 \newcommand{\org}[1]{\textcolor{orange}{#1}}
 \newcommand{\ques}{\textbf{\textcolor{red}{Question:  }}}
@@ -72,6 +78,8 @@
 \usepackage{dsfont}
 \usepackage{verbatim}
 \usepackage{amsmath}
+\usepackage{courier}
+%\usepackage{minted}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{bm}
@@ -93,8 +101,8 @@
 \usepackage{colortbl}
 \usepackage{mathtools}
 \usepackage{wrapfig}
-\usepackage{bm}
-\usepackage{amsmath}
+% \usepackage{bm}
+% \usepackage{amsmath}
 \usepackage{pifont}
 
 \usetikzlibrary{shapes.multipart,shapes,arrows,automata,positioning,calc,chains,trees, shadows}
