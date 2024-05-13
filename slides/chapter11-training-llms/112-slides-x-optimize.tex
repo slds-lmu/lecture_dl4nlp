@@ -1,0 +1,371 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\titlefigure}{figure/gpt4logo.png}
+\newcommand{\learninggoals}{
+\item Learn how to optimize LLM performance
+}
+
+\title{LLM Optimization}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{}
+\lecture{Deep Learning for NLP}
+
+\input{ackslide}
+% ------------------------------------------------------------------------------
+
+
+
+
+
+
+\input{roadmap2.tex}
+
+
+\section{Motivation: Why LLM optimization?}
+
+\begin{vbframe}{Motivation}
+
+\vfill
+
+\textbf{Why LLM optimization?}
+
+	\begin{itemize}
+		\item A model like GPT4 can do amazing
+		things.
+                \item Why can't we use it out of the box?
+                \item Why do we need to optimize its performance?
+                \item How can we  optimize its performance?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\newpage
+
+\
+
+\newpage
+
+\begin{vbframe}{Motivation}
+
+\vfill
+
+\textbf{Why LLM optimization?}
+
+	\begin{itemize}
+                \item Suboptimal behavior without carefully
+		designed instructions
+                \item Suboptimal behavior without carefully
+		selected training examples
+		\item Lack of knowledge
+                \item Lack of skills
+	\begin{itemize}
+        \item Important subcase: style/format
+	\end{itemize}
+                \item Reduce hallucinations
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{LLM optimization}
+
+\vfill
+
+\textbf{OpenAI's current take}
+
+\textbf{\href{https://www.youtube.com/watch?v=ahnGLM-RC1Y}{\beamergotobutton{OpenAI's
+                current take}}}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/openai,llm,optimization.png}
+\end{figure}
+
+%\begin{itemize}
+%	\item 
+%\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+\include{roadmap2}
+
+
+\section{Prompt engineering}
+
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Six strategies}
+
+
+\begin{itemize}
+\item
+\textbf{\href{https://platform.openai.com/docs/guides/prompt-engineering/six-strategies-for-getting-better-results}{\beamergotobutton{OpenAI
+prompt engineering guide}}}
+	\item Write clear instructions
+	\item Provide reference text
+	\item Split complex tasks into simpler subtasks
+        
+	\item Give the model time to ``think''
+        
+	\item Use external tools
+        
+	\item Test changes systematically
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 1: Write clear instructions}
+
+
+\begin{itemize}
+
+\item     Include details in your query to get more relevant
+    answers
+\item         Ask the model to adopt a persona (e.g., be an expert)
+\item             Use delimiters to clearly indicate distinct
+    parts of the input
+\item         Specify the steps required to complete a task
+\item             Provide examples
+\item                 Specify the desired length and format of the output
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 2: Provide reference text}
+
+
+\begin{itemize}
+\item (purpose: reduce hallucinations)
+\item     Instruct the model to answer using a reference text
+\item         Instruct the model to answer with citations from a
+        reference text
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 3: Split complex tasks into simpler subtasks}
+
+
+\begin{itemize}
+
+\item (it's much easier for the model to answer simple tasks
+and then stitch together the results than answer a  complex task)
+\item     Use intent classification to identify the most relevant
+    instructions for a user query
+\item         For dialog applications that require very long
+    conversations, summarize or filter previous dialog
+\item         Summarize long documents piecewise and construct a
+    full summary recursively
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 4: Give the model time to ``think''}
+
+
+\begin{itemize}
+
+\item (e.g., chain of thought)
+\item     Instruct the model to work out its own solution before
+    rushing to a conclusion
+\item         Use inner monolog or a sequence of queries to hide
+    the model's reasoning process
+\item         Ask the model if it missed anything on previous passes
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 5: Use external tools}
+
+
+\begin{itemize}
+
+
+\item     Use embedding-based search to implement efficient
+    knowledge retrieval, e.g., RAG
+\item         Use code execution to perform more accurate
+    calculations or call external APIs
+\item         Give the model access to specific functions
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+\begin{vbframe}{Prompt engineering}
+
+\vfill
+
+\textbf{Strategy 6: Test changes systematically}
+
+
+\begin{itemize}
+\item (it's hard/impossible to assess changes based on
+anecdotal evidence)
+\item     Evaluate model outputs with reference to gold-standard answers
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\include{roadmap2}
+
+
+\section{Beyond prompt engineering}
+
+
+
+
+\begin{vbframe}{System message}
+
+\vfill
+
+\textbf{Ways we can exploit the system message}
+
+	\begin{itemize}
+		\item Generally: helps set the assistant's
+		behavior
+		\item Give the model general instructions
+		that should govern its global behavior
+		(e.g., 3H)
+                		\item Give the assistant a persona
+                \item Give the model a summary of a long context
+                \item Instruct the model to check its own output
+\item For calculations: always generate and then execute code
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Doubts about LLM optimization}
+
+\vfill
+
+\textbf{What is the halflife of this lecture?}
+
+	\begin{itemize}
+		\item ``I've been hesitant lately to dedicate a lot of time to
+learning how to perfect prompts. It appears every new
+version, not to mention different LLMs, responds
+differently. With the rapid advancement we're seeing, in two
+years or five, we might not even need such complex prompting
+as systems get smarter.''
+\item https://www.infoq.com/news/2023/12/openai-prompt-engineering/
+\item (apart from systems getting smarter, their very nature
+may also change rapidly as has been the case in the last 2-5
+		years)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\include{roadmap2}
+
+\section{Exercise}
+
+\begin{vbframe}{Exercise}
+
+\vfill
+
+\textbf{Information extraction task}
+
+\begin{itemize}
+                \item Given: a sentence, e.g., ``After
+                working as a carpenter after school, Mary now has
+                been with BMW for 10 years.''
+\item Output: (Mary,is-employed-by,BMW)
+\item There is a small set of four relations: is-employed-by,
+                reports-to,
+                his/her-job-role-is, his/her-degree-is
+\item Optimize LLM performance for this task
+\item Work in groups!
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\include{roadmap2}
+
+\section{More details on prompt engineering}
+
+\begin{vbframe}{}
+
+\vfill
+
+
+\href{https://platform.openai.com/docs/guides/prompt-engineering}{\beamergotobutton{OpenAI Prompt Engineering Guide}}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\endlecture
+\end{document}

@@ -1,0 +1,1070 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\def\qmark{\myblue{?!?}}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item Learn to calculate Transformer number of parameters
+\item Understand Transformer computation and memory load
+\item Learn about Flash Attentions
+\item Understand Scaling Laws and Chinchilla
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+%\title{LLMs: Parameters, Data, Hardware, Scaling}
+\title{}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{LLMs: Parameters, Data, Hardware, Scaling}
+\lecture{Deep Learning for NLP}
+
+
+%Notes:
+% Slides: https://jasonwei20.github.io/files/FLAN%20talk%20external.pdf
+% Check out emergence talk: https://www.youtube.com/watch?v=0SuyDLjNR9g
+
+% LLM Survey: https://arxiv.org/pdf/2303.18223.pdf
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LLM Parameters: Main Components}
+
+\vfill
+
+\citebutton{Source: Kipply's Blog, 2023}{https://kipp.ly/transformer-param-count/}
+
+\begin{itemize}
+    \item Model parameters are half-precision (bf16 = bfloat16)
+    numbers,  2 bytes each
+    \item One block (decoder unit) consists of:
+		\begin{itemize}
+		\item $W_q, W_k, W_v$ matrices which are
+    each $n_{heads} \cdot d_{model} \cdot  d_{head}$ and project the input into the queries, keys, and values used in self-attention. 
+		\item A $W_0$ matrix which is also
+    $n_{heads} \cdot d_{head} \cdot d_{model} $ for the output of self-attention, before the MLP (feedforward) layer
+		\item MLP weights, which are two matrices
+    each of ${d_{model}}^2 \cdot 4$. Here
+    ``4''  means that the MLP is 4 times the size of the model embedding dimension. 
+		\end{itemize}
+	\item In most architectures, $d_{model} = n_{heads} \cdot d_{head}$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LLM Parameters: Formula}
+
+\vfill
+
+Combining the above, for one layer/block we get this formula:
+\begin{equation*}
+\begin{array}{c}
+P_{layer} = 3 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + d_{model} \cdot n_{heads} \cdot d_{head} + 2 \cdot 4 \cdot {d_{model}}^2 \\ [8pt]
+ = 4 \cdot d_{model} \cdot n_{heads} \cdot d_{head} + 8 \cdot {d_{model}}^2 \\ [8pt]
+ = 4 \cdot d_{model} \cdot d_{model} + 8 \cdot {d_{model}}^2 \\ [8pt]
+ = 12 \cdot {d_{model}}^2
+\end{array}
+\end{equation*}
+
+\vskip5mm
+
+For a LLM of $n_{layers}$ layers, we get:
+\begin{equation*}
+\begin{array}{c}
+\mbox{total \# parameters\ \ } P = 12 \cdot n_{layers} \cdot {d_{model}}^2
+\end{array}
+\end{equation*}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LLM Parameters: GPT}
+
+\vfill
+
+GPT-3 Small has:
+\begin{equation*}
+\begin{array}{l}
+n_{params} = 125\,M ~; n_{layers} = 12 ~; d_{model} = 768 ~; n_{heads} = 12 ~; d_{head} = 64 
+\end{array}
+\end{equation*}
+
+\vskip2mm
+
+GPT-3 Medium has:
+\begin{equation*}
+\begin{array}{l}
+n_{params} = 350\,M ~; n_{layers} = 24 ~; d_{model} = 1024 ~; n_{heads} = 16 ~; d_{head} = 64 
+\end{array}
+\end{equation*}
+
+\vskip2mm
+
+Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\sim$302\,M parameters for GPT-3 Medium. 
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{LLM Parameters: GPT}
+
+%\vfill
+
+%\textbf{GPT example}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/gptsize}
+\end{figure}
+
+\begin{itemize}
+\item Applying the above formula we get $\sim$85\,M parameters for GPT-3 Small and $\sim$302\,M parameters for GPT-3 Medium. 
+
+\item What are we missing?
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{LLM Parameters: Other Components}
+
+\vfill
+
+Numeric illustration as in BERT-base \\ \vskip5mm
+
+\begin{itemize}
+    \item Word Embedding parameters -- 30522 x 768 = 23,440,896
+    \item Position Embedding parameters -- 512 x 768 = 393,216
+	\item Token Type Embedding parameters -- 2 x 768 = 1536
+	\item Embedding Layer Normalization, weight and Bias -- 768 + 768 = 1536
+	\item There can be other model-specific parameters...
+\end{itemize}
+
+\vskip5mm
+
+Total additional parameters = 23,837,184 \vskip3mm
+
+They do not scale with model size.
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Requirements}
+
+\vfill
+
+\textbf{Basic equation: Cost to train a transformer model:}
+
+\vspace{1.5cm}
+
+$$C \approx \tau T = 6 P D$$ 
+
+\vspace{1.5cm}
+
+\centering \citebutton{Source: Quentin et al., 2023}{https://blog.eleuther.ai/transformer-math/}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Requirements: C = tau T = 6 P D}
+
+
+\vfill
+
+\textbf{where:}
+
+\begin{itemize}
+    \item $C$: No. of floating-point operations (FLOPs) to train the model:\\
+          $C = C_{forward} + C_{backward}$
+	\item $C_{forward} \approx 2 P D$
+	\item $C_{backward} \approx 4 P D$
+\item $2PD$: ``2'' comes from the multiply-accumulate
+          operation used in
+          matrix multiplication
+          \item $4PD$: backward pass approximately twice
+          the compute of the forward pass
+\item           In the backward pass at each
+          layer, gradients have to be calculated for the
+          weights at that layer and for the previous layer's
+          output.
+          \item So that the gradient of the previous
+          layer's weights can be calculated. 
+	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
+	\item $T$ is the time spent training the model, in seconds
+	\item $P$ is the number of parameters in the model
+	\item $D$ is the dataset size (in tokens)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Units}
+
+\vfill
+
+$C$  can be measured in different units:\newline
+
+\begin{itemize}
+    \item FLOP-seconds which is [Floating Point Ops / Second]
+	\begin{itemize}
+	    \item We also use multiples GFLOP-seconds, TFLOP-seconds etc.
+		\item Other multiples like PFLOP-days are used in papers
+		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
+		\item Actual FLOPs are always lower than the advertised theoretical FLOPs
+	\end{itemize}
+	\item GPU-hours
+	\begin{itemize}
+	    \item GPU model is also required since they have different compute capacities
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parameter vs Dataset}
+
+\vfill
+
+\begin{itemize}
+    \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
+	\item \textbf{We need to decide about $P$ and $D$, so that we get the best performance within the compute budget.}
+	\item
+        Recommended tradeoff between $P$ and $D$ is: $D = 20 P$
+	\begin{itemize}
+	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
+	\end{itemize}
+	\item Training a LLM for less than 200 billion tokens is not recommended
+	\item Rule of thumb: First determine the upmost
+	inference cost, and then train the biggest model
+	within that boundary.
+        \item Different ways to determine P: based
+	on available data, compute budget or
+	inference time
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Memory Requirements}
+
+\vfill
+
+Common questions: \newline
+
+\begin{itemize}
+ 	\item How big is this model in bytes?
+	\item Will it fit/train in my GPUs?
+\end{itemize}
+
+\vskip8mm
+
+Model size components: \newline
+
+\begin{itemize}
+ 	\item Model parameters
+	\item Optimizer states
+	\item Gradients
+	\item Activations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Number Representations}
+
+\vfill
+
+\begin{itemize}
+ 	\item Pure fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
+ 	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
+    \item bf16 or brain floating point 16, developed by Google Brain project, occupying 16 bits or 2 bytes
+\begin{itemize}
+\item gives more bits to exponent (vs.\ significand/mantissa)
+\end{itemize}
+
+	\item int8: integer from -128 to 127, occupying 8 bits or 1 byte
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{fp32 / fp16}
+
+%\vfill
+
+%\textbf{GPT example}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/16bit32bit}
+\end{figure}
+
+\begin{itemize}
+\item \
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{INT8 quantization}
+\href{https://de.mathworks.com/company/newsletters/articles/what-is-int8-quantization-and-why-is-it-popular-for-deep-neural-networks.html}{\beamergotobutton{mathworks}} 
+
+\vfill
+
+\begin{itemize}
+\item Real\_number = stored\_integer * scaling\_factor
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{INT* quantization}
+
+%\vfill
+
+%\textbf{GPT example}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/quantization1}
+\end{figure}
+
+\begin{itemize}
+\item \
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{INT* quantization}
+
+%\vfill
+
+%\textbf{GPT example}
+
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 8cm]{figure/quantization2}
+\end{figure}
+
+\begin{itemize}
+\item \
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Model Parameters}
+
+\vfill
+
+Parameter size depends on chosen representation: \newline
+
+\begin{itemize}
+ 	\item Pure fp32: $Mem_{model} = 4 ~bytes/param \cdot N_{params}$
+ 	\item fp16 or bf16: $Mem_{model} = 2 ~bytes/param \cdot N_{params}$
+	\item int8: $Mem_{model} = 1 ~byte/param \cdot N_{params}$
+\end{itemize}
+
+\vskip8mm
+
+It is practically common to use mixed representations: \newline
+
+\begin{itemize}
+ 	\item fp32 + fp16
+	\item fp32 + bf16
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Optimizer States}
+
+% https://huggingface.co/docs/transformers/v4.20.1/en/perf_train_gpu_one
+
+\vfill
+
+%AdamW: $Mem_{AdamW} = 12 ~bytes/param \cdot N_{params}$
+AdamW: $Mem_{AdamW} = 8 ~bytes/param \cdot N_{params}$
+\begin{itemize}
+ 	%\item fp32 copy of parameters: 4 bytes/param
+ 	\item Momentum: 4 bytes/param (fp32)
+	\item Variance: 4 bytes/param (fp32)
+\end{itemize}
+
+\vskip3mm
+
+bitsandbytes: $Mem_{AdamW} = 2 ~bytes/param \cdot N_{params}$
+\begin{itemize}
+% 	\item fp32 copy of parameters: 4 bytes/param
+ 	\item Momentum: 1 byte/param
+	\item Variance: 1 byte/param
+\end{itemize}
+
+%\vskip3mm
+%
+%For AdamW, memory = $ 12 ~bytes/param \cdot N_{params}$
+%\begin{itemize}
+% 	\item fp32 copy of parameters: 4 bytes/param
+% 	\item Momentum: 4 bytes/param
+%\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Gradients}
+
+\vfill
+
+They are usually stored in the same datatype as the model parameters. \newline
+
+Their memory overhead contribution is: \newline
+
+
+\begin{itemize}
+ 	\item fp32: $Mem_{grad} = 4 ~bytes/param \cdot N_{params}$
+ 	\item fp16 or bf16: $Mem_{grad} = 2 ~bytes/param \cdot N_{params}$
+	\item int8: $Mem_{grad} = 1 ~byte/param \cdot N_{params}$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Activations}
+
+\vfill
+
+\begin{itemize}
+ 	\item GPUs are bottlenecked by memory, not FLOPs
+ 	\item Save GPU memory by recomputing activations of certain layers
+	\item Various schemes for selecting which layers to clear
+	\item They take some extra memory, but save even more
+\end{itemize}
+
+\vskip5mm
+
+Total memory when training \textbf{using} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
+
+\vskip5mm
+
+
+Total memory when training \textbf{without} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
+
+\vskip5mm
+
+%In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Distributed Training}
+
+\vfill
+
+\begin{itemize}
+ 	\item Avoiding OOM issues
+	\item \textbf{Data parallelism:} split the data on different model replicas
+	\item \textbf{Tensor parallellism:} split model parameters across GPUs
+ 	\item Training LLMs faster on many GPUs
+%	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
+%	\begin{itemize}
+%	 	\item ZeRO (Zero Redundancy Optimizer)
+%		\item Requires low extra communication between GPUs
+%	 	\item Decreases optimizer memory requirement
+%		\item Improves training speed
+%\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Data Parallelism (animated gif!)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/data_parallel.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Parallelism (animated gif!)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/tensor_paralel.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/stable/nlp/nemo_megatron/parallelisms.html}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+%\begin{vbframe}{Zero Redundancy Optimizer}
+%
+%\vfill
+%
+%\begin{figure}
+%	\centering
+%	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
+%%%%% \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
+%  \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
+%  
+%\end{figure}
+%
+%\vfill
+%
+%\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{F\MakeLowercase{lash}A\MakeLowercase{ttention}}
+
+\vfill
+
+Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
+
+\begin{itemize}
+	\item Fast
+	\begin{itemize}
+		\item 15\,\% faster than BERT
+		\item 3x faster than GPT-2 
+		\item 2.4x faster than Megatron-LM
+	\end{itemize}
+	\item Memory-efficient
+	\begin{itemize}
+		\item Reducing from $O(\MakeLowercase{n}^2)$ to $O(\MakeLowercase{n})$ 
+	\end{itemize}
+	\item Exact
+	\begin{itemize}
+		\item Same as ``vanilla attention'', not an approximation 
+	\end{itemize}
+	\item IO aware
+	\begin{itemize}
+		\item Reducing memory load/store operations
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{GPU Memory Hierarchy}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/gpu_mem.png} \\ 
+	{\footnotesize Source: \href{https://arxiv.org/abs/2205.14135}{Dao et al. (2022)}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Computing Considerations}
+
+\vfill
+
+\begin{itemize}
+	\item GPU compute has been growing faster than memory bandwidth
+	\begin{itemize}
+		\item GPU has to wait for data
+	\end{itemize}
+	\item Transformer operations are memory-bound
+	\begin{itemize}
+		\item Elementwise operations with high memory access
+	\end{itemize}
+	\item IO aware means reducing memory load/store operations
+	\item FlashAttention implements the following:
+	\begin{itemize}
+		\item Operation fusion to reduce memory access
+		\item Tiling or chunking the softmax matrix into blocks
+		\item Recomputation for better memory utilization
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Operation Fusion}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/op_fusion.png} \\ 
+	{\footnotesize Source: \href{https://horace.io/brrr_intro.html}{\url{https://horace.io/brrr_intro.html}}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations and Prospects}
+
+\vfill
+
+\begin{itemize}
+	\item FlashAttention requires writing attention to CUDA language
+	\begin{itemize}
+		\item A new CUDA kernel for each new attention implementation
+		\item CUDA is lower-level than PyTorch
+		\item Implementation may not be transferable across GPUs
+	\end{itemize}
+	\item Towards IO-Aware Deep Learning
+	\begin{itemize}
+		\item Extending beyond attention
+	\end{itemize}
+	\item Multi-GPU IO-Aware Methods
+	\begin{itemize}
+		\item FlashAttention computation may be parallelizable across multiple GPUs
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Number of parameters: Notation}
+
+\vfill
+
+\begin{itemize}
+
+	\item Up to now: number of parameters = $P$
+	\item From now on: number of parameters = $N$
+
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Scaling Laws}
+\href{https://arxiv.org/abs/2001.08361}{\beamergotobutton{Kaplan et al. (2020)}} 
+
+\vfill
+
+\begin{itemize}
+
+	\item Performance depends strongly on scale, weakly
+	on model shape \qmark
+	\begin{itemize}
+	\item Scale means: parameters $N$, data $D$, and compute $C$
+	\item Shape means: depth and width
+	\end{itemize}
+
+	\item Smooth power laws \qmark
+	\begin{itemize}
+	\item Performance has power-law relation with each factor $N$, $D$, $C$
+	\item When not bottlenecked by the other two 
+	\item Trend spanning more than six orders of magnitude
+	\end{itemize}
+
+	\item Universality of overfitting \qmark 
+	\begin{itemize}
+	\item Performance enters regime of diminishing returns if $N$ or $D$ held fixed while the other increases
+	%\item Performance penalty depends on $N^{0.74} / D$
+	\end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Scaling Laws}
+
+\vfill
+
+\begin{itemize}
+
+	\item Universality of training (see figure next
+	slide) \qmark
+	\begin{itemize}
+	\item Training curves follow predictable power laws
+	\item Their parameters are roughly independent of model size
+	\item It is possible to predict by extrapolating the early part of the training curve
+	\end{itemize}
+
+	\item Transfer improves with test performance \qmark
+	\begin{itemize}
+	\item When evaluating on text with different distribution from training text, results are strongly correlated to those on the validation set
+	\item Transfer to different distribution incurs a constant penalty but improves in line with performance on training set
+	\end{itemize}
+
+	\item Sample efficiency \qmark
+	\begin{itemize}
+	\item Large models are more sample-efficient than small models
+	\item They reach same performance with fewer optimization steps
+	\end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Power law (gpt3 paper)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 9cm]{./figure/losscompute}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Scaling Laws}
+
+\vfill
+
+\begin{itemize}
+
+	\item Convergence is inefficient
+	\begin{itemize}
+	\item When $C$ is fixed but $N$ and $D$ are not,
+	optimal performance is achieved by training very
+	large models and stopping significantly short of
+	convergence (QUESTION: why?)  
+	\end{itemize}
+
+	\item Optimal batch size \qmark
+	\begin{itemize}
+\item ``Optimal batch size: The ideal batch size for training these
+	models is roughly a power of the loss only, and
+	continues to be determinable by measuring the
+	gradient noise scale [MKAT18]; it is roughly 1-2
+	million tokens at convergence for the largest models
+	we can train.''
+        \item gradient noise scale = a measure of the signal-to-noise
+	ratio of gradient across training examples
+	\end{itemize}
+
+\end{itemize}
+
+\vskip3mm
+
+\textbf{Larger language models will perform better and be
+	more sample efficient than current models. \qmark} 
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Optimal batch size}
+\href{https://arxiv.org/pdf/1812.06162.pdf}{\beamergotobutton{Kaplan et al. (2018)}} 
+
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width =9cm]{./figure/optimalbatchsize}
+\end{figure}
+
+\vfill
+
+\begin{itemize}
+
+	\item Estimate gradient as accurately as possible
+        $\rightarrow$ large batch
+        \item Increase training speed as much as possible
+        $\rightarrow$ large step size
+        \item Based on the estimated gradient, choose a step
+        size such that the cost of the landing position does not deviate
+        too much from the cost of the ideal landing position
+        $\rightarrow$ small step size
+        \item Exploit stochasticity (epoch batches would not
+        be a good thing even if we could compute them efficiently)
+        $\rightarrow$ small step size
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Scaling law for next word prediction}
+
+\vfill
+
+\begin{itemize}
+
+
+\item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}}        + \frac{410.7}{D^{0.28}}$        
+
+\item $L(N,D)$ is cross entropy on new text.
+        
+	\end{itemize}
+
+
+\vskip3mm
+
+%\textbf{Larger language models will perform better and be more sample efficient than current models.} 
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute-Optimal LLMs}
+
+Given a fixed FLOPs budget, how should we trade off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+
+\vfill
+
+\begin{itemize}
+
+	\item Find $N$ and $D$ so that $FLOPs(N,D) = C$ and $L(N,D)$ is minimal
+
+	\item Empirically estimated $N$ and $D$ based on 400 models. 
+	\begin{itemize}
+	\item Ranging from 70\,M to 16\,B parameters
+	\item Trained on 5\,B to 400\,B tokens
+	\end{itemize}
+
+	\item Different results from those of \citebutton{Kaplan et al., 2020}{https://arxiv.org/abs/2001.08361} 
+	\item Results verified using Chinchilla
+	\begin{itemize}
+	\item Chinchilla has 70\,B parameters and is trained on 1.4\,T tokens
+	\item 4x less parameters and 4x more tokens than Gopher
+	\item Chinchilla outperforms Gopher and has reduced memory footprint and inference cost 
+	\end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute-Optimal LLMs: Are GPT3 etc  too large?}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 9cm]{./figure/chinchilla.png} \\ 
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Compute-Optimal LLMs (2)}
+
+
+Given a fixed FLOPs budget, how should one trade off model
+size and the number of training tokens? 
+We find that all three methods predict that current large
+models should be substantially smaller and therefore trained
+much longer than is currently done.
+Based on our estimated compute-optimal frontier, we predict
+that for the compute budget used to train Gopher, an optimal
+model should be 4 times smaller, while being training on 4
+times more tokens. We verify this by training a more
+compute-optimal 70B model, called Chinchilla, on 1.4
+trillion tokens. Not only does Chinchilla outperform its
+much larger counterpart, Gopher, but its reduced model size
+reduces inference cost considerably and greatly facilitates
+downstream uses on smaller hardware. The energy cost of a
+large language model is amortized through its usage for
+inference and fine-tuning. The benefits of a more optimally
+trained smaller model, therefore, extend beyond the
+immediate benefits of its improved performance.
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Chinchilla and the other LLM\MakeLowercase{s}}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/llm_params.png} \\ 
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/chinchilla_gopher.png} \\ 
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Chinchilla outperforms other LLMs: MMLU}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 8cm]{./figure/chinchilla_mmlu.png} \\ 
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Chinchilla outperforms other LLMs: QA}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 12cm]{./figure/chinchilla_qa.png} \\ 
+	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+
+\end{document}

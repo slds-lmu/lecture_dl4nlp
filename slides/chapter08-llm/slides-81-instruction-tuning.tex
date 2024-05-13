@@ -1,0 +1,528 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item comprehend the different subtleties in the space between supervised fine-tuning and zero-shot prompting}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Large Language Models (LLMs)}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Instruction Fine-Tuning}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{recap}
+
+\vfill
+
+\begin{itemize}
+    \item encoder vs. decoder models (discriminative vs. generative)
+    \item[$\to$] fine-tuning vs. prompting
+    \item (in-context) learning vs. creative generation/chatting
+    \item pre-training with plain language modeling:
+        \begin{itemize}
+            \item next token prediction
+            \item no explicit understanding of tasks
+            \item no alignment with human preferences for charting or for generation coherent text
+        \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-trained generative models}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/manning.png}\\ 
+		Source: Chris Manning's keynote at EMNLP 2023
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{agenda}
+
+\vfill
+
+\begin{itemize}
+    \item \textit{instruction-tuning:} adapt the models to follow instructions
+        \begin{itemize}
+            \item rather task-oriented
+            \item multi-task, everything as text-to-text now
+        \end{itemize}
+    \item \textit{chain-of-thought prompting:}
+        \begin{itemize}
+            \item trigger the model to ''explain'' it thought-process
+            \item final goal still correct label/output
+        \end{itemize}
+    \item \textit{emergent abilities:}
+        \begin{itemize}
+            \item \textit{claim:} With increasing model sizes, at some point new capabilities of the models (seem to) ''emerge''.
+        \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{issues with fine-tuning}
+
+\vfill
+
+\begin{itemize}
+    \item Only single-task models (sequential transfer learning instead of multi-task learning)
+    \item Generalization of the model 
+        \begin{itemize}
+            \item only w.r.t. to one task / data distribution
+            \item \ques what about other tasks? Do they also benefit?
+            \item \ques what about related domains? other languages?
+        \end{itemize} 
+    \item Still requires (quite) large amounts of annotated data
+    \item Poor (to none) zero-/few-shot capabilities of fine-tuned models
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+\begin{frame}{issues with prompting}
+
+\vfill
+
+\begin{itemize}
+    \item Assumption: Model has learned about the task during (unsupervised) pre-training \\ \ques Is this \textit{always} a realistic assumption??
+    \item A direct response within the frame of a given label set is expected
+    \begin{itemize}
+        \item Humans usually don't directly answer but provide intermediate reasoning steps (so-called ``chain-of-thought``)
+    \end{itemize}
+    \item \textit{Misalignment with human needs}
+    \begin{itemize}
+        \item Out of context answers
+        \item Harmful answers
+    \end{itemize}
+    \item \textit{Lack of interpretability}
+    \begin{itemize}
+        \item Just the answer w/o explanation
+        \item Big concern about LLMs in general
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{issues with prompting}
+
+\vfill
+
+\begin{itemize}
+    \item \textit{Hallucinations:} Output that is not true or not reasonable w.r.t the context and given input data
+    \item \textit{Imprecise mathematical operations:} Models not trained to do arithmetics
+    \item \textit{Inadequate experience grounding:} Not fully capable of generating correct answers to questions from custom data
+    \item \textit{Limited ability for complex reasoning:} Long-known challenge in NLP/LLMs
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{best of both worlds}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/62-t5.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{best of both worlds}
+
+\vfill
+
+\begin{itemize}
+    \item \ques \textbf{How does multi-task learning happen?}
+    \item[$\to$] IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
+    \item \ques How can we make the \textit{EXPLICIT}?
+    \item[$\to$] Mapping any natural language tasks into a \textit{human-readable} prompted form \citebutton{Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Carefully designing task prefixes}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-t0.png}\\ 
+		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Multitask Prompted Training}
+
+\vfill
+
+\begin{itemize}
+    \item \textit{Multitask Prompted Training:} Novel training method that involves learning from multiple tasks using unified prompt formats as a means to improve generalization to new, unseen tasks. \\ $\to$ \textit{zero-shot task generalization}
+    \item This means that the model can perform well on tasks it hasn't been explicitly trained for.
+    \item The key for this lies in the set of shared prompts it has learned from during fine-tuning.
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Multitask Prompted Training}
+
+\vfill
+
+\begin{itemize}
+    \item Benchmark for Evaluation:
+        \begin{itemize}
+            \item Held-out \textit{tasks} instead of just held-out samples as a test set\\
+            (data sets are grouped according to task beforehand)
+            \item All data sets belonging to as held-out task go to the test set
+            \item Generalization across tasks / data distributions
+        \end{itemize}
+    \item Highlights the Importance of Prompts: The paper emphasizes the importance of prompts in facilitating zero-shot learning, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{t0 -- data splits}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-t0-data.png}\\ 
+		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{t0 -- prompt templates}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-t0-prompts.png}\\ 
+		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{finetuned language net (flan)}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-flan.png}\\ 
+		\citebutton{Source: Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{flan finetuning}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-flan-instruct-tune.png}\\ 
+		\citebutton{Source: Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{flan performance}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-flan-perf.png}\\ 
+		\citebutton{Source: Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------ 
+
+\begin{vbframe}{Flan Fine-Tuning}
+
+\vfill
+
+\textbf{Extend instruction fine-tuning:} \vskip3mm
+
+\begin{itemize}
+\item Scaling the number of fine-tuning tasks and data
+    \begin{itemize}
+    \item NIV2 (1554 tasks)
+    \item T0-SF (193 tasks)
+    \item Muffin (80 tasks)
+    \item CoT (reasoning tasks, cf. next chapter)
+    \end{itemize}
+\item Scaling model sizes
+    \begin{itemize}
+    \item PaLM 8\,B
+    \item PaLM 62\,B
+    \item PaLM 540\,B
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------ 
+
+\begin{vbframe}{Flan upscaling}
+
+\vfill
+
+\textit{Fine-tuning in 1.8\,K tasks}
+    
+\begin{figure}
+    \centering
+    \includegraphics{figure/scaling_up_paradigms.png}\\
+\citebutton{Source: Chung et al., 2022}{https://arxiv.org/pdf/2210.11416.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Fine-Tuning Conclusions}
+
+\vfill
+
+\begin{itemize}
+\item It is still possible to upscale
+    \begin{itemize}
+    \item Larger models will improve performance
+    \item More fine-tuning tasks will improve performance
+    \end{itemize}
+\item Instruction finetuning generalizes across models
+    \begin{itemize}
+    \item It works well on different architectures
+    \end{itemize}
+\item It improves usability and mitigates some harms
+\item It is relatively compute-efficient
+    \begin{itemize}
+    \item For PaLM 540\,B it takes 0.2\,\% of pre-training compute, but improves by 9.4\,\%
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\endlecture
+\end{document}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Interactive NLP (\MakeLowercase{i}NLP)}
+
+\vfill
+
+\emph{\NoCaseChange{i}NLP considers language models as agens capable of observing, acting, and receiving feedback in a loop with external objets such as humants, knowledge bases, tools, models and environments.} \vskip2mm
+
+\footnotesize{Source:} \href{https://arxiv.org/pdf/2305.13246.pdf}{\footnotesize \it Wang et al. (2023)}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Five levels of word scope}
+
+\vfill
+
+\begin{enumerate}
+
+    \item Corpus
+        \begin{itemize}
+        \item Classical resource
+        \end{itemize}
+
+    \item Internet 
+        \begin{itemize}
+        \item Extra knowledge
+        \end{itemize}
+
+    \item Perception 
+        \begin{itemize}
+        \item multimodal LLMs
+        \end{itemize}
+
+    \item Embodiment 
+        \begin{itemize}
+        \item Interactive loops involving agents
+        \end{itemize}
+
+    \item Social 
+        \begin{itemize}
+        \item Interactive loops involving humans and environments
+        \end{itemize}
+
+\end{enumerate}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Supervised Instruction Tuning}
+
+\vfill
+
+Fine-tuning a PLM using data that provides task instruction supervision. \vskip3mm
+\begin{itemize}
+\item Supervised instructions on a multitask mixture
+\item Instructions as part of input
+\item Covering various tasks 
+\item Including zero-shot generalization capabilities
+\item Avoiding catastrophic forgetting
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Continual Learning}
+
+\vfill
+
+\begin{itemize}
+\item LLMs get outdated over time
+\item It is beneficial to update them with new data
+\item Continuously integrate knowledge from novel sources
+\item Avoid catastrophic forgetting in various ways
+    \begin{itemize}
+    \item Regularization
+    \item Rehearsal
+    \item Modularization
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parameter-Efficient Fine-Tuning}
+
+\vfill
+
+\begin{itemize}
+\item Computationally hard to fine-tune very large models
+\item Only update a small number of parameters
+\item Two main categories:
+    \begin{itemize}
+    \item Partial fine-tuning updates only a strict subset of model parameters
+    \item Adapter-based methods freeze the complet model and addess a small set of extra parameters which are tuned
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Semi-Supervised Fine-Tuning}
+
+\vfill
+
+\begin{itemize}
+\item Use both labeled and unlabeled data to tune the model
+\item Some of the interaction messages lack instructions
+\item Other strategies:
+    \begin{itemize}
+    \item Self-training that uses model-generated data to tune the model itself
+    \item Semi-supervised knowledge distillation that uses the model to annotate data for its tuning
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+

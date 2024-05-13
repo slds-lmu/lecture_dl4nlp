@@ -1,0 +1,223 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item illustrate chain-of-thought and point out the benefits it brings to LLMs
+\item illustrate tree-of-thought and point out the benefits it brings to LLMs 
+}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Chain-of-thought Prompting}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Large Language Models (LLMs)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------ 
+
+\begin{vbframe}{chain-of-though motivation}
+
+\vfill
+
+How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+
+\begin{itemize}
+\item Training or tuning with formal languages works well
+    \begin{itemize}
+    \item Still, templates \& labeled data are costly to create
+    \end{itemize}
+\item Few-shot learning via prompting works for most tasks
+    \begin{itemize}
+    \item Still, it works poorly on tasks that require reasoning
+    \end{itemize}
+\item Chain of thought (COT) prompting
+    \begin{itemize}
+    \item Prompts in the form <input, \textit{chain of thought}, output>
+    \item COT: series of intermediate steps that lead to a final output
+    \end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------ 
+
+\begin{vbframe}{Chain-of-thought prompting paradigm}
+
+\vfill
+
+\textbf{CoT enables LLMs to tackle complex arithmetic, commonsense, and symbolic reasoning tasks.}
+
+\begin{figure}
+    \centering
+    \includegraphics{figure/chain_of_thought.png}\\
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Benefits of Chain-of-thought}
+
+\vfill
+
+\begin{itemize}
+    \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps
+    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
+    \item It is closer to how humans solve tasks using language
+    \item By designing a prompt, existing large language models are able to perform chain-of-thought reasoning.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Examples (1)}
+
+\vfill
+
+\textbf{Examples of 〈input, chain of thought, output〉 triples for arithmetic, commonsense, and symbolic reasoning}
+
+\begin{figure}
+    \centering
+    \includegraphics{figure/cot_examples_1.png}\\
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Examples (2)}
+
+\vfill
+
+\textbf{Examples of 〈input, chain of thought, output〉 triples for arithmetic, commonsense, and symbolic reasoning}
+
+\begin{figure}
+    \centering
+    \includegraphics{figure/cot_examples_2.png}\\
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance (1)}
+
+\vfill
+
+\textbf{CoT prompting enables LLMs to solve challenging arithmetics.}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.67\textwidth]{figure/cot_performance1.png}\\
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Performance (2)}
+
+\vfill
+
+\textbf{CoT prompting improves commonsense reasoning abilities of LLMs.}
+
+\begin{figure}
+    \centering
+    \includegraphics{figure/cot_performance2.png}\\
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------ 
+
+\begin{vbframe}{tree-of-thought: motivation}
+
+\vfill
+
+\begin{itemize}
+\item The token-level and left-to-right decisions of the autoregressive mechanism pose a limitation for:
+    \begin{itemize}
+    \item Tasks where initial decisions play a pivotal role
+    \item Tasks requiring exploration or strategic lookahead
+    \end{itemize}
+\item Potential strategy to solve those:
+    \begin{itemize}
+    \item Maintain and explore diverse alternatives instead of just picking one
+    \item Evaluates current status and looks ahead or backtrack to make global decisions
+    \end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tree-of-thought: prompting paradigm}
+
+\vfill
+
+Schematic illustrating various approaches to problem solving with LLMs. Each rectangle box represents a \textit{thought}, a coherent language sequence serving as an intermediate step toward problem solving.
+
+\begin{figure}
+    \centering
+    \includegraphics{chapters/chapter08/figure/tot_vs_cot.png}\\
+\citebutton{Yao et al., 2023}{https://arxiv.org/pdf/2305.10601.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+
+\begin{vbframe}{Tree-of-thought for creative writing}
+
+\vfill
+
+A step of deliberate search in a randomly picked Creative Writing task. Given the input, the LM samples five different plans, and then votes five times to decide which plan is best.
+    
+\begin{figure}
+    \centering
+    \includegraphics{chapters/chapter08/figure/tot_creative_writing.png}\\
+\citebutton{Yao et al., 2023}{https://arxiv.org/pdf/2305.10601.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
