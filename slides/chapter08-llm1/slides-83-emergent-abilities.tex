@@ -1,0 +1,218 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+%\newcommand{\titlefigure}{figure/gpt_sq.png}
+\newcommand{\learninggoals}{
+\item illustrate emergent abilities that LLMs reveal when they are scaled up
+\item discuss a counterargument for the concept of emergence
+}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Emergent Abilities}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Large Language Models (LLMs)}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Emergent abilities}
+
+\vfill
+
+An \textit{Emergent ability} is an ability that is not present in small models but is present in large models. \vskip3mm
+
+\begin{itemize}
+    \item Is emergence a rare phenomenon?
+    \item Are many tasks emergent?
+    \item We need to observe scaling models 
+    \begin{itemize}
+        \item GPT-3
+        \item Chinchilla
+        \item PaLM
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Emergent abilities and model size}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.84\textwidth]{chapters/chapter08/figure/emergent_abilities.png}
+    \caption{Examples of emergence in few-shot prompting.}
+    \label{fig:emergent_abilities}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Emergent tasks in Big-Bench}
+
+\vfill
+
+\begin{itemize}
+    \item GPT-3 13B (2 tasks): hindu knowledge, modified arithmetic
+    \item GPT-3 175B (15 tasks): analytic entailment, codenames, phrase relatedness, question answer creation, self evaluation tutoring, ...
+    \item LaMDA 137B (8 tasks): gender inclusive sentences german, repeat copy logic, sports understanding, ...
+    \item PaLM 8B (3 tasks): auto debugging, sufficient information, parsinlu reading comprehension
+    \item PaLM 64B (14 tasks): anachronisms, ascii word recognition, conceptual combinations, ...
+    \item PaLM 540B (25 tasks): analogical similarity, causal judgment, code line description, crass ai, cs algorithms, ...
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Emergent tasks in MMLU}
+
+\vfill
+
+\begin{itemize}
+    \item Chinchilla 7B (7 tasks): Professional Medicine, High School Statistics, High School Macroeconomics, High School Psychology, Anatomy, High School Government And Politics, High School Microeconomics
+    \item Chinchilla 70B (44 tasks): International Law, Human Aging, Sociology, Us Foreign Policy, High School World History, Marketing, Logical Fallacies, Miscellaneous, College Biology, High School Us History, Security Studies, High School European History, ...
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Other emergent tasks}
+
+\vfill
+
+\begin{itemize}
+    \item GPT-3 paper: 3 digit addition/subtraction (GPT-3 13B), 4-5 digit addition/substraction (GPT-3 175B), leveraging few-shot examples for word denoising (GPT-3 13B)
+    \item Gopher paper: Toxicity classification (Gopher 7.1B), TruthfulQA (Gopher 280B)
+    \item Patel \& Pavlick: grounded conceptual mappings (GPT-3 175B)
+    \item PaLM paper: Word in Context benchmark (PaLM 540B)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+% \begin{vbframe}{Impact of Model Size}
+
+% \vfill
+
+% \vfill
+
+% \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{counter argument}
+
+\citebutton{Source: Schaeffer et al., 2023}{https://arxiv.org/pdf/2304.15004.pdf}
+
+\vfill
+
+Two defining properties for emergent abilities in LLMs:
+
+\begin{enumerate}
+%
+\item \textbf{Sharpness:} transitioning seemingly instantaneously from not present to present
+%
+\item \textbf{Unpredictability:} transitioning at seemingly unforeseeable model scales
+%
+\end{enumerate}
+
+\vskip5mm
+
+Observation: Emergent abilities appear only under metrics that nonlinearly or discontinuously scale model's per-token error rate:
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/metrics.png} \\ 
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% -----------------------------------------------------------------------------
+
+\begin{vbframe}{counter argument}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{chapters/chapter08/figure/emergent_experiments.png}\\ 
+		\citebutton{Source: Schaeffer et al., 2023}{https://arxiv.org/pdf/2304.15004.pdf}
+	\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{counter argument}
+
+\vfill
+
+\textbf{Conclusions:}
+%
+\begin{itemize}
+%
+\item For a fixed task and a fixed model family, the researcher can choose a metric to create an
+emergent ability or choose a metric to ablate an emergent ability
+%
+\item Emergent abilities can be induced in computer vision tasks as well
+%
+\item A task and a metric are distinct and meaningful choices when constructing a benchmark
+%
+\item When choosing a metric, one should consider the metric's effect on the per-token error rate and adapt their measuring process accordingly
+%
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+% \begin{vbframe}{Summary}
+
+% \vfill
+
+% \begin{itemize}
+%     \item Can we improve model architectures?
+%     \item Can we improve data quality and quantity? 
+%     \item Better prompting.
+%     \item Frontier tasks. 
+%     \item Why do emergent abilities occur, and can we predict them? 
+% \end{itemize}
+
+% \vfill
+
+% \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
