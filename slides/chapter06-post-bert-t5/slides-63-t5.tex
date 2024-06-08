@@ -342,148 +342,148 @@
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Different T5 versions}
-	\textit{Similar to BERT T5 has different versions, which all have a different parameter count} \citebutton{Raffel et al., 2020}{https://arxiv.org/abs/1910.10683}
-	
-	\hspace{}
-	
-	\begin{table}[h!]
-	\centering
-	\small % Reduce font size
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-	\hline
-	\textbf{Model} & \textbf{Parameters} & $\bm{n_{layers}}$ & $\bm{d_{model}}$ & $\bm{d_{FFN}}$ & $\bm{d_{qkv}}$ & $\bm{n_{heads}}$ \\ \hline
-	small  & 60M  & 6  & 512  & 2048 & 64 & 8 \\ \hline
-	base   & 220M & 12 & 768  & 3072 & 64 & 12 \\ \hline
-	large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
-	3B     & 3B   & 24 & 1024 & 16384 & 128 & 32 \\ \hline
-	11B    & 11B  & 24 & 1024 & 65536 & 128 & 128 \\ \hline
-	\end{tabular}
-	\end{table}
-	
-	\begin{itemize}
-		\item For T5 small, base and large we have the following parameter count per encoder/decoder layer:
-		\begin{itemize}
-			\item $N_{Encoder} = 12\cdot d_{model}^2$
-			\item $N_{Decoder} = 16\cdot d_{model}^2$
-		\end{itemize}
-	\end{itemize}
-	
-	\hspace{}
-	
-	\textit{For T5 3B and 11B $N_{Encoder}$ and $N_{Decoder}$ are different!}
-		
-	\end{frame}
-	
-	
-	
-	%-------------------------------------------------------------------------------
-	
-	\begin{frame}{Approximate Parameter Count (1)}
-	\textit{The general formula is:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
-	
-	\begin{itemize}
-		\item Let $V = 32000$ be the size of the vocabulary, we then have: $$N_{Embedding} = 32000 \times d_{model}$$
-	
-		\item \textbf{T5 small}:
-			$$N_{small} = 6\cdot (12\cdot 512^2 + 16\cdot 512^2) + 32000\times 512 = 60,424,192$$
-		\item \textbf{T5 base}:
-			$$N_{base} = 12\cdot (12\cdot 768^2 + 16\cdot 768^2) + 32000\times 768 = 222,756,864$$
-		\item \textbf{T5 large}:
-			$$N_{large} = 24\cdot (12\cdot 1024^2 + 16\cdot 1024^2) + 32000\times 1024 = 737,411,072$$
-		
-	\end{itemize}
-		
-	\end{frame}
-	
-	%-------------------------------------------------------------------------------
-	
-	\begin{frame}{Revisiting: MHA and FFN (1)}
-	
-	\hspace{}
-	
-	\begin{itemize}
-		\item In the transformer chapter we derived the FFN parameter count to be $\bm{8\cdot d_{model}}$
-		\item We also derived the MHA parameter count to be $\bm{4\cdot d_{model^2}}$ 
-		\item But this is only the case if we choose $d_{FFN} = 4\cdot d_{model}$ and $d_{qkv} = \frac{d_{model}}{n_{heads}}$, with $d_{FFN}$ being the hidden dimension of the FFN and $d_{qkv}$ being the embedding dimension of each head in MHA 
-		\item For the two bigger model variants we have the following relations:
-		\begin{itemize}
-			\item \textbf{T5 3B}: $d_{FFN} = 16\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$
-			\item \textbf{T5 11B}: $d_{FFN} = 64\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$ 
-		\end{itemize}
-		\item Thats why we can't use the same formulas as for the three previous variants
-	\end{itemize}
-		
-	\end{frame}
-	
-	%-------------------------------------------------------------------------------
-	
-	\begin{frame}{Revisiting: MHA and FFN (2)}
-	
-	\begin{itemize}
-		\item In MHA $n_{heads} \cdot d_{qkv}$ is no longer $d_{model}$:
-	
-	$$
-	\begin{aligned}
-	N_{attention} &= n_{heads} \cdot d_{qkv} \times d_{model} + (d_{model} \times d_{qkv}) \times n_{heads} \cdot 3 \\
-	&= 4\cdot n_{heads}\cdot d_{qkv} \times d_{model}\text{;}\quad \text{instead of:}\quad 4\cdot d_{model}^2
-	\end{aligned}
-	$$
-	
-	\hspace{}
-		
-		\item For the FFN $d_{FFN}$ is no longer $4\cdot d_{model}$:
-	
-	$$    
-	\begin{aligned}
-	N_{FFN} &= d_{model} \times d_{FFN} + d_{FFN} \times d_{model} \\
-	&= 2\cdot d_{model} \times d_{FFN}\text{;}\quad \text{instead of:}\quad 8\cdot d_{model}^2
-	\end{aligned}
-	$$
-	
-	\hspace{}
-	
-		\item For the Encoder and Decoder that means:
-		\begin{itemize}
-			\item $N_{Encoder} = 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN}$
-			\item $N_{Decoder} = 2\cdot 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN} $
-		\end{itemize}
-	
-	\end{itemize}
-		
-	\end{frame}
-	
-	%-------------------------------------------------------------------------------
-	
-	\begin{frame}{Approximate Parameter Count (2)}
-	
-	\textit{The general formula is still:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
-	
-	\begin{itemize}
-		\item \textbf{T5 3B}: 
-	
-		$$
-		\begin{aligned}
-			N_{3B} &= 24\cdot ([4\cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384] \\
-			&+ [2\cdot 4 \cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384]) + 32000\cdot 1024 \\
-			&= 2,851,340,288 \approx 3B
-		\end{aligned}
-		$$
-	
-		\hspace{}
-	
-		\item \textbf{T5 11B}:
-		$$
-		\begin{aligned}
-			N_{11B} &= 24\cdot ([4\cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536] \\
-			&+ [2\cdot 4 \cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536]) + 32000\cdot 1024 \\
-			&= 11,307,057,152 \approx 11B
-		\end{aligned}
-		$$
-	\end{itemize}
-		
-	\end{frame}
-	
-	%-------------------------------------------------------------------------------
+\textit{Similar to BERT T5 has different versions, which all have a different parameter count} \citebutton{Raffel et al., 2020}{https://arxiv.org/abs/1910.10683}
+
+\hspace{}
+
+\begin{table}[h!]
+\centering
+\small % Reduce font size
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Parameters} & $\bm{n_{layers}}$ & $\bm{d_{model}}$ & $\bm{d_{FFN}}$ & $\bm{d_{qkv}}$ & $\bm{n_{heads}}$ \\ \hline
+small  & 60M  & 6  & 512  & 2048 & 64 & 8 \\ \hline
+base   & 220M & 12 & 768  & 3072 & 64 & 12 \\ \hline
+large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
+3B     & 3B   & 24 & 1024 & 16384 & 128 & 32 \\ \hline
+11B    & 11B  & 24 & 1024 & 65536 & 128 & 128 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item For T5 small, base and large we have the following parameter count per encoder/decoder layer:
+    \begin{itemize}
+        \item $N_{Encoder} = 12\cdot d_{model}^2$
+        \item $N_{Decoder} = 16\cdot d_{model}^2$
+    \end{itemize}
+\end{itemize}
+
+\hspace{}
+
+\textit{For T5 3B and 11B $N_{Encoder}$ and $N_{Decoder}$ are different!}
+    
+\end{frame}
+
+
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Approximate Parameter Count (1)}
+\textit{The general formula is:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
+
+\begin{itemize}
+    \item Let $V = 32000$ be the size of the vocabulary, we then have: $$N_{Embedding} = 32000 \times d_{model}$$
+
+    \item \textbf{T5 small}:
+        $$N_{small} = 6\cdot (12\cdot 512^2 + 16\cdot 512^2) + 32000\times 512 = 60,424,192$$
+    \item \textbf{T5 base}:
+        $$N_{base} = 12\cdot (12\cdot 768^2 + 16\cdot 768^2) + 32000\times 768 = 222,756,864$$
+    \item \textbf{T5 large}:
+        $$N_{large} = 24\cdot (12\cdot 1024^2 + 16\cdot 1024^2) + 32000\times 1024 = 737,411,072$$
+    
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Revisiting: MHA and FFN (1)}
+
+\hspace{}
+
+\begin{itemize}
+    \item In the transformer chapter we derived the FFN parameter count to be $\bm{8\cdot d_{model}}$
+    \item We also derived the MHA parameter count to be $\bm{4\cdot d_{model^2}}$ 
+    \item But this is only the case if we choose $d_{FFN} = 4\cdot d_{model}$ and $d_{qkv} = \frac{d_{model}}{n_{heads}}$, with $d_{FFN}$ being the hidden dimension of the FFN and $d_{qkv}$ being the embedding dimension of each head in MHA 
+    \item For the two bigger model variants we have the following relations:
+    \begin{itemize}
+        \item \textbf{T5 3B}: $d_{FFN} = 16\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$
+        \item \textbf{T5 11B}: $d_{FFN} = 64\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$ 
+    \end{itemize}
+    \item Thats why we can't use the same formulas as for the three previous variants
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Revisiting: MHA and FFN (2)}
+
+\begin{itemize}
+    \item In MHA $n_{heads} \cdot d_{qkv}$ is no longer $d_{model}$:
+
+$$
+\begin{aligned}
+N_{attention} &= n_{heads} \cdot d_{qkv} \times d_{model} + (d_{model} \times d_{qkv}) \times n_{heads} \cdot 3 \\
+&= 4\cdot n_{heads}\cdot d_{qkv} \times d_{model}\text{;}\quad \text{instead of:}\quad 4\cdot d_{model}^2
+\end{aligned}
+$$
+
+\hspace{}
+    
+    \item For the FFN $d_{FFN}$ is no longer $4\cdot d_{model}$:
+
+$$    
+\begin{aligned}
+N_{FFN} &= d_{model} \times d_{FFN} + d_{FFN} \times d_{model} \\
+&= 2\cdot d_{model} \times d_{FFN}\text{;}\quad \text{instead of:}\quad 8\cdot d_{model}^2
+\end{aligned}
+$$
+
+\hspace{}
+
+    \item For the Encoder and Decoder that means:
+    \begin{itemize}
+        \item $N_{Encoder} = 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN}$
+        \item $N_{Decoder} = 2\cdot 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN} $
+    \end{itemize}
+
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Approximate Parameter Count (2)}
+
+\textit{The general formula is still:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
+
+\begin{itemize}
+    \item \textbf{T5 3B}: 
+
+    $$
+    \begin{aligned}
+        N_{3B} &= 24\cdot ([4\cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384] \\
+        &+ [2\cdot 4 \cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384]) + 32000\cdot 1024 \\
+        &= 2,851,340,288 \approx 3B
+    \end{aligned}
+    $$
+
+    \hspace{}
+
+    \item \textbf{T5 11B}:
+    $$
+    \begin{aligned}
+        N_{11B} &= 24\cdot ([4\cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536] \\
+        &+ [2\cdot 4 \cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536]) + 32000\cdot 1024 \\
+        &= 11,307,057,152 \approx 11B
+    \end{aligned}
+    $$
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
 
 \endlecture
 \end{document}
