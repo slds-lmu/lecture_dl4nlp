@@ -249,5 +249,95 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{Two different BERT versions}
+	\textit{There are two different BERT versions, namely BERT base and large. Depending on the architecture we get different parameter counts} \citebutton{Source: Devlin et al., 2019}{https://arxiv.org/abs/1810.04805}
+	
+	\hspace{}
+	
+	\begin{itemize}
+		\item \textbf{BERT base:}
+		\begin{itemize}
+			\item $n_{layers} = 12$, we have 12 encoder layers
+			\item $n_{heads} = 12$, this will not affect the parameter count since they perfectly split $d_{model}$ across the heads
+			\item $d_{model} = 768$, thats the embedding dimension
+		\end{itemize}
+	
+	\hspace{}
+		
+		\item \textbf{BERT large:}
+		\begin{itemize}
+			\item $n_{layers} = 24$
+			\item $n_{heads} = 16$
+			\item $d_{model} = 1024$
+		\end{itemize}
+	\end{itemize}
+		
+	\end{frame}
+	
+	%-------------------------------------------------------------------------------
+	
+	\begin{frame}{Encoder Parameter Count}
+	
+	\textit{From the chapter about the transformer parameter count we already know the number of parameters for one Encoder layer: $12\cdot d_{model}^2$}
+	$$
+	N_{Encoder} &= n_{layers} \cdot 12\cdot d_{model}^2
+	$$
+	
+	\hspace{}
+	
+	\begin{itemize}
+		\item \textbf{BERT base}:
+		$$N_{Encoder} = 12\cdot 12\cdot 768^2 = 84,934,656$$
+		\item \textbf{BERT large}:
+		$$N_{Encoder} = 24\cdot 12\cdot 1024^2 = 301,989,888$$
+	\end{itemize}
+	
+	\hspace{}
+	
+	\textit{By increasing $d_{model}$ and $n_{layers}$ we more than tripled the number of Encoder parameters!}
+	\end{frame}
+	
+	%-------------------------------------------------------------------------------
+	
+	\begin{frame}{Embedding Parameter Count}
+	\textit{Similar to the Transformer chapter we also have to consider the paramters from the embeddings:}
+	
+	\hspace{}
+	
+	\begin{itemize}
+		\item Let $V$ be the vocabulary size, $M$ the maximum sequence length and $S$ the number of segments
+		\item BERT has three kinds of embeddings, which are all learned:
+		\begin{itemize}
+			\item $V \times d_{model}$ token embeddings
+			\item $S \times d_{model}$ segment embeddings
+			\item $M \times d_{model}$ position embeddings
+		\end{itemize}
+		\item From the BERT paper we know $V=30000$, $S = 2$ and $M = 512$ 
+		\item \textbf{BERT base}:
+		$$N_{Embedding} = 30000\times 768 + 2\times 768 + 512\times 768 = 23,434,752$$
+		\item \textbf{BERT large}:
+		$$N_{Embedding} = 30000\times 1024 +2\times 1024 + 512\times 1024 = 31,246,336$$
+	\end{itemize}
+		
+	\end{frame}
+	
+	%-------------------------------------------------------------------------------
+	
+	\begin{frame}{Final Parameter Count}
+	\textit{Now we just have to sum up both parts to get the final parameter count:}
+	
+	\hspace{}
+	
+	\begin{itemize}
+		\item \textbf{BERT base}: 
+		$$N_{Total} = 84,934,656 + 23,434,752 = 108,369,408 \approx 110M$$
+		\item \textbf{BERT large}:
+		$$N_{Total} = 301,989,888 + 31,246,336 = 333,236,224 \approx 340M$$
+	\end{itemize}
+		
+	\end{frame}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}
