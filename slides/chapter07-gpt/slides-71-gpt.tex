@@ -154,5 +154,31 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{GPT Parameter Count}
+
+\vfill 
+
+\begin{itemize}
+	\item \textbf{We know}: 
+		$$n_{layers} = 12; \quad d_{model} = 768; \quad V = 40000; \quad M = 512;$$
+	\item \textbf{Also}: 
+		$$N_{Decoder} = 12\cdot d_{model}^2 \quad and \quad  N_{Embedding} = \overbrace{V \times d_{model}}^{\text{token embedding}} + \underbrace{M \times d_{model}}_{\text{pos. embedding}}$$
+	\end{itemize}
+
+$$
+\begin{aligned}
+\Rightarrow \quad N_{total} &= n_{layers} \cdot N_{Decoder} + N_{Embedding} \\ 
+&= 12\cdot 12\cdot 768^2 + 40000\times 768 + 512\times 768 \\
+&= 116,047,872 \approx 117M
+\end{aligned}
+$$
+
+\vfill
+\textbf{Note that $N_{Decoder} = 12\cdot d_{model}^2$ and not $16 \cdot d_{model}^2$ because the Decoder here doesn't do cross attention!}
+	
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}
