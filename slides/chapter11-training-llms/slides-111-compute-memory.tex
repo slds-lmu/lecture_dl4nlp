@@ -182,19 +182,19 @@ $$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-b
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int8 Quantitization (1)}
+\begin{vbframe}{Int8 Quantization (1)}
 
-\textit{Since fp32 takes up too much memory, you can make use of int8 quantitization to reduce the memory requirements}
+\textit{Since fp32 takes up too much memory, you can make use of int8 quantization to reduce the memory requirements}
 
 \vfill
 
 \begin{itemize}
     \item Real\_number = stored\_integer * scaling\_factor
-    \item \textbf{Absmax quantitization}: 
+    \item \textbf{Absmax quantization}: 
         \begin{itemize}
             \item $X_{quant} = \text{round}\left(\frac{127}{max{|\mathbf{X}|}} \cdot \mathbf{X}\right)$ 
         \end{itemize}
-    \item \textbf{Zero-point quantitization}: 
+    \item \textbf{Zero-point quantization}: 
         \begin{itemize}
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
@@ -208,7 +208,7 @@ $$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-b
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int8 Quantitization (2)}
+\begin{vbframe}{Int8 Quantization (2)}
 
 \textit{We map a number from a fp32 to an int8 representation:}
 
@@ -222,7 +222,7 @@ $$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-b
 
 \vfill
 
-\textit{These quantitizations reduce the amount of memory used by the model, also they further speed up computation by enabling integer computation instead of floating-point math!} 
+\textit{These quantizations reduce the amount of memory used by the model, also they further speed up computation by enabling integer computation instead of floating-point math!} 
     
 \end{vbframe}
 
