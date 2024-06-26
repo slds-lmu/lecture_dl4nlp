@@ -1,0 +1,213 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\learninggoals}{
+\item Get to know deterministic decoding strategies
+\item Learn how text is generated with greedy search and beam search
+\item Understand how beam search tries to fix the drawbacks of greedy search
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Decoding Strategies}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Deterministic Decoding}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Greedy Search (1)}
+\href{https://codelabsacademy.com/blog/the-beam-search-algorithm-in-the-context-of-natural-language-processing-and-sequence-generation-tasks}{\beamergotobutton{Codelabs Academy}}
+\vfill
+
+\begin{itemize}
+    \item \textbf{Core idea}: Greedy search selects the word with the highest probability at each timestep, iteratively building the output sequence
+    \item \textbf{Exploration of search space}: It explores a single path through the output space, favoring the most probable word at each step without considering future consequences
+    \item \textbf{Candidate Sequence}: Only keeps track of the most likely sequence at each step, discarding other possibilities
+    \item \textbf{Decision Making}: It makes local decisions based solely on the highest probability at the current step without considering potential longer-term outcomes
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Greedy Search (2)}
+
+\vfill
+
+\begin{itemize}
+    \item The model accepts an input sequence of tokens $x_1, x_2,...,x_N$, which we also call prompt
+    \item The model then generates a token at each timestep $t$ until $T$: $y_1,y_2,...,y_T$
+    \item In greedy search we choose the token with the highest conditional probability from the vocabulary V
+    \item $y_t = argmax_{y \in V}P(y|y_1,y_2,...,y_{t-1},\mathbf{x})$
+    \item With $y_t$ being the chosen token at timestep t and $\mathbf{x} = (x_1, x_2,...,x_N)$ being the initial prompt
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Greedy Search: Example}
+\href{https://d2l.ai/chapter_recurrent-modern/beam-search.html}{\beamergotobutton{d2l book}}
+
+\begin{itemize}
+    \item Suppose our vocabulary only has four tokens: $A$, $B$, $C$ and <eos>
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=6cm]{chapters/chapter12/figure/greedy.png}
+\end{figure}
+
+\begin{itemize}
+    \item At each timestep greedy search chooses the token with the highest conditional probability
+    \item The model thus predicts $A$, $B$, $C$, <eos>
+    \item Its probability is $0.5\cdot 0.4 \cdot 0.4 \cdot 0.6 = 0.048$
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Drawbacks of Greedy Search (1)}
+
+\begin{itemize}
+    \item Now we select token $C$ at timestep 2 instead of $B$
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=6cm]{chapters/chapter12/figure/greedy2.png}
+\end{figure}
+
+\begin{itemize}
+    \item At the timesteps 3 and 4 the conditional probabilities change since the context is no longer $A$, $B$ but $A$, $C$
+    \item The final token sequence is $A$, $C$, $B$, <eos>
+    \item Its probability is $0.5 \cdot 0.3 \cdot 0.6 \cdot 0.6 = 0.054$
+    \item Even though $C$ at $t=2$ has a lower probability, the final sequence has a higher probability
+\end{itemize}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Drawbacks of Greedy Search (2)}
+
+\vfill
+
+\begin{itemize}
+    \item \textbf{Suboptimal Global Solutions}: It makes decisions based only on the highest probability token at each step, often missing globally optimal solutions
+    \item \textbf{Lack of Diversity}: It generates repetitive and predictable text, leading to bland outputs
+    \item \textbf{Incoherence in Long Sequences}: It may produce incoherent text over longer sequences due to losing track of the overall context
+    \item \textbf{Repetitiveness}: The lack of diversity leads to repetitive phrases, especially in longer texts
+    \item \textbf{Overemphasis on Common Phrases}: It favors common words and phrases, resulting in overly generic outputs
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Beam Search}
+\href{https://codelabsacademy.com/blog/the-beam-search-algorithm-in-the-context-of-natural-language-processing-and-sequence-generation-tasks}{\beamergotobutton{Codelabs Academy}}
+
+\vfill
+
+\begin{itemize}
+    \item \textbf{Core idea}: Beam search extends the exploration to multiple possible sequences instead of just the most probable one
+    \item \textbf{Exploration of search space}: It explores multiple paths (or "beams") simultaneously, maintaining a set of promising candidate sequences
+    \item \textbf{Candidate Sequence}: Keeps a fixed number of most probable sequences (determined by the beam width parameter $k$) at each step
+    \item \textbf{Decision Making}: At each step, it considers multiple candidate sequences and selects the most probable ones based on their cumulative probabilities up to that point
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Beam Search: Example (1)}
+\href{https://d2l.ai/chapter_recurrent-modern/beam-search.html}{\beamergotobutton{d2l book}}
+
+\vfill
+
+\begin{itemize}
+    \item Suppose $V = \{A, B, C, D, E\}$ and beam width $k=2$
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/beam.png}
+\end{figure}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+\begin{vbframe}{Beam Search: Example (2)}
+
+\vfill
+
+\begin{itemize}
+    \item At each timestep beam search chooses the $k$ tokens with the highest joint probability
+    \item Suppose at $t=1$ $A$ and $B$ have the highest conditional probabilities $P(y_1|\mathbf{x})$
+    \item At $t=2$ for all $y_2\in V$ we compute:
+    $$
+    \begin{aligned}
+    P(A,y_2|\mathbf{x}) &= P(A|\mathbf{x})\cdot P(y_2|A,\mathbf{x}) \\
+    P(C,y_2|\mathbf{x}) &= P(C|\mathbf{x})\cdot P(y_2|C,\mathbf{x})
+    \end{aligned}
+    $$
+    \item And we again pick the $k$ sequences with the highest probabilities ($AB$ and $CE$)
+    \item At $t=3$ again for all $y_3\in V$ we compute:
+    $$
+    \begin{aligned}
+    P(A,B,y_2|\mathbf{x}) &= P(A,B|\mathbf{x})\cdot P(y_2|A,B,\mathbf{x}) \\
+    P(C,E,y_2|\mathbf{x}) &= P(C,E|\mathbf{x})\cdot P(y_2|C,E,\mathbf{x})
+    \end{aligned}
+    $$
+    \item We repeat this process unitl the maximum length is reached or unitl the <EOS> token gets generated
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+\begin{vbframe}{Beam Width: Pros and Cons}
+
+\vfill
+
+\textbf{Advantages}:
+\begin{itemize}
+    \item \textbf{Better Quality}: More likely to find a globally optimal sequence, producing higher quality and more coherent text
+    \item \textbf{Balance Between Exploration and Exploitation}: Avoids the pitfalls of greedy search
+    \item \textbf{Flexibility}: Beam width can be adjusted to trade off between computational complexity and output quality
+\end{itemize}
+
+\textbf{Drawbacks}:
+\begin{itemize}
+    \item \textbf{Computational Complexity}: More computationally intensive than greedy search
+    \item \textbf{Limited Diversity}: May still produce similar sequences if the beam width is not large enough
+    \item \textbf{Hyperparameter Tuning}: Additionally requires to tune the hyperparameter $k$ 
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

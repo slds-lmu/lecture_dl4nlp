@@ -1,0 +1,110 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\learninggoals}{
+\item Get to know the concept of decoding in NLP
+\item Learn about different decoding strategies  
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Decoding Strategies}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{What is Decoding?}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Reminder: ARLM}
+
+\vfill
+
+\begin{itemize}
+    \item In Autoregressive Language Modeling (ARLM) the model predicts the next token given the previous tokens
+    \item Given the context a language model produces a probability distribution over all the tokens in the vocabulary
+    \item The context is the prompt given to the model plus the already generated tokens
+    \item The way we then choose the next token from that probability distribution to generate natural text is called a decoding strategy
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Decoding Example}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/arlm.png}
+\end{figure}
+
+\begin{itemize}
+    \item At teach timestep the model produces a probability distribution
+    \item A decoding strategy determines how to choose the next token from that distribution, that token is then added to the context
+    \item Generation stops based on stopping criteria (\textit{see: next slide})
+\end{itemize}
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Stopping Criteria for Text Generations}
+
+\vfill
+
+\begin{itemize}
+    \item \textbf{<EOS> Token}: When this token is generated the model stops
+    \item \textbf{Maximum Length}: A predefined maximum length can be set for the generated text. When the text reaches this length, generation stops to prevent excessively long outputs
+    \item \textbf{Maximum Time}: A predefined maximum time for generation can be set. After this time has been reached, generation stops
+    \item \textbf{Other Criteria}: There are more stopping criteria implemented in huggingface \citebutton{huggingface}{https://huggingface.co/docs/transformers/internal/generation_utils}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Different Decoding Stratagies}
+
+\textit{The previous slide is an example for greedy search. The generated token is the one with the maximum probability at the current timestep. Various other strategies are going to be covered in this chapter:}
+
+\vfill
+
+\begin{itemize}
+    \item Deterministic Methods
+    \begin{itemize}
+        \item Greedy Search
+        \item Beam Search
+    \end{itemize}
+    \item Sampling Methods
+    \begin{itemize}
+        \item Top-p
+        \item Top-n
+        \item Contrastive Search
+        \item Contrastive Decoding
+    \end{itemize}
+    \item Decoding Hyperparameters
+    \begin{itemize}
+        \item Temperature
+        \item ...
+    \end{itemize}
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
