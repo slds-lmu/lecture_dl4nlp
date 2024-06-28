@@ -16,7 +16,7 @@
 \date{}
 
 \begin{document}
-\lecturechapter{Deterministic Decoding}
+\lecturechapter{Greedy \& Beam Search}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
@@ -185,27 +185,65 @@
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
-\begin{vbframe}{Beam Width: Pros and Cons}
 
-\vfill
+\begin{vbframe}{Greedy Search versus Beam Search}
 
-\textbf{Advantages}:
+\vspace{2ex}
+\textbf{Prompt: "Once upon a time"}
 \begin{itemize}
-    \item \textbf{Better Quality}: More likely to find a globally optimal sequence, producing higher quality and more coherent text
-    \item \textbf{Balance Between Exploration and Exploitation}: Avoids the pitfalls of greedy search
-    \item \textbf{Flexibility}: Beam width can be adjusted to trade off between computational complexity and output quality
+\item Greedy search: \textit{", the United States was the world's leading producer of oil and natural gas. Today, we are the world's leading producer of coal. 
+The United States is the world's largest producer of oil and natural gas"}
+\item Beam search (beam-width 2): \textit{", I had a friend who was a big fan of the show. He was a huge fan of the show, and I was a huge fan of the show. We would talk about the show all the time"}
 \end{itemize}
+\vspace{2ex}
+The generated stories are repetitive, also referred to as \textit{degenerate}. These decoding strategies don't seem to work well for the task, where more creativity and diversity might be desirable.\\
+\vspace{2ex}
 
-\textbf{Drawbacks}:
-\begin{itemize}
-    \item \textbf{Computational Complexity}: More computationally intensive than greedy search
-    \item \textbf{Limited Diversity}: May still produce similar sequences if the beam width is not large enough
-    \item \textbf{Hyperparameter Tuning}: Additionally requires to tune the hyperparameter $k$ 
-\end{itemize}
 
-\vfill
-    
+
 \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Beam Search vs. Human}
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{figure/beam_vs_human.png}
+\end{center}
+
+\begin{itemize}
+    \item Humans typically use words that have a low probabililty
+    \item Beam search though mostly outputs words which have a high probability
+\end{itemize}
+
+\vfill
+
+$\Rightarrow$ Incorporate some randomness (next chapter)
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+% \begin{vbframe}{Beam Width: Pros and Cons}
+
+% \vfill
+
+% \textbf{Advantages}:
+% \begin{itemize}
+%     \item \textbf{Better Quality}: More likely to find a globally optimal sequence, producing higher quality and more coherent text
+%     \item \textbf{Balance Between Exploration and Exploitation}: Avoids the pitfalls of greedy search
+%     \item \textbf{Flexibility}: Beam width can be adjusted to trade off between computational complexity and output quality
+% \end{itemize}
+
+% \textbf{Drawbacks}:
+% \begin{itemize}
+%     \item \textbf{Computational Complexity}: More computationally intensive than greedy search
+%     \item \textbf{Limited Diversity}: May still produce similar sequences if the beam width is not large enough
+%     \item \textbf{Hyperparameter Tuning}: Additionally requires to tune the hyperparameter $k$ 
+% \end{itemize}
+
+% \vfill
+    
+% \end{vbframe}
 
 % ------------------------------------------------------------------------------
 

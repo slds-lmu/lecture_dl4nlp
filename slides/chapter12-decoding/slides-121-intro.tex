@@ -37,7 +37,49 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Decoding Example}
+\begin{frame}{Decoding Example (1)}
+
+{\fontsize{8pt}{10pt}\selectfont
+\noindent \textbf{Prompt:} \textcolor{blue}{Once upon a time}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 1:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time}
+    \item Next token: \textcolor{red}{there}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 2:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there}
+    \item Next token: \textcolor{red}{was}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 3:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there was}
+    \item Next token: \textcolor{red}{a}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 4:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there was a}
+    \item Next token: \textcolor{red}{cat}
+\end{itemize}
+...
+}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Decoding Example (2)}
 
 \begin{figure}
     \centering
@@ -70,38 +112,30 @@
 
 \end{vbframe}
 
-
-
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Different Decoding Stratagies}
+\begin{vbframe}{Decoding Strategies}
 
-\textit{The previous slide is an example for greedy search. The generated token is the one with the maximum probability at the current timestep. Various other strategies are going to be covered in this chapter:}
 
-\vfill
 
+\textbf{Deterministic}
 \begin{itemize}
-    \item Deterministic Methods
-    \begin{itemize}
-        \item Greedy Search
-        \item Beam Search
-    \end{itemize}
-    \item Sampling Methods
-    \begin{itemize}
-        \item Top-p
-        \item Top-n
-        \item Contrastive Search
-        \item Contrastive Decoding
-    \end{itemize}
-    \item Decoding Hyperparameters
-    \begin{itemize}
-        \item Temperature
-        \item ...
-    \end{itemize}
+    \item Greedy search
+    \item Beam search
+    \item Contrastive decoding \citebutton{Li et al., 2023}{https://arxiv.org/abs/2210.15097}
+    \item Contrastive search \citebutton{Su et al., 2022}{https://arxiv.org/abs/2210.14140}
 \end{itemize}
 
-\vfill
-    
+\textbf{Stochastic}
+\begin{itemize}
+    \item Sampling (with temperature) 
+    \item Top-$k$ sampling 
+    \item Nucleus top-$p$ sampling 
+    \item Typical sampling 
+\end{itemize}
+\vspace{1ex}
+
+\textit{Remark:} Other decoding strategies exist, and various combinations are possible, such as top-$k$ sampling with temperature, or top-$p$ sampling followed by top-$k$ sampling (with temperature), etc.
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
