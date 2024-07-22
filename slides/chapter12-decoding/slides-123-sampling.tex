@@ -5,6 +5,7 @@
 \newcommand{\learninggoals}{
 \item Get to know different stochastic decoding strategies
 \item Learn about sampling with temperature, top-k sampling and top-p (nucleus) sampling
+\item learn about contrastive search and contrastive decoding
 }
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
@@ -15,7 +16,7 @@
 \date{}
 
 \begin{document}
-\lecturechapter{Stochastic Decoding}
+\lecturechapter{Stochastic Decoding \& CS/CD}
 \lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
@@ -25,16 +26,8 @@
 \vfill
     
 \begin{itemize}
-    \item \textbf{Diversity in Output}
-    \begin{itemize}
-        \item \textit{Creativity and Variation}: Sampling methods produce varied outputs for the same input, useful in creative applications like story generation and dialogue systems.
-        \item \textit{Avoiding Repetition}: These methods are less likely to generate repetitive loops compared to deterministic methods.
-    \end{itemize}
-    \item \textbf{Technical Advantages}
-    \begin{itemize}
-        \item \textit{Reduced Computational Cost}: Sampling methods are often cheaper than beam search, particularly for long sequences.
-        \item \textit{Scalability}: They are easier to scale for large models and datasets due to simpler implementation and reduced computational demands.
-    \end{itemize}
+    \item \textit{Creativity and Variation}: Sampling methods produce varied outputs for the same input, useful in creative applications like story generation and dialogue systems.
+    \item \textit{Avoiding Repetition}: These methods are less likely to generate repetitive loops compared to deterministic methods.
 \end{itemize}
 
 \vfill
@@ -88,7 +81,8 @@ $\Rightarrow$ Sample from the top-$k$ tokens
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Top-$k$ sampling}
+\begin{vbframe}{Top-$k$ sampling \citebutton{F\MakeLowercase{an et al., 2018}}{\MakeLowercase{https://arxiv.org/abs/1805.04833}}} 
+
 
 In Top-$k$ sampling, the $k$ most likely next tokens are filtered, and the probability mass is redistributed.
 Visualization for $k$ = 6 in two sampling steps:
@@ -97,7 +91,7 @@ Visualization for $k$ = 6 in two sampling steps:
     \includegraphics[width=0.9\linewidth]{figure/top_k.png}
 \end{center}
 
-\citebutton{Hugging Face, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
+\citebutton{huggingface, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
 
 \end{vbframe}
 
@@ -122,7 +116,9 @@ $\Rightarrow$ Make $k$ dynamic
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Top-$p$ (Nucleus) sampling}
+\begin{vbframe}{Top-$p$ (Nucleus) sampling \citebutton{H\MakeLowercase{oltzman et al., 2019}}{\MakeLowercase{https://arxiv.org/abs/1904.09751}}}
+
+
 Top-$p$ sampling chooses from the smallest possible set of tokens whose cumulative probability exceeds the probability threshold $p$. The probability mass is then redistributed accordingly.
 Visualization with a threshold $p$ = 0.92:
 
@@ -130,7 +126,7 @@ Visualization with a threshold $p$ = 0.92:
 \includegraphics[width=1.0\linewidth]{figure/nucleus.png}
 \end{center}
 
-\citebutton{Hugging Face, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
+\citebutton{huggingface, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
@@ -156,7 +152,7 @@ $\Rightarrow$ Contrastive search
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Contrastive Search}
+\begin{frame}{Contrastive Search \citebutton{S\MakeLowercase{u et al., 2022}}{\MakeLowercase{https://arxiv.org/abs/2210.14140}}}
 
 \begin{center}
     \includegraphics[width=1.0\linewidth]{figure/contrastive_search.png}
@@ -173,6 +169,45 @@ $\Rightarrow$ An "ideal" token should have a high probability and bring diversit
 Empirical studies suggest $k \in \{5, 8, 10, 15\}$ and $\alpha \in \{0.4, 0.5, 0.6\}$ \citebutton{Su \& Collier, 2023}{https://arxiv.org/abs/2210.14140} \citebutton{Su \& Xu, 2022}{https://arxiv.org/abs/2211.10797} \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
 
 \vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contrastive Search formula}
+
+\citebutton{huggingface, Tian Lan}{https://huggingface.co/blog/introducing-csearch}
+
+\hspace{}
+
+\textit{Let's have a closer look at the formula for Contrastive Search:}
+\small
+$$x_t = \underset{v \in V^{(k)}}{argmax}\left\{(1 - \alpha) \times \textcolor{red}{p_\theta(v|\mathbf{x}_{<t})} - \alpha \times \textcolor{blue}{(max\{s(h_v,h_{x_j}):1\leq j \leq t-1\})}\right\}$$
+
+\begin{itemize}
+    \item $x_t$ is the output token and $\mathbf{x}_{<t}$ the context
+    \item $V^{(k)}$ is the set of top-k predictions from the models probability distribution (this is the same $k$ as in the top-$k$ sampling from earlier)
+    \item $\textcolor{red}{p_\theta(v|\mathbf{x}_{<t})}$, the \textit{model confidence}, is the probability of a candidate token $v$ given the context
+    \item $\textcolor{blue}{max\{s(h_v,h_{x_j}):1\leq j \leq t-1\}}$, the \textit{degeneration penalty}, measures how similar $v$ is to the context, $s()$ is the cosine similarity between the token representations
+    \item The degeneration penalty is defined as the maximum cosine similarity between the token representation of $v$, i.e $h_v$, and of all tokens in the context $\mathbf{x}_{<t}$
+    \item $h_v$ is computed by the language model given the concatination of $v$ and $\mathbf{x}_{<t}$
+    \item In order to maximize the formula we want $v$ to have a high probability and a low degeneration penalty
+    \item Intuitively, a larger degeneration penalty of $v$ means it is more similar (in the representation space) to the context, therefore more likely leading to the problem of model degeneration
+    \item $\alpha$ determines how much weight give to each component
+    \item For $\alpha = 0$ we only consider the probability and contrastive search becomes greedy search
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Contrastive Decoding \citebutton{L\MakeLowercase{i et al., 2023}}{\MakeLowercase{https://arxiv.org/abs/2210.15097}}}
+
+
+TODO:
+
 
 \end{frame}
 

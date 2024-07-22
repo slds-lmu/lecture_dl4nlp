@@ -186,6 +186,22 @@
 
 % ------------------------------------------------------------------------------
 
+% \begin{vbframe}{Generate Function \citebutton{G\MakeLowercase{eneration}C\MakeLowercase{onfig}}{https://huggingface.co/docs/transformers/v4.40.0/en/main_classes/text_generation#transformers.GenerationConfig}}
+
+% \vfill
+
+% \begin{itemize}
+%     \item The default decoding strategy for \texttt{generate()} is greedy search
+%     \item In order to use beam search you have to provide the \texttt{num\_beams} hyperparameter
+% \end{itemize}
+
+
+% \vfill
+    
+% \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Greedy Search versus Beam Search}
 
 \vspace{2ex}
@@ -206,6 +222,8 @@ The generated stories are repetitive, also referred to as \textit{degenerate}. T
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Beam Search vs. Human}
+
+\citebutton{Holtzmann et al., 2019}{https://arxiv.org/abs/1904.09751}
 \begin{center}
     \includegraphics[width=0.7\linewidth]{figure/beam_vs_human.png}
 \end{center}
@@ -221,29 +239,6 @@ $\Rightarrow$ Incorporate some randomness (next chapter)
 
 \end{frame}
 
-% ------------------------------------------------------------------------------
-
-% \begin{vbframe}{Beam Width: Pros and Cons}
-
-% \vfill
-
-% \textbf{Advantages}:
-% \begin{itemize}
-%     \item \textbf{Better Quality}: More likely to find a globally optimal sequence, producing higher quality and more coherent text
-%     \item \textbf{Balance Between Exploration and Exploitation}: Avoids the pitfalls of greedy search
-%     \item \textbf{Flexibility}: Beam width can be adjusted to trade off between computational complexity and output quality
-% \end{itemize}
-
-% \textbf{Drawbacks}:
-% \begin{itemize}
-%     \item \textbf{Computational Complexity}: More computationally intensive than greedy search
-%     \item \textbf{Limited Diversity}: May still produce similar sequences if the beam width is not large enough
-%     \item \textbf{Hyperparameter Tuning}: Additionally requires to tune the hyperparameter $k$ 
-% \end{itemize}
-
-% \vfill
-    
-% \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
