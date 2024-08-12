@@ -1,0 +1,217 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\newcommand{\learninggoals}{
+\item Get to know different stochastic decoding strategies
+\item Learn about sampling with temperature, top-k sampling and top-p (nucleus) sampling
+\item learn about contrastive search and contrastive decoding
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Decoding Strategies}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Stochastic Decoding \& CS/CD}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sampling Motivation}
+
+\vfill
+    
+\begin{itemize}
+    \item \textit{Creativity and Variation}: Sampling methods produce varied outputs for the same input, useful in creative applications like story generation and dialogue systems.
+    \item \textit{Avoiding Repetition}: These methods are less likely to generate repetitive loops compared to deterministic methods.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sampling (with temperature) (1)}
+
+
+
+The next token is selected randomly based on its conditional probability distribution. To control the randomness of the output sequence, a temperature parameter can be applied to the softmax function
+
+\vfill 
+
+$$
+\sigma\left(z_i\right)=\frac{e^{\frac{z_i}{temp}}}{\sum_{j=1}^N e^{\frac{z_j}{temp}}}
+$$
+
+\vfill
+
+\begin{itemize}
+\item $temp \rightarrow \infty: \text{ Output distribution $\approx$ Uniform distribution}$
+\item $temp \rightarrow 0: \text{ Output distribution $\approx$ Point mass (Greedy search) }$
+\end{itemize}
+
+
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sampling (with temperature) (2)}
+
+\vfill
+
+\textbf{Prompt: "Once upon a time"}
+\begin{itemize}
+\item Sampling with low temperature: \textit{", during the Second World War, during the final months for his three most talented young players, the coach, Harry Gregg said this"}
+\item Sampling with high temperature: \textit{"— well. Nowhere you call back my call, not on time; never the two on account my four. Do not come." This old woman — you might have liked, she herself — she did smile."}
+\end{itemize}
+
+The generated stories are diverse but sometimes very erratic.\\
+
+\vfill
+
+$\Rightarrow$ Sample from the top-$k$ tokens     
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-$k$ sampling \citebutton{F\MakeLowercase{an et al., 2018}}{\MakeLowercase{https://arxiv.org/abs/1805.04833}}} 
+
+
+In Top-$k$ sampling, the $k$ most likely next tokens are filtered, and the probability mass is redistributed.
+Visualization for $k$ = 6 in two sampling steps:
+
+\begin{center}
+    \includegraphics[width=0.9\linewidth]{figure/top_k.png}
+\end{center}
+
+\citebutton{huggingface, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-$k$ sampling}
+
+\vfill
+
+\textbf{Prompt: "Once upon a time"}
+\begin{itemize}
+    \item Top-$k$ , $k = 100$: \textit{"when I was young the internet was a mysterious landscape full of new and exciting ideas. I read ebooks, watched videos, read short stories"}
+\end{itemize}
+\vspace{2ex}
+
+The quality has improved, but the fixed $k$ might be counterproductive\\
+\vspace{2ex}
+$\Rightarrow$ Make $k$ dynamic        
+
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-$p$ (Nucleus) sampling \citebutton{H\MakeLowercase{oltzman et al., 2019}}{\MakeLowercase{https://arxiv.org/abs/1904.09751}}}
+
+
+Top-$p$ sampling chooses from the smallest possible set of tokens whose cumulative probability exceeds the probability threshold $p$. The probability mass is then redistributed accordingly.
+Visualization with a threshold $p$ = 0.92:
+
+\begin{center}
+\includegraphics[width=1.0\linewidth]{figure/nucleus.png}
+\end{center}
+
+\citebutton{huggingface, Patrick von Platen}{https://huggingface.co/blog/how-to-generate}
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-$p$ (Nucleus) sampling}
+
+\vfill
+\textbf{Prompt: "Once upon a time"}
+\begin{itemize}
+    \item Top-$p$ , $p = 0.92$: \textit{"there were four major political parties in the United States. Since then, however, they have become even more of a novelty. For the past few decades, there have been only two."}
+\end{itemize}
+
+\vspace{2ex}
+
+SOTA for many years, default decoding strategy in various GPT versions, but sometimes erratic depending on $p$ and the sampled tokens.\\
+
+\vspace{2ex}
+
+\textbf{Question:} Can there be a balance of coherence and diversity?\\
+$\Rightarrow$ Contrastive search
+  
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Contrastive Search \citebutton{S\MakeLowercase{u et al., 2022}}{\MakeLowercase{https://arxiv.org/abs/2210.14140}}}
+
+\begin{center}
+    \includegraphics[width=1.0\linewidth]{figure/contrastive_search.png}
+\end{center}     
+
+When generating output, contrastive search jointly considers:
+\begin{itemize}
+    \item The probability predicted by the language model to maintain the semantic coherence between the generated text and the prompt.
+    \item The similarity with respect to the previous context to avoid  degeneration (as in Greedy or Beam search)
+\end{itemize}
+   
+$\Rightarrow$ An "ideal" token should have a high probability and bring diversity to the story.
+
+Empirical studies suggest $k \in \{5, 8, 10, 15\}$ and $\alpha \in \{0.4, 0.5, 0.6\}$ \citebutton{Su \& Collier, 2023}{https://arxiv.org/abs/2210.14140} \citebutton{Su \& Xu, 2022}{https://arxiv.org/abs/2211.10797} \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contrastive Search formula}
+
+\citebutton{huggingface, Tian Lan}{https://huggingface.co/blog/introducing-csearch}
+
+\hspace{}
+
+\textit{Let's have a closer look at the formula for Contrastive Search:}
+\small
+$$x_t = \underset{v \in V^{(k)}}{argmax}\left\{(1 - \alpha) \times \textcolor{red}{p_\theta(v|\mathbf{x}_{<t})} - \alpha \times \textcolor{blue}{(max\{s(h_v,h_{x_j}):1\leq j \leq t-1\})}\right\}$$
+
+\begin{itemize}
+    \item $x_t$ is the output token and $\mathbf{x}_{<t}$ the context
+    \item $V^{(k)}$ is the set of top-k predictions from the models probability distribution (this is the same $k$ as in the top-$k$ sampling from earlier)
+    \item $\textcolor{red}{p_\theta(v|\mathbf{x}_{<t})}$, the \textit{model confidence}, is the probability of a candidate token $v$ given the context
+    \item $\textcolor{blue}{max\{s(h_v,h_{x_j}):1\leq j \leq t-1\}}$, the \textit{degeneration penalty}, measures how similar $v$ is to the context, $s()$ is the cosine similarity between the token representations
+    \item The degeneration penalty is defined as the maximum cosine similarity between the token representation of $v$, i.e $h_v$, and of all tokens in the context $\mathbf{x}_{<t}$
+    \item $h_v$ is computed by the language model given the concatination of $v$ and $\mathbf{x}_{<t}$
+    \item In order to maximize the formula we want $v$ to have a high probability and a low degeneration penalty
+    \item Intuitively, a larger degeneration penalty of $v$ means it is more similar (in the representation space) to the context, therefore more likely leading to the problem of model degeneration
+    \item $\alpha$ determines how much weight give to each component
+    \item For $\alpha = 0$ we only consider the probability and contrastive search becomes greedy search
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Contrastive Decoding \citebutton{L\MakeLowercase{i et al., 2023}}{\MakeLowercase{https://arxiv.org/abs/2210.15097}}}
+
+
+TODO:
+
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

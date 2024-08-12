@@ -1,0 +1,171 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+
+\newcommand{\learninggoals}{
+\item Get to know the concept of decoding in NLP
+\item Learn about different decoding strategies  
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Decoding Strategies}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{What is Decoding?}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Reminder: ARLM}
+
+\vfill
+
+\begin{itemize}
+    \item In Autoregressive Language Modeling (ARLM) the model predicts the next token given the previous tokens
+    \item Given the context a language model produces a probability distribution over all the tokens in the vocabulary
+    \item The context is the prompt given to the model plus the already generated tokens
+    \item The way we then choose the next token from that probability distribution to generate natural text is called a decoding strategy
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Decoding Example (1)}
+
+{\fontsize{8pt}{10pt}\selectfont
+\noindent \textbf{Prompt:} \textcolor{blue}{Once upon a time}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 1:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time}
+    \item Next token: \textcolor{red}{there}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 2:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there}
+    \item Next token: \textcolor{red}{was}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 3:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there was}
+    \item Next token: \textcolor{red}{a}
+\end{itemize}
+
+\vspace{0.5cm}
+
+\noindent \textbf{Time step 4:}
+\begin{itemize}
+    \item Model input: \textcolor{blue}{Once upon a time there was a}
+    \item Next token: \textcolor{red}{cat}
+\end{itemize}
+...
+}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Decoding Example (2)}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/arlm.png}
+\end{figure}
+
+\begin{itemize}
+    \item At each timestep the model produces a probability distribution
+    \item A decoding strategy determines how to choose the next token from that distribution, that token is then added to the context
+    \item Generation stops based on stopping criteria (\textit{see: next slide})
+\end{itemize}
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Stopping Criteria for Text Generations}
+
+\vfill
+
+\begin{itemize}
+    \item \textbf{<EOS> Token}: When this token is generated the model stops
+    \item \textbf{Maximum Length}: A predefined maximum length can be set for the generated text. When the text reaches this length, generation stops to prevent excessively long outputs
+    \item \textbf{Maximum Time}: A predefined maximum time for generation can be set. After this time has been reached, generation stops
+    \item \textbf{Other Criteria}: There are more stopping criteria implemented in huggingface \citebutton{huggingface}{https://huggingface.co/docs/transformers/internal/generation_utils#transformers.StoppingCriteria}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Generate Function}
+
+\textit{There is two types of hyperparameters for the \texttt{generate()} function of the \texttt{Transformers} library: One that control the length of the ouput and one that control the generation strategy used:} \citebutton{huggingface, GenerationConfig}{https://huggingface.co/docs/transformers/v4.40.0/en/main_classes/text_generation#transformers.GenerationConfig}
+
+\hspace{}
+
+\begin{itemize}
+    \item You input a tokenized sentence as the context into the \texttt{generate()} function
+    \item And then control the length of the output with the following hyperparameters:
+    \begin{itemize}
+        \item \texttt{max\_length}: The maximum length the generated tokens can have. Corresponds to the length of the input prompt + \texttt{max\_new\_tokens}. Its effect is overridden by \texttt{max\_new\_tokens}, if also set
+        \item \texttt{max\_new\_tokens}: The maximum numbers of tokens to generate, ignoring the number of tokens in the prompt
+        \item \texttt{min\_length}: The minimum length of the sequence to be generated. Corresponds to the length of the input prompt + \texttt{min\_new\_tokens}. Its effect is overridden by \texttt{min\_new\_tokens}, if also set
+        \item \texttt{min\_new\_tokens}: The minimum numbers of tokens to generate, ignoring the number of tokens in the prompt
+        \item \texttt{max\_time}: The maximum amount of time you allow the computation to run for in seconds. generation will still finish the current pass after allocated time has been passed
+    \end{itemize}
+    \item With the second type of hyperparameters you control which of the following (\textit{see: next slide}) decoding strategies you use (\textit{will be introduced in the following chapters})
+\end{itemize}
+
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Decoding Strategies}
+
+
+
+\textbf{Deterministic}
+\begin{itemize}
+    \item Greedy search
+    \item Beam search
+    \item Contrastive search \citebutton{Su et al., 2022}{https://arxiv.org/abs/2210.14140}
+    \item Contrastive decoding \citebutton{Li et al., 2023}{https://arxiv.org/abs/2210.15097}
+\end{itemize}
+
+\textbf{Stochastic}
+\begin{itemize}
+    \item Sampling (with temperature) 
+    \item Top-$k$ sampling \citebutton{Fan et al., 2018}{https://arxiv.org/abs/1805.04833}
+    \item Nucleus top-$p$ sampling \citebutton{Holtzman et al., 2019}{https://arxiv.org/abs/1904.09751}
+    \item Typical sampling \citebutton{Meister et al., 2023}{https://arxiv.org/abs/2202.00666}
+\end{itemize}
+\vspace{1ex}
+
+\textit{Remark:} Other decoding strategies exist, and various combinations are possible, such as top-$k$ sampling with temperature, or top-$p$ sampling followed by top-$k$ sampling (with temperature), etc.
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
