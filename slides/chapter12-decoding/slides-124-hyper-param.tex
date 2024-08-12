@@ -21,5 +21,203 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{Generating text with LLM\MakeLowercase{s}}
+
+\vfill
+
+In order to generate text with a generative language model you have to use their built in \texttt{generate()} method: 
+
+\vfill
+
+\begin{itemize}
+    \item You need a tokenized input prompt
+    \item This will be the input to the model 
+    \item Then you specify the hyperparameters of the models' \texttt{generate()} method to control the output length and to choose the desired decoding strategy
+    \item You can find all the code in this notebook: \citebutton{decoding\_examples.ipynb}{https://github.com/slds-lmu/lecture_dl4nlp/blob/main/code-demos/decoding_examples.ipynb}
+\end{itemize}
+
+\vfill
+    
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Greedy Search}
+
+\vfill
+
+The default decoding strategy is \textbf{greedy search}, if all the default hyperparameters are used
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt)}
+    \item \textbf{Output:} Once upon a time, the world was a place of great beauty and great danger. The world was a place of great danger, and the world was a place of great danger. The world was a place of great danger, and the world was a place of great danger.
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Beam Search}
+
+\vfill
+
+In order to use \textbf{beam search} you simply have to add the \texttt{num\_beams} argument to the \texttt{generate()} method and set it to a value > 1
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, num\_beams=5)}
+    \item Once upon a time, it was said, there would be a time when the world would be a better place.
+    It was a time when the world would be a better place.
+    It was a time when the world would be a better place.
+    It was a time when the world would be a better place.
+    It was a time when the world would be a better place.
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sampling with Temperature (1)}
+
+\vfill
+
+In order to activate \textbf{sampling} you have to set \texttt{do\_sample=True}. To additionally use \textbf{temperature} you have to set the \texttt{temperature}. Also \texttt{top\_k} has to be set to 0, as 50 is the default value
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, do\_sample=True, temperature=0.7, top\_k=0)}
+    \item \textbf{Output:} Once upon a time, we could have seen ourselves as a modern day, modern version of ourselves. Ken, who was assembled with great courage and bravery to fight for the cause of women's reproductive rights, has been doing so for more than 15 years, and his career is full of inspiring stories. He is a poet, a civil rights leader, a hard-nosed activist and a true American hero.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sampling with Temperature (2)}
+
+\vfill
+
+If we set \texttt{temperature} to a super high value, the output distribution will approximate a uniform distribution. For \texttt{temperature} $\rightarrow$ 0 the output distribution will have all the probability mass in the most probable token and \texttt{generate()} will be equivalent to \textbf{greedy search}
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, do\_sample=True, temperature=10000000.0, top\_k=0)}
+    \item \textbf{Output:} Once upon a time indicators Gran slew extrater rockedIA moaningJohn Chin knocking transgender Button nin forgiving submarine traveller efforts Pascal despairaways Hem Melvin Toryunn Amb velvet
+\end{itemize}
+
+\vfill
+
+This output is as expected since with such a high \texttt{temperature} every token in the vocabulary will have the same probability
+
+\end{vbframe}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-k sampling}
+
+\vfill
+
+In order to activate \textbf{top-k sampling} you have to set \texttt{do\_sample=True} and set \texttt{top\_k} to a integer > 0. If you use \texttt{top\_k=1} it will again be equivalent to \textbf{greedy search} as only the most probable token is chosen
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, do\_sample=True, top\_k=10)}
+    \item \textbf{Output:} Once upon a time, he did not think he had a chance and turned to her and said:
+
+"'My dear, what do you mean by that? I know your father, but he is dead.'
+
+"So she said:
+
+'I knew it. I know your father, but I do not know his whereabouts. You know my mother.'
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Top-p sampling}
+
+\vfill
+
+Set \texttt{top\_p} to some float and \texttt{do\_sample=True} to use \textbf{top-p sampling}. Using a very small value is equal to using \textbf{greedy search}. Using \texttt{top\_p=1.0} will consider all tokens
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, do\_sample=True, top\_p=0.7, top\_k=0)}
+    \item \textbf{Output:} Once upon a time they arrived at the well of water, they saw that their creature was burning in flames. After they had brought their clothes back to the dry land, they were found that they had died in the burning body.
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Contrastive Search}
+
+\vfill
+
+For \textbf{contrastive search} you have to set \texttt{penalty\_alpha} to a float and set \texttt{top\_k} as previously mentioned. Remember we are \textbf{not} sampling here. For \texttt{penalty\_alpha=0} we only maximize the model confidence term and it becomes \textbf{greedy search} again. Using \texttt{penalty\_alpha=1} we only care about the degeneration penalty term
+
+\hspace{}
+
+\textbf{Prompt: "Once upon a time"}
+
+\begin{itemize}
+    \item \texttt{model.generate(tokenized\_prompt, do\_sample=True, penalty\_alpha=0.6, top\_k=20)}
+    \item \textbf{Output:} Once upon a time, the man who had been the object of the most intense and most intense hatred, the most intense and most intense hatred, was the man who had been the object of the most intense and most intense hatred, and the man who had been the object of the most intense and most intense hatred.
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Conclusion}
+
+\vfill
+
+\begin{itemize}
+    \item In practice you wouldn't use one decoding strategy in isolation
+    \item You would have to play around with the different hyperparameters and decoding strategies until you get a good result
+    \item But how do we determine if a generated text is good or not?
+    \item For that there are several evaluation metrics $\rightarrow$ next chapter
+\end{itemize}
+
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}

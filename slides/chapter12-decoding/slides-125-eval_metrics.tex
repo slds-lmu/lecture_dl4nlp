@@ -21,5 +21,207 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{How do we evaluate LLM\MakeLowercase{s}?}
+
+\vfill
+
+\textit{How to choose the appropriate evaluation metric?}
+
+\hspace{}
+
+\begin{itemize}
+    \item Does the task have a gold reference?
+    \begin{itemize}
+        \item BLEU score \citebutton{Papineni et al., 2002}{https://aclanthology.org/P02-1040.pdf}
+        \item ROUGE score \citebutton{Lin, 2004}{https://aclanthology.org/W04-1013/}
+    \end{itemize}
+    \item Are we dealing with open ended text generation without a gold reference?
+    \begin{itemize}
+        \item Diversity \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
+        \item Coherence \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
+        \item MAUVE \citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454}
+    \end{itemize}
+    \item If you have the proper resources choose human evaluation
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU score (1)}
+
+\textit{Given a task with a gold reference, e.g machine translation or text summarization, you compare the generated output with the given source reference to compute the BLEU score:}
+
+\hspace{}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/1-gram.png}
+    \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
+    \label{fig:enter-label}
+\end{figure}
+
+\hspace{}
+
+Five out of eight 1-grams are correctly predicted:
+
+\hspace{}
+
+$\rightarrow p_1 = 5/8$
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU score (2)}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/2-gram.png}
+    \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
+    \label{fig:enter-label}
+\end{figure}
+
+\hspace{}
+
+Four out of seven 2-grams are correctly predicted:
+
+\hspace{}
+
+$\rightarrow p_2 = 4/7$
+
+\hspace{}
+
+\textit{You keep doing this procedure until $N$ n-grams and compute a weighted geometric average over the precision scores with weights $w_n$:}
+
+$$exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU Score - Brevity penalty}
+
+\textit{In order to penalize very short predictions (it's more likely for shorter sentences to achieve a good precision score) the BLEU score additionally has a brevity penalty term:}
+
+\hspace{}
+
+$$
+  BP=\begin{cases}
+    1, & \text{if $c>r$}\\
+    e^{(1-r/c)}, & \text{if $c\leq r$}
+  \end{cases}
+$$
+
+\hspace{}
+
+\begin{itemize}
+    \item With $r$ being the \textbf{reference corpus length} and $c$ the \textbf{candidate corpus length}
+    \item The final formula is then:
+
+$$BLEU = BP \cdot exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
+\end{itemize}
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ROUGE score}
+
+\vfill
+
+\begin{itemize}
+    \item The ROUGE (Recall-Oriented Understudy for Gisting Evaluation) is a metric commonly used for evaluating the quality of machine-generated text, particularly summaries
+    \item ROUGE measures the similarity between the generated summary and one or more reference (human-written) summaries
+    \item ROUGE includes multiple metrics, such as ROUGE-N (for n-grams), ROUGE-L (for longest common subsequence), and ROUGE-W (for weighted n-grams). Depending on the task, these metrics capture different aspects of summary quality, allowing a more comprehensive evaluation
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example: ROUGE-1 precision}
+
+\vfill
+\textit{Consider the following source sentence $S$ and candidate summary $C$:}
+
+\hspace{}
+
+\begin{itemize}
+    \item \textbf{S:} The cat is on the mat.
+    \item \textbf{C:} \textcolor{green}{The cat} and \textcolor{green}{the} dog.
+\end{itemize}
+
+\hspace{}
+
+\textit{Using the ROUGE-N precision score with $N = 1$ you get:}
+
+\hspace{}
+
+\begin{itemize}
+    \item Three correctly predicted unigrams
+    \item Total of number of unigrams in $C$ is 5
+\end{itemize}
+
+\hspace{}
+
+$\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
+
+\hspace{}
+
+\textit{There are more ROUGE scores as mentioned earlier. You can find more details here:} \citebutton{Medium, Fabio Chiusano}{https://medium.com/nlplanet/two-minutes-nlp-learn-the-rouge-metric-by-examples-f179cc285499}
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+\begin{vbframe}{Metrics without a gold reference}
+
+\vfill
+
+\begin{itemize}
+    \item BLEU and ROUGE are both used for tasks that have a gold reference you can compare your prediction to
+    \item In open ended text generation you just have a prompt and an output generated by the model
+    \item You don't have any gold reference to compare your output to
+    \item Therefore you have to get a bit more creative with the choice of evaluation metrics
+\end{itemize}
+
+
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Diversity}
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Coherence}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{MAUVE}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}
