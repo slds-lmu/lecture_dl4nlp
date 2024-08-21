@@ -205,20 +205,157 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Diversity}
-    
+
+\citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} \textit{define diversity in their paper, where they introduce contrastive search, as the generation repetition at different $n$-gram levels}:
+
+\hspace{}
+
+\begin{itemize}
+    \item \textbf{Generation Repitition:}
+    \begin{itemize}
+        \item Measures the sequence-level repitition as the portion of duplicate $n$-grams in the generated text
+        \item For a generated text continuation $x_{cont}$ the repitition at $n$-gram level is defined as: 
+        $$\text{rep-n} = 100 \times \left(1.0 - \frac{|\text{unique $n$-grams}(x_{cont})|}{|\text{total $n$-grams}(x_{cont})|}\right)$$ 
+    \end{itemize}
+\end{itemize}
+
 \end{vbframe}
 
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Diversity (2)}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Diversity:}
+    \begin{itemize}
+        \item Repitition at different $n$-gram levels:
+        $$\text{DIV} = \prod_{n=2}^{4}\left(1.0 - \frac{\text{rep-n}}{100}\right)$$
+        \item Plugging in rep-n from the previous slide, this expression simplifies to:
+        $$\text{DIV} = \prod_{n=2}^{4} \frac{|\text{unique $n$-grams}(x_{cont})|}{|\text{total $n$-grams}(x_{cont})|}$$
+        \item A low diversity score suggests the model suffers from repitition, and a high diversity score means the model-generated text is lexically diverse
+    \end{itemize}
+\end{itemize}
+
+\vfill
+        
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \begin{vbframe}{Coherence}
+
+\textit{This measure was also proposed by \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} as the cosine similarity between the sentence embeddings of the prompt $x_{prompt}$ and a generated text conitinuation $x_{cont}$}:
+
+\hspace{}
+
+\begin{itemize}
+    \item They use pre-trained SimCSE sentence embeddings $EMB(x)$ proposed by \citebutton{Gao et al., 2022}{https://arxiv.org/abs/2104.08821}:
+    $$COH(x_{cont}, x_{prompt}) = \frac{EMB(x_{prompt}) \cdot EMB(x_{cont})}{\Vert EMB(x_{prompt})\Vert \cdot \Vert EMB(x_{cont})\Vert}$$
+    \item The higher the coherence-score the better the model-generated text fits to the given prompt
+\end{itemize}
     
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{MAUVE}
+\citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454}
+
+\vfill
+
+\begin{itemize}
+    \item A language model is an estimate $\hat{P}(x)$ of the probability distribution over sequences of text $x = (x_1, . . ., x_{|\mathbf{x}|})$, consisting of tokens $x_t$ belonging to a fixed vocabulary
+    \item Given a context $x_{1:t}$, a language model $\hat{P}$ and a stochastic decoding strategy we generate text by sampling $\hat{x}_{t+1} \sim \hat{P}(\cdot|x_{1:t}), \hat{x}_{t+2} \sim \hat{P}(\cdot|x_{1:t}, \hat{x}_{t+1})$, etc.
+    \item The decoding strategy and the language model taken together define a distribution $Q$ over text, which we call \textit{model distribution}
+    \item The goal of MAUVE is to measure the gap between the model distribution $Q$ and the target distribution $P$
+\end{itemize}
+
+\vfill
     
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sources of error in text generation}
+
+\hspace{}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/mauve_errors.png}
+\end{figure}
+
+\begin{itemize}
+    \item The gap between $Q$ and $P$ arises from two sources of error
+    \item Type I error: $Q$ places high mass on text which is unlikely under $P$
+    \item Type II error: $Q$ cannot generate text which is plausible under $P$
+\end{itemize}
+
+\hspace{}
+
+\begin{itemize}
+    \item They formalize the two errors through the Kullback-Leibler divergence:
+        \begin{itemize}
+            \item $KL(Q|P)$ penalizes $Q$ if there is a text $x$ that leads to a high $Q(x)$ but a low $P(x)$, which is the Type I error
+            \item Similarly the Type II error is defined by $KL(P|Q)$
+        \end{itemize}
+    \item Issue: both KL divergences are infinite if the supports of $Q$ and $P$ are not identical
+    \item The authors overcome this issue by \textit{softly} measuring the two errors with a mixture distribution: 
+    $$R_{\lambda} = \lambda P (1-\lambda) Q \quad \text{for} \quad \lambda \in (0,1)$$
+    \item (soft) Type I error: $KL(Q,R_{\lambda})$
+    \item (soft) Type II error: $KL(P,R_{\lambda})$
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Divergence Curve}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/mauve_divergence.png}
+\end{figure}
+
+\begin{itemize}
+    \item To capture all the possible values of the mixture weight $\lambda$ they vary $\lambda$ between 0 and 1 to generate a \textit{divergence curve}:
+\end{itemize}
+\scalebox{0.85}{% 
+$C(P,Q) = \left\{(exp(-cKL(Q|R_{\lambda})), exp(-cKL(P|R_{\lambda})) : R_{\lambda} = \lambda P + (1-\lambda) Q, \lambda \in (0,1)\right\}$}
+\begin{itemize}
+    \item $MAUVE(P,Q)$ is the area under this divergence curve, it is a summary of the trade-off between Type I and II errors and lies in (0,1] (more details can be found in the paper \citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454})
+\end{itemize}
+    
+\end{vbframe}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Human evaluation}
+
+\textbf{Why Human Evaluation?}
+\begin{itemize}
+    \item \textbf{Subjectivity of Quality}: Human judgments are essential for evaluating the nuanced quality of text that automatic metrics might miss, such as humor, creativity, and relevance
+\end{itemize}
+
+\textbf{Key Considerations}
+\begin{itemize}
+    \item \textbf{Evaluators}: Use domain experts or crowdworkers, depending on the task complexity
+    \item \textbf{Evaluation Criteria}:
+    \begin{itemize}
+        \item \textbf{Fluency}: Is the generated text grammatically correct and natural-sounding?
+        \item \textbf{Coherence}: Does the text make logical sense?
+        \item \textbf{Diversity}: Is the output lexically diverse?
+    \end{itemize}
+    \item \textbf{Challenges}: 
+    \begin{itemize}
+        \item \textbf{Subjectivity}: Different evaluators might have varying opinions, leading to inconsistency
+        \item \textbf{Cost and Time}: Human evaluation is resource-intensive
+        \item \textbf{Bias}: Evaluators might bring in their biases, which can skew results
+    \end{itemize}
+\end{itemize}
+   
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
