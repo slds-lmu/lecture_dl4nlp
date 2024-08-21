@@ -21,5 +21,344 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{How do we evaluate LLM\MakeLowercase{s}?}
+
+\vfill
+
+\textit{How to choose the appropriate evaluation metric?}
+
+\hspace{}
+
+\begin{itemize}
+    \item Does the task have a gold reference?
+    \begin{itemize}
+        \item BLEU score \citebutton{Papineni et al., 2002}{https://aclanthology.org/P02-1040.pdf}
+        \item ROUGE score \citebutton{Lin, 2004}{https://aclanthology.org/W04-1013/}
+    \end{itemize}
+    \item Are we dealing with open ended text generation without a gold reference?
+    \begin{itemize}
+        \item Diversity \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
+        \item Coherence \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417}
+        \item MAUVE \citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454}
+    \end{itemize}
+    \item If you have the proper resources choose human evaluation
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU score (1)}
+
+\textit{Given a task with a gold reference, e.g machine translation or text summarization, you compare the generated output with the given source reference to compute the BLEU score:}
+
+\hspace{}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/1-gram.png}
+    \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
+    \label{fig:enter-label}
+\end{figure}
+
+\hspace{}
+
+Five out of eight 1-grams are correctly predicted:
+
+\hspace{}
+
+$\rightarrow p_1 = 5/8$
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU score (2)}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/2-gram.png}
+    \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
+    \label{fig:enter-label}
+\end{figure}
+
+\hspace{}
+
+Four out of seven 2-grams are correctly predicted:
+
+\hspace{}
+
+$\rightarrow p_2 = 4/7$
+
+\hspace{}
+
+\textit{You keep doing this procedure until $N$ n-grams and compute a weighted geometric average over the precision scores with weights $w_n$:}
+
+$$exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{BLEU Score - Brevity penalty}
+
+\textit{In order to penalize very short predictions (it's more likely for shorter sentences to achieve a good precision score) the BLEU score additionally has a brevity penalty term:}
+
+\hspace{}
+
+$$
+  BP=\begin{cases}
+    1, & \text{if $c>r$}\\
+    e^{(1-r/c)}, & \text{if $c\leq r$}
+  \end{cases}
+$$
+
+\hspace{}
+
+\begin{itemize}
+    \item With $r$ being the \textbf{reference corpus length} and $c$ the \textbf{candidate corpus length}
+    \item The final formula is then:
+
+$$BLEU = BP \cdot exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
+\end{itemize}
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{ROUGE score}
+
+\vfill
+
+\begin{itemize}
+    \item The ROUGE (Recall-Oriented Understudy for Gisting Evaluation) is a metric commonly used for evaluating the quality of machine-generated text, particularly summaries
+    \item ROUGE measures the similarity between the generated summary and one or more reference (human-written) summaries
+    \item ROUGE includes multiple metrics, such as ROUGE-N (for n-grams), ROUGE-L (for longest common subsequence), and ROUGE-W (for weighted n-grams). Depending on the task, these metrics capture different aspects of summary quality, allowing a more comprehensive evaluation
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example: ROUGE-1 precision}
+
+\vfill
+\textit{Consider the following source sentence $S$ and candidate summary $C$:}
+
+\hspace{}
+
+\begin{itemize}
+    \item \textbf{S:} The cat is on the mat.
+    \item \textbf{C:} \textcolor{green}{The cat} and \textcolor{green}{the} dog.
+\end{itemize}
+
+\hspace{}
+
+\textit{Using the ROUGE-N precision score with $N = 1$ you get:}
+
+\hspace{}
+
+\begin{itemize}
+    \item Three correctly predicted unigrams
+    \item Total of number of unigrams in $C$ is 5
+\end{itemize}
+
+\hspace{}
+
+$\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
+
+\hspace{}
+
+\textit{There are more ROUGE scores as mentioned earlier. You can find more details here:} \citebutton{Medium, Fabio Chiusano}{https://medium.com/nlplanet/two-minutes-nlp-learn-the-rouge-metric-by-examples-f179cc285499}
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+\begin{vbframe}{Metrics without a gold reference}
+
+\vfill
+
+\begin{itemize}
+    \item BLEU and ROUGE are both used for tasks that have a gold reference you can compare your prediction to
+    \item In open ended text generation you just have a prompt and an output generated by the model
+    \item You don't have any gold reference to compare your output to
+    \item Therefore you have to get a bit more creative with the choice of evaluation metrics
+\end{itemize}
+
+
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Diversity}
+
+\citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} \textit{define diversity in their paper, where they introduce contrastive search, as the generation repetition at different $n$-gram levels}:
+
+\hspace{}
+
+\begin{itemize}
+    \item \textbf{Generation Repitition:}
+    \begin{itemize}
+        \item Measures the sequence-level repitition as the portion of duplicate $n$-grams in the generated text
+        \item For a generated text continuation $x_{cont}$ the repitition at $n$-gram level is defined as: 
+        $$\text{rep-n} = 100 \times \left(1.0 - \frac{|\text{unique $n$-grams}(x_{cont})|}{|\text{total $n$-grams}(x_{cont})|}\right)$$ 
+    \end{itemize}
+\end{itemize}
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Diversity (2)}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Diversity:}
+    \begin{itemize}
+        \item Repitition at different $n$-gram levels:
+        $$\text{DIV} = \prod_{n=2}^{4}\left(1.0 - \frac{\text{rep-n}}{100}\right)$$
+        \item Plugging in rep-n from the previous slide, this expression simplifies to:
+        $$\text{DIV} = \prod_{n=2}^{4} \frac{|\text{unique $n$-grams}(x_{cont})|}{|\text{total $n$-grams}(x_{cont})|}$$
+        \item A low diversity score suggests the model suffers from repitition, and a high diversity score means the model-generated text is lexically diverse
+    \end{itemize}
+\end{itemize}
+
+\vfill
+        
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Coherence}
+
+\textit{This measure was also proposed by \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} as the cosine similarity between the sentence embeddings of the prompt $x_{prompt}$ and a generated text conitinuation $x_{cont}$}:
+
+\hspace{}
+
+\begin{itemize}
+    \item They use pre-trained SimCSE sentence embeddings $EMB(x)$ proposed by \citebutton{Gao et al., 2022}{https://arxiv.org/abs/2104.08821}:
+    $$COH(x_{cont}, x_{prompt}) = \frac{EMB(x_{prompt}) \cdot EMB(x_{cont})}{\Vert EMB(x_{prompt})\Vert \cdot \Vert EMB(x_{cont})\Vert}$$
+    \item The higher the coherence-score the better the model-generated text fits to the given prompt
+\end{itemize}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{MAUVE}
+\citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454}
+
+\vfill
+
+\begin{itemize}
+    \item A language model is an estimate $\hat{P}(x)$ of the probability distribution over sequences of text $x = (x_1, . . ., x_{|\mathbf{x}|})$, consisting of tokens $x_t$ belonging to a fixed vocabulary
+    \item Given a context $x_{1:t}$, a language model $\hat{P}$ and a stochastic decoding strategy we generate text by sampling $\hat{x}_{t+1} \sim \hat{P}(\cdot|x_{1:t}), \hat{x}_{t+2} \sim \hat{P}(\cdot|x_{1:t}, \hat{x}_{t+1})$, etc.
+    \item The decoding strategy and the language model taken together define a distribution $Q$ over text, which we call \textit{model distribution}
+    \item The goal of MAUVE is to measure the gap between the model distribution $Q$ and the target distribution $P$
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Sources of error in text generation}
+
+\hspace{}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/mauve_errors.png}
+\end{figure}
+
+\begin{itemize}
+    \item The gap between $Q$ and $P$ arises from two sources of error
+    \item Type I error: $Q$ places high mass on text which is unlikely under $P$
+    \item Type II error: $Q$ cannot generate text which is plausible under $P$
+\end{itemize}
+
+\hspace{}
+
+\begin{itemize}
+    \item They formalize the two errors through the Kullback-Leibler divergence:
+        \begin{itemize}
+            \item $KL(Q|P)$ penalizes $Q$ if there is a text $x$ that leads to a high $Q(x)$ but a low $P(x)$, which is the Type I error
+            \item Similarly the Type II error is defined by $KL(P|Q)$
+        \end{itemize}
+    \item Issue: both KL divergences are infinite if the supports of $Q$ and $P$ are not identical
+    \item The authors overcome this issue by \textit{softly} measuring the two errors with a mixture distribution: 
+    $$R_{\lambda} = \lambda P (1-\lambda) Q \quad \text{for} \quad \lambda \in (0,1)$$
+    \item (soft) Type I error: $KL(Q,R_{\lambda})$
+    \item (soft) Type II error: $KL(P,R_{\lambda})$
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Divergence Curve}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/mauve_divergence.png}
+\end{figure}
+
+\begin{itemize}
+    \item To capture all the possible values of the mixture weight $\lambda$ they vary $\lambda$ between 0 and 1 to generate a \textit{divergence curve}:
+\end{itemize}
+\scalebox{0.85}{% 
+$C(P,Q) = \left\{(exp(-cKL(Q|R_{\lambda})), exp(-cKL(P|R_{\lambda})) : R_{\lambda} = \lambda P + (1-\lambda) Q, \lambda \in (0,1)\right\}$}
+\begin{itemize}
+    \item $MAUVE(P,Q)$ is the area under this divergence curve, it is a summary of the trade-off between Type I and II errors and lies in (0,1] (more details can be found in the paper \citebutton{Pillutla et al., 2021}{https://arxiv.org/abs/2102.01454})
+\end{itemize}
+    
+\end{vbframe}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Human evaluation}
+
+\textbf{Why Human Evaluation?}
+\begin{itemize}
+    \item \textbf{Subjectivity of Quality}: Human judgments are essential for evaluating the nuanced quality of text that automatic metrics might miss, such as humor, creativity, and relevance
+\end{itemize}
+
+\textbf{Key Considerations}
+\begin{itemize}
+    \item \textbf{Evaluators}: Use domain experts or crowdworkers, depending on the task complexity
+    \item \textbf{Evaluation Criteria}:
+    \begin{itemize}
+        \item \textbf{Fluency}: Is the generated text grammatically correct and natural-sounding?
+        \item \textbf{Coherence}: Does the text make logical sense?
+        \item \textbf{Diversity}: Is the output lexically diverse?
+    \end{itemize}
+    \item \textbf{Challenges}: 
+    \begin{itemize}
+        \item \textbf{Subjectivity}: Different evaluators might have varying opinions, leading to inconsistency
+        \item \textbf{Cost and Time}: Human evaluation is resource-intensive
+        \item \textbf{Bias}: Evaluators might bring in their biases, which can skew results
+    \end{itemize}
+\end{itemize}
+   
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
 \endlecture
 \end{document}

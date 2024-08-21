@@ -193,7 +193,7 @@ $$x_t = \underset{v \in V^{(k)}}{argmax}\left\{(1 - \alpha) \times \textcolor{re
     \item $h_v$ is computed by the language model given the concatination of $v$ and $\mathbf{x}_{<t}$
     \item In order to maximize the formula we want $v$ to have a high probability and a low degeneration penalty
     \item Intuitively, a larger degeneration penalty of $v$ means it is more similar (in the representation space) to the context, therefore more likely leading to the problem of model degeneration
-    \item $\alpha$ determines how much weight give to each component
+    \item $\alpha$ determines how much weight to give to each component
     \item For $\alpha = 0$ we only consider the probability and contrastive search becomes greedy search
 \end{itemize}
 
@@ -205,8 +205,15 @@ $$x_t = \underset{v \in V^{(k)}}{argmax}\left\{(1 - \alpha) \times \textcolor{re
 
 \begin{frame}{Contrastive Decoding \citebutton{L\MakeLowercase{i et al., 2023}}{\MakeLowercase{https://arxiv.org/abs/2210.15097}}}
 
+\centering
+\includegraphics[width=0.7\textwidth]{chapters/chapter12/figure/cd.png}
 
-TODO:
+\begin{itemize}
+    \item Contrastive decoding exploits the contrasts
+between expert and amateur LM of different sizes by
+choosing tokens that maximize their log-likelihood
+difference (read the paper if you are interested, not going into more detail here!)
+\end{itemize}
 
 
 \end{frame}
