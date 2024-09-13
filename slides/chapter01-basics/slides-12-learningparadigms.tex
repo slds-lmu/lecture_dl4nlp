@@ -77,7 +77,7 @@
 
 \begin{itemize}
 	\item Words are discrete units composed of characters
-	\item We can represent them (high-dimensional) one-hot vectors
+	\item We can represent them as (high-dimensional) one-hot vectors
 	\item This makes it difficult/impossible to e.g. capture similarity between synonyms
 	\item Documents can be represented as a vector of word occurrences (bag-of-words)
 \end{itemize}
@@ -102,7 +102,8 @@
 
 \begin{itemize}
 	\item high dimensionality
-	\item not possible to measure similarity
+	\item \textit{Again:} not possible to measure similarity
+	\item \textit{Alternative:} Dense embeddings
 \end{itemize}
 
 \begin{exampleblock}{Example (dense embedding)}
@@ -129,7 +130,7 @@
 	
 \vfill
 
-\textbf{Measuring similarity}
+\textbf{Measuring similarity now possible:}
 
 \begin{figure}
 	\centering
@@ -147,7 +148,11 @@
 	
 \vfill
 
-\textbf{Document retrieval}
+\textbf{Not only possible for words, but for whole documents:}\\
+
+\vspace{.5cm}
+
+\textit{Use Case:} \textbf{Document retrieval}
 
 \begin{figure}
 	\centering
@@ -171,8 +176,8 @@
 \begin{itemize}
 	\item The larger the models, the more data is needed to train them
 	\item (Labeled) Data is scarce and expensive!
-	\item Many languages in the world are highly underrepresented in terms of existing resources\\
-				Often: \textit{Number of speakers} $\neq$ \textit{Amount of available written text}
+	\item Many languages in the world are highly underrepresented in terms of existing resources:\\
+				\textit{Number of speakers (of a language)} $\neq$ \textit{Amount of available written text}
 	\item Unlabeled (English) text data is ubiquitous
 \end{itemize}
 	
@@ -188,8 +193,40 @@
 
 \begin{figure}
 	\centering
+		\includegraphics[width = 9cm]{figure/tl_supervised.png}\\ 
+	\beamergotobutton{Classical Machine Learning \href{https://researchrepository.universityofgalway.ie/entities/publication/cd6308ee-6911-460b-8ca7-27d37f44fb04}{(Source: Ruder, 2019)}}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-train/fine-tune}
+
+\vfill
+
+\begin{figure}
+	\centering
+		\includegraphics[width = 9cm]{figure/tl_transfer.png}\\ 
+	\beamergotobutton{Transfer Learning \href{https://researchrepository.universityofgalway.ie/entities/publication/cd6308ee-6911-460b-8ca7-27d37f44fb04}{(Source: Ruder, 2019)}}
+\end{figure}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-train/fine-tune}
+
+\vfill
+
+\begin{figure}
+	\centering
 		\includegraphics[width = 7cm]{figure/transfer_learning_taxonomy-1.png}\\ 
-	\beamergotobutton{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{(Source: Ruder, 2019)}}
+	\beamergotobutton{Taxonomy of transfer learning \href{https://researchrepository.universityofgalway.ie/entities/publication/cd6308ee-6911-460b-8ca7-27d37f44fb04}{(Source: Ruder, 2019)}}
 \end{figure}
 
 \vfill
@@ -213,6 +250,8 @@
 			\begin{itemize}
 				\item to cover different phenomena better than the others
 				\item to work more efficiently for learning
+				\item \textit{Example 1:} predict next work in a sentence
+				\item \textit{Example 2:} masked word prediction
 			\end{itemize}
 	\end{itemize}
 	
@@ -324,12 +363,12 @@
 
 \vfill
 	
-\textbf{Interacting with the model}
+\textbf{Interacting with the model:} \textit{Persona-Chat Benchmark}
 
 \begin{figure}
 	\centering
 		\includegraphics[width = 5cm]{figure/persona-chat.jpg}\\ 
-	\beamergotobutton{\href{https://paperswithcode.com/task/code-generation}{Source: Papers with code (example for \texttt{Persona-Chat)}}}
+	\beamergotobutton{\href{https://paperswithcode.com/sota/dialogue-generation-on-persona-chat-1}{Source: Papers with code (example for \texttt{Persona-Chat)}}}
 \end{figure}
 
 \vfill

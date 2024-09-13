@@ -4,7 +4,7 @@
 
 \newcommand{\titlefigure}{figure/linear-relationships.png}
 \newcommand{\learninggoals}{
-\item Understand what word embeddigns are
+\item Understand what word embeddings are
 \item Learn the main methods for creating them}
 
 \title{Basics}
@@ -321,7 +321,7 @@ Calculate $p(\text{sat}|\text{cat})$.
 	\item One option: \textbf{Hierarchical Softmax} (not covered) reduces complexity from $\mathcal{O}(|V|)$ to $\mathcal{O}(log_2|V|)$
 	\item Another trick: \textbf{Negative Sampling}\\ (a variant of \emph{noise contrastive estimation})
 	\item[] $\to$ Changes the objective function; the resulting model is not a language model anymore!
-	\item \textbf{Idea}: Instead of predicting the probability distribution over whole vocabulary, make binary decisions for a small number of words.
+	\item \textbf{Idea}: Instead of predicting the probability distribution over the whole vocabulary, make binary decisions for a small number of words.
 			\begin{itemize}
 				\item ``Positive`` samples: Bigrams seen in the corpus.
 				\item ``Negative`` samples: Random bigrams (not seen in corpus)
@@ -393,7 +393,7 @@ Calculate $p(\text{sat}|\text{cat})$.
 						\item $1 = $ word pair is from positive training set,
 						\item $0 = $ word pair is from negative training set
 					\end{itemize} 
-			\item $\theta$ Parameters $\vec v$, $\vec w$
+			\item Parameters $\theta$ of the model: $\vec v$, $\vec w$
 			\item $P(...)$ Logistic sigmoid: $P(1|\cdot) = \sigma(\vec w^T \vec v)$, resp. $P(0|\cdot) = 1-\sigma(\vec w^T \vec v)$.
 		\end{itemize}
 \end{itemize}
@@ -630,24 +630,6 @@ $\Rightarrow$ \qquad ([brown, fox, over, the], jumps)
 
 \vfill
 
-\begin{align}
-\displaystyle
-\text{known word:  } & \vec w^{(i)} = \frac{1}{|\mathrm{ngrams}(i)| + 1} \Big[ \vec u^{(i)} + \sum_{n \in \mathrm{ngrams}(i)} \vec u^{(n)} \Big] \nonumber \\
-\text{unknown word:  } & \vec w^{(i)} = \frac{1}{|\mathrm{ngrams}(i)|} \sum_{n \in \mathrm{ngrams}(i)} \vec u^{(n)} \nonumber
-\end{align}
-
-%$$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem}, \ldots  \text{ration}, \text{ation\$}\} $$
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{FastText (3)}
-
-\vfill
-
 \textbf{Assume, we want to represent the word \textit{example}:}
 
 \begin{itemize}
@@ -663,6 +645,24 @@ $\Rightarrow$ \qquad ([brown, fox, over, the], jumps)
   \end{align*}
 	\item Note, that the 4-gram \textit{exam} is different from the word $<$exam$>$.
 \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{FastText (3)}
+
+\vfill
+
+\textbf{Representation of a known word:}\\ Average of the word's embedding and char-n-gram embeddings
+$$\vec w^{(i)} = \frac{1}{|\mathrm{ngrams}(i)| + 1} \Big[ \vec u^{(i)} + \sum_{n \in \mathrm{ngrams}(i)} \vec u^{(n)} \Big]$$
+
+\textbf{Representation of an unknown word:}\\ Average of char-n-gram embeddings
+$$\vec w^{(i)} = \frac{1}{|\mathrm{ngrams}(i)|} \sum_{n \in \mathrm{ngrams}(i)} \vec u^{(n)}$$
+
+%$$ \mathrm{ngrams}(\text{remuneration}) = \{\text{\$re}, \text{rem}, \text{\$rem}, \ldots  \text{ration}, \text{ation\$}\} $$
 
 \vfill
 
@@ -736,7 +736,7 @@ $\Rightarrow$ \qquad ([brown, fox, over, the], jumps)
 \node [red] at (-1.7,-0.65) {\tiny (combination)};
 \end{tikzpicture}
 
-Table from Kim 2014: Convolutional Neural Networks for Sentence Classification.
+\beamergotobutton{\href{https://aclanthology.org/D14-1181/}{Kim (2014): Convolutional Neural Networks for Sentence Classification}}
 
 \vfill
 

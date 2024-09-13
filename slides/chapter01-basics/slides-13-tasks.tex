@@ -79,7 +79,7 @@
 	\begin{itemize}
 		\item \textit{Token-level Classification}: Problems on a word/token level
 		\item Modeling relationships \textit{between} words/tokens %(can also be rephrased to a token-level classification task)
-		\item \textit{Note:} The latter one can also be formulated in such a way,\\that it can be solved as a \textit{token-level classification} task
+		%\item \textit{Note:} The latter one can also be formulated in such a way,\\that it can be solved as a \textit{token-level classification} task
 	\end{itemize}
 	
 \vspace{.3cm}
@@ -258,7 +258,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Token-level classification}
+\begin{vbframe}{NER as Token-level classification}
 
 \vfill
 
@@ -391,7 +391,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 		\end{itemize}
 	\item Statistical Machine Translation (90s -- 10s)
 		\begin{itemize}
-			\item Driven by IBM guys
+			\item Mostly driven by IBM research
 		\end{itemize}
 	\item Neural Machine Translation (10s -- now)
 		\begin{itemize}
@@ -452,7 +452,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{benchmarking: traditional nlu}
+\begin{vbframe}{traditional benchmarking: nlu}
 
 \vfill
 
@@ -473,12 +473,12 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{benchmarking: generation}
+\begin{vbframe}{more challenging benchmarks}
 
 \vfill
 
 \begin{itemize}
-	\item \textbf{WinoGrande} 
+	\item \href{https://winogrande.allenai.org/}{\textbf{WinoGrande}}
 	\begin{figure}
 		\centering
 		\includegraphics[width = 10cm]{figure/winogrande.png}\\ 
@@ -498,7 +498,7 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{benchmarking: generation}
+\begin{vbframe}{more challenging benchmarks}
 
 \vfill
 
@@ -507,13 +507,13 @@ IN = Preposition or subordinating conjunction (conjunction here); VBZ = Verb, 3r
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/lambada.png}\\ 
-	\beamergotobutton{\href{https://aclanthology.org/P16-1144/}{Source: Paperno et al., 2016}}
+	\beamergotobutton{Language Modeling Broadened to Account for Discourse Aspects \href{https://aclanthology.org/P16-1144/}{(Source: Paperno et al., 2016)}}
 	\end{figure}
-	\item \textbf{PIQA}
+	\item \textbf{PIQA (Physical Intercation: Question Answering)}
 	\begin{figure}
 		\centering
 		\includegraphics[width = 9cm]{figure/piqa.png}\\ 
-	\beamergotobutton{\href{https://arxiv.org/abs/1911.11641}{Source: Bisk et al., 2019}}
+	\beamergotobutton{Reasoning about Physical Commonsense in Natural Language \href{https://arxiv.org/abs/1911.11641}{(Source: Bisk et al., 2019)}}
 	\end{figure}
 \end{itemize}
 
