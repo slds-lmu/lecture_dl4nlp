@@ -485,9 +485,9 @@
 \end{figure}
 
 \begin{itemize}
-	\item Table 1: Use case categories in RM dataset
-        \item Prompts  submitted to
-        InstructGPT model
+	\item Use case categories in RM dataset
+        (prompts  submitted to
+        InstructGPT model)
 \end{itemize}
 
 
@@ -507,11 +507,11 @@
 \end{figure}
 
 \begin{itemize}
-	\item Not used for training, just for analysis?
+%	\item Not used for training, just for analysis?
 	\item Gives a good sense of what the problem
 	behaviors of LLMs are
-	that we are trying to eliminate.
-        \item This is for RM training/validation (page 33).
+	that we are trying to fix.
+ %       \item This is for the reward model (RM, page 33).
 \end{itemize}
 
 \vfill
@@ -651,8 +651,8 @@ model responses}
 \end{figure}
 
 \begin{itemize}
-	\item (not perfect instruction following, but humans
-	don't either)
+	\item How would you rate InstructGPT's output here?
+        \item Is this a problem?
 \end{itemize}
 
 
@@ -674,8 +674,8 @@ model responses}
 	\item Start with SFT model, final layer removed
         	\item Input: prompt+response, output: reward
         \item Only uses 6B model (not 175B)
-        \item Comparisons  for a
-        	given prompt are
+        \item Given a prompt, comparisons  
+      are
         	highly correlated.
                 \item $\rightarrow$ Put them in
         	a single batch (prevents overfitting).
