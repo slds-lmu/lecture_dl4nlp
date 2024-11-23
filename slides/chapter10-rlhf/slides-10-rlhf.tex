@@ -237,10 +237,12 @@
                     \item This feedback is easy to give for
                       annotators.
                       \item In contrast:
+	\begin{itemize}
                     \item Writing good GPT answers for
                       training is hard.
                     \item It is hard to describe what is good/bad,
                       what could be improved.
+	\end{itemize}
 	\end{itemize}
 
 \vfill
@@ -336,22 +338,22 @@
 \textbf{}
 
 	\begin{itemize}
-		\item Using a simple
-		proxy for a complex goal, or getting the
-		complex goal a bit wrong, can lead to
-		undesirable and even dangerous behavior.
-		\item So one step towards building safe AI
-		systems is to remove the need for humans to
+		\item One way to make  AI
+		systems safe: have humans 
 		write goal functions.
+		\item NOT PRACTICAL: Using a simple
+		proxy for a complex goal or getting the
+		complex goal a bit wrong can lead to
+		undesirable and even dangerous behavior.
                 \item
 		RLHF: an algorithm that can infer
 		what humans want by being told which of two
 		proposed behaviors is better.
-\item RLHF needed 900 bits of feedback from a human
-		evaluator to learn to backflip.
-                \item This works great because backflipping
-                is \textbf{a seemingly
-	simple task that is simple to judge but challenging
+\item RLHF needed only 900 bits of feedback from a human
+		evaluator to learn to backflip!
+                \item The backflipping task is ideal
+                for RLHF
+       because it         is \textbf{simple to judge but challenging
 	to specify.}
 	\end{itemize}
 
@@ -394,7 +396,7 @@
 	\begin{itemize}
 		\item Finetuning on human-written dialogs
                 \item Create a reward model that measures
-		quality of dialogs -- not based on dialogs,
+		quality of dialogs -- not directly based on dialogs,
 		but on preferences which dialogs are
 		better/worse.
                 \item Use reward model for further training
