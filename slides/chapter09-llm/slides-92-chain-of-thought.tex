@@ -37,10 +37,10 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \begin{itemize}
     \item Still, it works poorly on tasks that require reasoning
     \end{itemize}
-\item Chain of thought (COT) prompting
+\item Chain of thought (CoT) prompting
     \begin{itemize}
     \item Prompts in the form <input, \textit{chain of thought}, output>
-    \item COT: series of intermediate steps that lead to a final output
+    \item CoT: series of intermediate steps that lead to a final output
     \end{itemize}
 
 \end{itemize}
@@ -124,29 +124,35 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Performance (1)}
+\begin{vbframe}{CoT improves arithmetics}
 
-\vfill
+%\vfill
 
-\textbf{CoT prompting enables LLMs to solve challenging arithmetics.}
+SVAMP: math word problems with varying structures; MAWPS:
+repository unifying math problems from different sources;
+    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.67\textwidth]{figure/cot_performance1.png}\\
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+    \includegraphics[width=0.5\textwidth]{figure/cot_performance1.png}
 \end{figure}
 
-\vfill
+%\vfill
 
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Performance (2)}
+\begin{vbframe}{CoT improves commonsense}
 
 \vfill
 
-\textbf{CoT prompting improves commonsense reasoning abilities of LLMs.}
+CSQA: Contains around 200K dialogs with a total of 1.6M
+turns. Further, unlike existing large scale QA datasets
+which contain simple questions that can be answered from a
+single tuple, the questions in the dialogs require a larger
+subgraph of the KG. 
+
 
 \begin{figure}
     \centering
@@ -213,6 +219,18 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
     \centering
     \includegraphics{figure/tot_creative_writing.png}\\
 \citebutton{Yao et al., 2023}{https://arxiv.org/pdf/2305.10601.pdf}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Tree-of-thought for creative writing (2)}
+
+\vfill
+    
+\begin{figure}
+    \includegraphics[width=1.05\textwidth]{figure/totcreativebig.png}
 \end{figure}
 
 \vfill
