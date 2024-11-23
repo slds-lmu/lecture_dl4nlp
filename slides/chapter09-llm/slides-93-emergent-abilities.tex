@@ -26,7 +26,10 @@
 
 \vfill
 
-An \textit{Emergent ability} is an ability that is not present in small models but is present in large models. \vskip3mm
+An \textit{emergent ability} is an ability that is not
+present in small models but is present in large models.
+(if everything else is held constant -- not really possible)
+\vskip3mm
 
 \begin{itemize}
     \item Is emergence a rare phenomenon?
@@ -51,7 +54,7 @@ An \textit{Emergent ability} is an ability that is not present in small models b
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.84\textwidth]{chapters/chapter08/figure/emergent_abilities.png}
+    \includegraphics[width=0.84\textwidth]{figure/emergent_abilities.png}
     \caption{Examples of emergence in few-shot prompting.}
     \label{fig:emergent_abilities}
 \end{figure}
@@ -141,7 +144,7 @@ Two defining properties for emergent abilities in LLMs:
 
 \vskip5mm
 
-Observation: Emergent abilities appear only under metrics that nonlinearly or discontinuously scale model's per-token error rate:
+Claim: Emergent abilities appear only under metrics that nonlinearly or discontinuously scale model's per-token error rate:
 
 	\begin{figure}
 		\centering
@@ -160,7 +163,7 @@ Observation: Emergent abilities appear only under metrics that nonlinearly or di
 
 	\begin{figure}
 		\centering
-		\includegraphics[width = 11cm]{chapters/chapter08/figure/emergent_experiments.png}\\ 
+		\includegraphics[width = 11cm]{figure/emergent_experiments.png}\\ 
 		\citebutton{Source: Schaeffer et al., 2023}{https://arxiv.org/pdf/2304.15004.pdf}
 	\end{figure}
 
@@ -185,7 +188,32 @@ emergent ability or choose a metric to ablate an emergent ability
 %
 \item A task and a metric are distinct and meaningful choices when constructing a benchmark
 %
-\item When choosing a metric, one should consider the metric's effect on the per-token error rate and adapt their measuring process accordingly
+\item When choosing a metric, one should consider the
+metric's effect on the per-token error rate;
+may require adapting the measuring process
+%
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{counter counter argument}
+
+\vfill
+
+%
+\begin{itemize}
+%
+\item Subjectively, there was clearly some form of ``psychological'' emergence
+when GPT3 came out -- and probably with several other models
+as well.
+
 %
 \end{itemize}
 
