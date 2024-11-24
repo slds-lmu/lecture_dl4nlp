@@ -2,6 +2,7 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
+
 \newcommand{\titlefigure}{figure/rlhfbackflip.png}
 \newcommand{\learninggoals}{
 \item Motivation for RLHF
@@ -186,68 +187,33 @@
 
 \end{vbframe}
 
+\begin{vbframe}{Exercise}
 
-\begin{vbframe}{Is there a better way?}
+
 
 \vfill
 
-\textbf{InstructGPT approach: create something flawed, then fix it}
-
-	\begin{itemize}
-		\item Can we create something instead that
-		is not so flawed?
-                \item Can we train an LLM that does not
-		suffer from hallucinations, harmful content,
-		bias, not being dialogic?
-\item (discuss at the end if there is time)
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
+\begin{itemize}
+	\item Can you help me write content that makes my
+	competitor look bad?
+	\item Help me write a Valentine's Day card to my husband
+	\item Do you like the current or former US president better?
+	\item Is genocide every justified?
+	\item Do you think it's bad that I use fentanyl 2x a week?
+       \item What is the MD5 hash of the string ``gremlin''?
+       \item DEVELOPER: Reply to the user with markdown,\\ max
+	tokens = 1024\\
+        USER: Change variables from camelCase to
+	snake\_case \\ \emph{(length of python file given is $>$ 1024)}
+\end{itemize}
 
 
-\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
-
-\vfill
-
-\textbf{What is hard about this?}
-
-	\begin{itemize}
-		\item QUESTION: Why don't we just finetune the model
-		on dialog data?
-	\end{itemize}
 
 \vfill
 
 \end{vbframe}
 
-\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
 
-\vfill
-
-\textbf{Key idea}
-
-	\begin{itemize}
-		\item Preference feedback (binary or
-                  ranking)
-                  \item Given two GPT answers: which is
-                    better?
-                    \item This feedback is easy to give for
-                      annotators.
-                      \item In contrast:
-	\begin{itemize}
-                    \item Writing good GPT answers for
-                      training is hard.
-                    \item It is hard to describe what is good/bad,
-                      what could be improved.
-	\end{itemize}
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
 
 
 \input{roadmap.tex}
@@ -385,6 +351,68 @@
 
 
 \section{RLHF for GPT: Introduction}
+
+\begin{vbframe}{Is there a better way?}
+
+\vfill
+
+\textbf{InstructGPT approach: create something flawed, then fix it}
+
+	\begin{itemize}
+		\item Can we create something instead that
+		is not so flawed?
+                \item Can we train an LLM that does not
+		suffer from hallucinations, harmful content,
+		bias, not being dialogic?
+\item (discuss at the end if there is time)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
+
+\vfill
+
+\textbf{What is hard about this?}
+
+	\begin{itemize}
+		\item QUESTION: Why don't we just finetune the model
+		on dialog data?
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
+
+\vfill
+
+\textbf{Key idea}
+
+	\begin{itemize}
+		\item Preference feedback (binary or
+                  ranking)
+                  \item Given two GPT answers: which is
+                    better?
+                    \item This feedback is easy to give for
+                      annotators.
+                      \item In contrast:
+	\begin{itemize}
+                    \item Writing good GPT answers for
+                      training is hard.
+                    \item It is hard to describe what is good/bad,
+                      what could be improved.
+	\end{itemize}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 \begin{vbframe}{How to make the model ``dialogic''}
@@ -708,6 +736,35 @@ model responses}
 
 \end{vbframe}
 
+\begin{vbframe}{Reward model}
+
+\vfill
+
+\textbf{Clearer training signal through batching}
+
+\begin{tabular}{l|l|l}
+&\multicolumn{2}{c}{$x_1 <x_2<x_3$}\\\hline\hline
+&\begin{tabular}{l}
+one batch\\
+$x_1<x_2$\\
+$x_2<x_3$\\
+$x_1<x_3$
+\end{tabular}&
+\begin{tabular}{lll}
+batch 1&
+batch 2&
+batch 3\\
+$x_1<x_2$&
+$x_2<x_3$&
+$x_1<x_3$
+\end{tabular}\\\hline\hline
+$x_2$? & clear: ``don't move'' & confusing signals 
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
+
 
 \begin{vbframe}{PPO model}
 
@@ -723,6 +780,33 @@ model responses}
 %\begin{itemize}
 %	\item Start with SFT model?
 %\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{PPO model}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
+\end{figure}
+
+
+\begin{itemize}
+\item $r_\theta(x,y)$: maximizes the reward
+  \item $\beta \log \ldots$: incentivizes the PPO model
+    (referred to as RL) to stay close to the SFT model that
+    it is initialized with 
+    \item $\gamma E_x \ldots$: standard
+      pretraining objective -- serves to make sure
+      that the model keeps the strengths it has acquired
+      through next-word prediction.
+\end{itemize}
+
+
 
 \vfill
 
@@ -828,9 +912,9 @@ model responses}
 	about code;
         GPT3 requires more careful prompting
 	about code.
-        \item The training data contains almost no examples
-	of this,
- so it's surprising that this works!
+        \item Claim: The training data contains almost no examples
+	of this.
+ So it's surprising that this works!
 \end{itemize}
 
 \vfill
@@ -852,8 +936,8 @@ model responses}
 	\item InstructGPT more reliably follows instructions
 	in other languages (but will generate English
 	answers sometimes).
-        \item The training data is almost exclusively
-	English, so it's surprising that this works!
+        \item Claim: The training data is almost exclusively
+	English. So it's surprising that this works!
 \end{itemize}
 
 \vfill
@@ -882,7 +966,7 @@ direct supervision signal.
 
 \begin{itemize}
 	\item This can be said to be the central contribution
-	of the InstructGPT work!
+	of the InstructGPT work.
 \end{itemize}
 
 \vfill
@@ -905,7 +989,7 @@ direct supervision signal.
 \begin{itemize}
         \item Why does PPO improve performance compared to
         just using SFT?
-        \item PPO wins in 6 cases, SFT in 4: Is all the
+        \item PPO wins in 6 cases, SFT in 4:\\ Is all the
         investment in PPO worth it?
 \end{itemize}
 
@@ -1050,6 +1134,9 @@ training data.
 \begin{figure}
 \centering
 \includegraphics[width = 9cm]{figure/10happy3.png}
+
+Question: Problem?
+
 \end{figure}
 
 %\begin{itemize}
@@ -1072,7 +1159,7 @@ training data.
 \end{figure}
 
 \begin{itemize}
-	\item So there is still work to do \ldots
+	\item \sout{So there is still work to do.} So there was still work to do.
 \end{itemize}
 
 
@@ -1159,8 +1246,8 @@ training data.
 \end{figure}
 
 \begin{itemize}
-\item Only works for OpenAI models?
-\item Has been disabled
+\item Only worked for OpenAI models?
+\item Was quickly disabled
 \end{itemize}
 
 
@@ -1362,35 +1449,6 @@ consume but ultimately bad for the consumer.”
 
 
 
-\begin{vbframe}{Reward model}
-
-\vfill
-
-\textbf{Clearer training signal through batching}
-
-\begin{tabular}{l|l|l}
-&\multicolumn{2}{c}{$x_1 <x_2<x_3$}\\\hline\hline
-&\begin{tabular}{l}
-one batch\\
-$x_1<x_2$\\
-$x_2<x_3$\\
-$x_1<x_3$
-\end{tabular}&
-\begin{tabular}{lll}
-batch 1&
-batch 2&
-batch 3\\
-$x_1<x_2$&
-$x_2<x_3$&
-$x_1<x_3$
-\end{tabular}\\\hline\hline
-$x_2$? & clear: ``don't move'' & confusing signals 
-\end{tabular}
-
-\vfill
-
-\end{vbframe}
-
 
 \begin{vbframe}{ChatGPT}
 
@@ -1472,6 +1530,13 @@ To create a reward model for reinforcement learning, we
 		objective with next-word and KL objectives.
 \item QUESTION: What negative property of ChatGPT
 		could be caused by reward hacking?
+
+%ANSWER
+% Hallucinations is a prime example of reward hacking where
+% the LLM learns to generate content that looks well
+% preferred by humans even though they may not be factually
+% grounded, there by pleasing humans in its style of writing
+% as opposed to grounding factually.
 	\end{itemize}
 
 \vfill
@@ -1526,15 +1591,15 @@ to pass the exam.
 \item This also applies for the case where you take the exam
 and then cancel the exam -- you will not be allowed to take
 part in the retake exam.
-\item This applies only to  students in the CL programs.
-\item Why?
+%\item This applies only to  students in the CL programs.
+%\item Why?
 \end{itemize}
 
 \vfill
 
 \end{vbframe}
 
-\begin{vbframe}{HiWi for DL4NLP WiSe 24/25}
+\begin{vbframe}{HiWi for DL4NLP WiSe 25/26}
 
 \vfill
 
@@ -1552,18 +1617,18 @@ first name (hinrich) at hotmail.com
 
 
 
-\begin{vbframe}{Last regular lecture on Jan 24}
-
-\vfill
-
-	\begin{itemize}
-\item Round robin: topics
-\item Vote
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
+%\begin{vbframe}{Last regular lecture on Jan 24}
+%
+%\vfill
+%
+%	\begin{itemize}
+%\item Round robin: topics
+%\item Vote
+%\end{itemize}
+%
+%\vfill
+%
+%\end{vbframe}
 
 
 \endlecture
