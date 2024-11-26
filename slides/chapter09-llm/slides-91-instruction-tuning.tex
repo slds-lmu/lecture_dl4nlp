@@ -32,7 +32,8 @@
         \begin{itemize}
             \item next token prediction
             \item no explicit understanding of tasks
-            \item no alignment with human preferences for charting or for generation coherent text
+            \item no alignment with human preferences for
+    chat or for generation of coherent text
         \end{itemize}
 \end{itemize}
 
@@ -85,7 +86,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{issues with fine-tuning}
+\begin{frame}{issues with (BERT task-specific) fine-tuning}
 
 \vfill
 
@@ -112,6 +113,8 @@
 
 \begin{itemize}
     \item Assumption: Model has learned about the task during (unsupervised) pre-training \\ \ques Is this \textit{always} a realistic assumption??
+% if you believe that you can find everything on the web: yes
+% however: see point "grounding in specialized domain" in a few slides
     \item A direct response within the frame of a given label set is expected
     \begin{itemize}
         \item Humans usually don't directly answer but provide intermediate reasoning steps (so-called ``chain-of-thought``)
@@ -139,9 +142,13 @@
 \vfill
 
 \begin{itemize}
-    \item \textit{Hallucinations:} Output that is not true or not reasonable w.r.t the context and given input data
+    \item \textit{Hallucinations:} Output that is not true.
+(different possible causes: just made up,
+incorrect internal reasoning etc)
     \item \textit{Imprecise mathematical operations:} Models not trained to do arithmetics
-    \item \textit{Inadequate experience grounding:} Not fully capable of generating correct answers to questions from custom data
+    \item \textit{Inadequate experience grounding:} Not
+    fully capable of generating correct answers to questions
+    from specialized domains not covered by pretraining data
     \item \textit{Limited ability for complex reasoning:} Long-known challenge in NLP/LLMs
 \end{itemize}
 
@@ -151,7 +158,8 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{best of both worlds}
+\begin{frame}{T5: best of both worlds, fine-tuning on tasks
+and prompting}
 
 \vfill
 	
