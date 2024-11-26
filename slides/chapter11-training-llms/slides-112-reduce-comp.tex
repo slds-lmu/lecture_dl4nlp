@@ -193,12 +193,25 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \begin{vbframe}{GPU Memory Hierarchy}
 
 \vfill
-
-\begin{figure}
+\begin{minipage}[c]{.49\textwidth}
+	\begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/gpu_mem.png} \\ 
-	{\footnotesize Source: \href{https://arxiv.org/abs/2205.14135}{Dao et al. (2022)}}
+	\includegraphics[width = 6.3cm]{./figure/gpu_mem.png} \\ 
 \end{figure}
+\end{minipage}
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\makebox[6cm][r]{ 
+			\includegraphics[width = 5cm]{figure/flash-attn.png}
+		}\\ 
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+
+\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
 
 \vfill
 
