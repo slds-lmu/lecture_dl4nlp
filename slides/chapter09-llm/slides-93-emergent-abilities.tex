@@ -70,6 +70,8 @@ present in small models but is present in large models.
 \vfill
 
 \begin{itemize}
+\item ``MODEL SIZE (TASK)'' means: MODEL can do
+TASK with SIZE, but not with less than SIZE (hence emerging)
     \item GPT-3 13B (2 tasks): hindu knowledge, modified arithmetic
     \item GPT-3 175B (15 tasks): analytic entailment, codenames, phrase relatedness, question answer creation, self evaluation tutoring, ...
     \item LaMDA 137B (8 tasks): gender inclusive sentences german, repeat copy logic, sports understanding, ...
@@ -181,8 +183,10 @@ Claim: Emergent abilities appear only under metrics that nonlinearly or disconti
 %
 \begin{itemize}
 %
-\item For a fixed task and a fixed model family, the researcher can choose a metric to create an
-emergent ability or choose a metric to ablate an emergent ability
+\item
+If TASK is emergent for family MODEL at SIZE on METRIC, then
+it is often possible to choose another metric for which the
+task is not emergent.
 %
 \item Emergent abilities can be induced in computer vision tasks as well
 %
