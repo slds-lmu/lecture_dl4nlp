@@ -4,7 +4,7 @@
 
 %\newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
-\item comprehend the different subtleties in the space between supervised fine-tuning and zero-shot prompting}
+\item comprehend the different subtleties in the space of fine-tuning and prompting}
 
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
@@ -51,8 +51,7 @@
         training set of size $k$ (where $k$ is not small,
         e.g., $k=100$)
         \item the output can be an arbitrary category (e.g.,
-        ``0'', ``1'' for sentiment analysis), typically done
-        for BERT
+        ``0'', ``1'' for sentiment analysis)
             \item alternatively, the output can be a
         meaningful ``verbalizer'' (e.g., ``negative'',
         ``positive'' for sentiment analysis)
@@ -96,8 +95,8 @@ supposed to do
         \item requires finetuning on a large training set
         \item but now: many tasks (the more the better)
         \item task format is consistent with language model
-            objective (similar to verbalizer), see below
-            \item T5
+            objective (similar to verbalizer)
+            \item T5, see below
         \end{itemize}
 \end{itemize}
 
@@ -143,6 +142,7 @@ supposed to do
 that has been    trained on generic data (web, reddit etc),
     adapt it to a new domain (e.g., company-internal data) by
     training it on a large corpus from this new domain.
+\item objective: standard language modeling objective
     \item This results in a language model that has all the
     nice capabilities of a generic language model (e.g.,
     MISTRAL family), but also understands the special domain.
@@ -195,12 +195,13 @@ that has been    trained on generic data (web, reddit etc),
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{issues with (BERT task-specific) fine-tuning}
+\begin{frame}{issues with single-task fine-tuning}
 
 \vfill
 
 \begin{itemize}
-    \item Only single-task models (sequential transfer learning instead of multi-task learning)
+    \item The result is a single-task model.
+(sequential transfer learning instead of multi-task learning)
     \item Generalization of the model 
         \begin{itemize}
             \item only w.r.t. to one task / data distribution
@@ -208,7 +209,7 @@ that has been    trained on generic data (web, reddit etc),
             \item \ques what about related domains? other languages?
         \end{itemize} 
     \item Still requires (quite) large amounts of annotated data
-    \item Poor (to none) zero-/few-shot capabilities of fine-tuned models
+    \item Poor few-shot capabilities of fine-tuned models
 \end{itemize}
 
 \vfill
@@ -322,7 +323,10 @@ and prompting}
 \vfill
 
 \begin{itemize}
-    \item \textit{Multitask Prompted Training:} Novel training method that involves learning from multiple tasks using unified prompt formats as a means to improve generalization to new, unseen tasks. \\ $\to$ \textit{zero-shot task generalization}
+    \item \textit{Multitask Prompted Training:} Novel
+    training method that involves learning from multiple
+    tasks using unified prompt formats as a means to improve
+    generalization to new, unseen tasks.
     \item This means that the model can perform well on tasks it hasn't been explicitly trained for.
     \item The key for this lies in the set of shared prompts it has learned from during fine-tuning.
 \end{itemize}
@@ -345,7 +349,9 @@ and prompting}
             \item All data sets belonging to as held-out task go to the test set
             \item Generalization across tasks / data distributions
         \end{itemize}
-    \item Highlights the Importance of Prompts: The paper emphasizes the importance of prompts in facilitating zero-shot learning, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
+    \item Highlights the Importance of Prompts: The paper
+        emphasizes the importance of prompts in facilitating
+        transfer to new tasks, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
 \end{itemize}
 
 \vfill
@@ -571,7 +577,8 @@ Fine-tuning a PLM using data that provides task instruction supervision. \vskip3
 \item Supervised instructions on a multitask mixture
 \item Instructions as part of input
 \item Covering various tasks 
-\item Including zero-shot generalization capabilities
+\item Enables transfer to unseen tasks, based on using a
+common prompt template
 \item Avoiding catastrophic forgetting
 \end{itemize}
 
