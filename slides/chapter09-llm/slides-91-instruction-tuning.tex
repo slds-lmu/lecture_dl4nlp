@@ -20,6 +20,26 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{recap}
+
+\vfill
+
+\begin{itemize}
+    \item language modeling objectives
+        \begin{itemize}
+            \item token prediction
+            \item no explicit understanding of tasks
+        \end{itemize}
+    \item this is true for encoder and decoder models
+    \item So we need to do additional work if we want
+        to use language models for solving tasks!
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
 \begin{frame}{How to solve a task with language models? (1)}
 
 \vfill
@@ -35,8 +55,11 @@
         for BERT
             \item alternatively, the output can be a
         meaningful ``verbalizer'' (e.g., ``negative'',
-        ``positive'' for sentiment analysis), works best for
-        autoregressive models
+        ``positive'' for sentiment analysis)
+        		\citebutton{Schick et al.,
+        2020}{https://arxiv.org/abs/2009.07118}
+        \item this was the typical way encoder models like
+        BERT were used
         \end{itemize}
 \end{itemize}
 
@@ -54,6 +77,8 @@
 supposed to do
         \item the model will then often complete the task
         just based on analogy to these few shots
+        \item this is the most typical way of using
+        autoregressive models for tasks
         \end{itemize}
 \end{itemize}
 
@@ -71,7 +96,7 @@ supposed to do
         \item requires finetuning on a large training set
         \item but now: many tasks (the more the better)
         \item task format is consistent with language model
-            objective (similar to verbalizer)
+            objective (similar to verbalizer), see below
             \item T5
         \end{itemize}
 \end{itemize}
@@ -87,7 +112,7 @@ supposed to do
 \begin{itemize}
 \item instruction tuning (short for instruction finetuning)
         \begin{itemize}
-            \item theory/hope: you do not have to explicitly
+            \item theory/hope: you no longer have to explicitly
             train on specific tasks
             \item instead, you teach the model a general
             capability of being ``helpful''
@@ -116,7 +141,7 @@ supposed to do
     finetuning.
     \item Continued pretraining: given a language model
 that has been    trained on generic data (web, reddit etc),
-    adapt it to a new domain (e.g., company-iternal data) by
+    adapt it to a new domain (e.g., company-internal data) by
     training it on a large corpus from this new domain.
     \item This results in a language model that has all the
     nice capabilities of a generic language model (e.g.,
@@ -129,25 +154,6 @@ that has been    trained on generic data (web, reddit etc),
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{recap}
-
-\vfill
-
-\begin{itemize}
-    \item encoder vs. decoder models (discriminative vs. generative)
-    \item (in-context) learning vs. creative generation/chat
-    \item pre-training with plain language modeling:
-        \begin{itemize}
-            \item next token prediction
-            \item no explicit understanding of tasks
-            \item no alignment with human preferences for
-    chat or for generation of coherent text
-        \end{itemize}
-\end{itemize}
-
-\vfill
-
-\end{frame}
 
 % ------------------------------------------------------------------------------
 
