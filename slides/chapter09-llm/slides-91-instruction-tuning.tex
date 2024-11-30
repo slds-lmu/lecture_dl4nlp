@@ -59,6 +59,8 @@
         2020}{https://arxiv.org/abs/2009.07118}
         \item this was the typical way encoder models like
         BERT were used
+        \item still very much relevant if you need to deploy
+        a small efficient model for a focused task
         \end{itemize}
 \end{itemize}
 
@@ -84,6 +86,7 @@ supposed to do
 \vfill
 
 \end{frame}
+
 \begin{frame}{How to solve a task with language models? (3)}
 
 \vfill
@@ -91,12 +94,15 @@ supposed to do
 \begin{itemize}
 \item multi-task finetuning
         \begin{itemize}
-            \item mixes single-task finetuning with prompting
-        \item requires finetuning on a large training set
-        \item but now: many tasks (the more the better)
-        \item ideally: task format is consistent with language model
+        \item finetuning on a large training set of *many* tasks
+        \item the more the better
+        \item method 1: consistent task format, e.g., each
+        task is reformulated into a question-answering format
+        \item method 2: more open task format
+\item ideally: 
+consistent with language model
             objective (similar to verbalizer)
-            \item T5, see below
+            \item Examples: T5 and FLAN, see below
         \end{itemize}
 \end{itemize}
 
@@ -152,6 +158,24 @@ that has been    trained on generic data (web, reddit etc),
 \vfill
 
 \end{frame}
+
+\begin{frame}{Finetuning: Terminology}
+
+\vfill
+
+\begin{itemize}
+\item single-task finetuning
+\item multi-task finetuning
+\item instruction tuning
+\item prompting
+\item continued pretraining
+\item \ques about terminology?
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
 
 % ------------------------------------------------------------------------------
 
@@ -225,71 +249,73 @@ that has been    trained on generic data (web, reddit etc),
 \vfill
 
 \begin{itemize}
-    \item Assumption: Model has learned about the task during (unsupervised) pre-training \\ \ques Is this \textit{always} a realistic assumption??
-% if you believe that you can find everything on the web: yes
-% however: see point "grounding in specialized domain" in a few slides
-    \item A direct response within the frame of a given label set is expected
-    \begin{itemize}
-        \item Humans usually don't directly answer but provide intermediate reasoning steps (so-called ``chain-of-thought``)
-    \end{itemize}
-    \item \textit{Misalignment with human needs}
-    \begin{itemize}
-        \item Out of context answers
-        \item Harmful answers
-    \end{itemize}
-    \item \textit{Lack of interpretability}
-    \begin{itemize}
-        \item Just the answer w/o explanation
-        \item Big concern about LLMs in general
-    \end{itemize}
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{issues with prompting}
-
-\vfill
-
-\begin{itemize}
-    \item \textit{Hallucinations:} Output that is not true.
-(different possible causes: just made up,
-incorrect internal reasoning etc)
-    \item \textit{Imprecise mathematical operations:} Models not trained to do arithmetics
-    \item \textit{Inadequate experience grounding:} Not
-    fully capable of generating correct answers to questions
-    from specialized domains not covered by pretraining data
-    \item \textit{Limited ability for complex reasoning:} Long-known challenge in NLP/LLMs
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{frame}{issues with prompting}
-
-\vfill
-
-\begin{itemize}
-\item Prompting works best if the task has occurred during
+    \item Assumption: Model has learned about the task during (unsupervised) pre-training 
+    \item A direct response is expected
+        \item Just a label, just yes/no answer, just a name
+    in QA
+    \item This is not natural dialogic behavior: human
+    typically don't
+    just answer with a label, yes/no, a name (although
+    sometimes they do)
+    \item See next lecture
+\item Again: Prompting works best if the task has occurred during
 unsupervised training.
-    \item \ques For which tasks is this expected to the case
+    \item \ques For which tasks is this expected to be the case
     / not the case?
-    \end{itemize}
+%    \item \textit{Misalignment with human needs}
+%    \begin{itemize}
+%        \item Out of context answers
+%        \item Harmful answers
+%    \end{itemize}
+%    \item \textit{Lack of interpretability}
+%    \begin{itemize}
+%        \item Just the answer w/o explanation
+%        \item Big concern about LLMs in general
 \end{itemize}
 
 \vfill
 
 \end{frame}
+% ------------------------------------------------------------------------------
+
+%\begin{vbframe}{issues with prompting}
+%
+%\vfill
+%
+%\begin{itemize}
+%    \item \textit{Hallucinations:} Output that is not true.
+%(different possible causes: just made up,
+%incorrect internal reasoning etc)
+%    \item \textit{Imprecise mathematical operations:} Models not trained to do arithmetics
+%    \item \textit{Inadequate experience grounding:} Not
+%    fully capable of generating correct answers to questions
+%    from specialized domains not covered by pretraining data
+%    \item \textit{Limited ability for complex reasoning:} Long-known challenge in NLP/LLMs
+%\end{itemize}
+%
+%\vfill
+%
+%\end{vbframe}
+%
+%% ------------------------------------------------------------------------------
+
+%\begin{frame}{issues with prompting}
+%
+%\vfill
+%
+%\begin{itemize}
+%% if you believe that you can find everything on the web: yes
+%% however: see point "grounding in specialized domain" in a few slides
+%    \end{itemize}
+%
+%
+%\vfill
+%
+%\end{frame}
 
 
-\begin{frame}{T5: best of both worlds, fine-tuning on tasks
-and prompting-like behavior}
+\begin{frame}{Multitask finetuning: best of both worlds
+(finetuning and  prompting)}
 
 \vfill
 	
@@ -299,34 +325,43 @@ and prompting-like behavior}
 		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
 	\end{figure}
 
+\pause
+
+    \item \ques \textbf{Why does this result in multi-task learning?}
+    % IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
+
+
 \vfill
 
 \end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{best of both worlds}
+\begin{frame}{One format consistently used for all tasks}
 
 \vfill
 
 \begin{itemize}
-    \item \ques \textbf{How does multi-task learning happen?}
-    \item[$\to$] IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
-    \item \ques How can we make the \textit{EXPLICIT}?
-    \item[$\to$] Mapping any natural language tasks into
-    a \textit{human-readable} prompted form
-\citebutton{Schick et al.,
-        2020}{https://arxiv.org/abs/2009.07118},
-\citebutton{Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+\item So a consistent format (as in T5) is desirable.
+    \item \ques The format used in T5 is not just any
+    format, but it has a special property. Which property is this?
+
+%How can we make the \textit{EXPLICIT}?
+%    \item[$\to$] Mapping any natural language tasks into
+%    a \textit{human-readable} prompted form
+%\citebutton{Schick et al.,
+%        2020}{https://arxiv.org/abs/2009.07118},
+%\citebutton{Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
 \end{itemize}
 
 \vfill
 
 \end{frame}
 
+
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Carefully designing task prefixes}
+\begin{frame}{Carefully designing task formats (mostly prefixes)}
 
 \vfill
 	
@@ -368,8 +403,10 @@ and prompting-like behavior}
 \begin{itemize}
     \item Benchmark for Evaluation:
         \begin{itemize}
-            \item Held-out \textit{tasks} instead of just held-out samples as a test set\\
-            (data sets are grouped according to task beforehand)
+        \item Instead of using held-out *samples* (as is
+        standard in NLP) \ldots
+        \item \ldots we now use held-out *tasks*
+%            \item Held-out \textit{tasks} instead of just held-out samples as a test set\\
             \item All data sets belonging to a held-out task go to the test set
             \item Generalization across tasks / data distributions
         \end{itemize}
@@ -468,10 +505,10 @@ and prompting-like behavior}
 
 \vfill
 
-\textbf{Extend instruction fine-tuning:} \vskip3mm
+\textbf{Extend multi-task learning} \vskip3mm
 
 \begin{itemize}
-\item Scaling the number of fine-tuning tasks and data
+\item Scaling the number of tasks and data
     \begin{itemize}
     \item NIV2 (1554 tasks)
     \item T0-SF (193 tasks)
@@ -509,22 +546,56 @@ and prompting-like behavior}
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
+\begin{vbframe}{Multi-task training vs Instruction tuning}
+
+\vfill
+
+\begin{itemize}
+\item The term ``instruction tuning'' was introduced by FLAN paper,
+		\citebutton{Source: Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+\item However, today ``instruction tuning'' refers to a wide
+variety of methods that train on instruction-output pairs,
+    not just tasks
+    \item
+Open-ended generation and ``alignment'' 
+is now included under
+    the rubric ``instruction tuning'': brainstorming,
+    writing a joke, give me ten analogies for concept X,
+    don't use hate language, don't take positions on
+    controversial political issues etc
+\item These are not classical NLP tasks.
+\item See next lecture
+\item Our use of terminology in this class:
+\item multi-task finetuning = tasks in the classical NLP
+    sense
+    \item instruction-tuning: a broad approach to changing
+    the behavior of a raw language model (i.e., trained on
+    next-word prediction) to be ``helpful, harmless and
+    honest''. This includes training on classical NLP tasks,
+    but it's just one part.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+% ------------------------------------------------------------------------------
 
 \begin{vbframe}{Fine-Tuning Conclusions}
 
 \vfill
 
 \begin{itemize}
-\item It is still possible to upscale
+\item The  more the better
     \begin{itemize}
     \item Larger models will improve performance
     \item More fine-tuning tasks will improve performance
     \end{itemize}
-\item Instruction finetuning generalizes across models
+\item Multi-task finetuning generalizes across models
     \begin{itemize}
     \item It works well on different architectures
     \end{itemize}
-\item It improves usability and mitigates some harms
+\item Greatly improves usability
+%and mitigates some harms
 \item It is relatively compute-efficient
     \begin{itemize}
     \item For PaLM 540\,B it takes 0.2\,\% of pre-training compute, but improves by 9.4\,\%
@@ -537,6 +608,34 @@ and prompting-like behavior}
 
 \endlecture
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Interactive NLP (\MakeLowercase{i}NLP)}
