@@ -72,11 +72,11 @@
 \begin{itemize}
     \item few-shot prompting
         \begin{itemize}
-            \item provide $k$ (where $k$ is small) examples of what the model is
+            \item provide $k$ (where $k$ is small, e.g., $k=5$) examples of what the model is
 supposed to do
         \item the model will then often complete the task
         just based on analogy to these few shots
-        \item this is the most typical way of using
+        \item this is the most typical way of using current
         autoregressive models for tasks
         \end{itemize}
 \end{itemize}
@@ -94,7 +94,7 @@ supposed to do
             \item mixes single-task finetuning with prompting
         \item requires finetuning on a large training set
         \item but now: many tasks (the more the better)
-        \item task format is consistent with language model
+        \item ideally: task format is consistent with language model
             objective (similar to verbalizer)
             \item T5, see below
         \end{itemize}
@@ -111,13 +111,14 @@ supposed to do
 \begin{itemize}
 \item instruction tuning (short for instruction finetuning)
         \begin{itemize}
-            \item theory/hope: you no longer have to explicitly
-            train on specific tasks
-            \item instead, you teach the model a general
+            \item you teach the model a *general*
             capability of being ``helpful''
             \item it then solves arbitrary tasks without few-shot
             prompting and without finetuning beyond instruction tuning
-            \item no task-specific training set required!
+            \item theory/hope: you no longer have to explicitly
+            train on specific tasks, the instruction-tuned
+            model can solve new tasks without having been
+            trained on them
             \item next lecture
         \end{itemize}
 \end{itemize}
@@ -201,15 +202,17 @@ that has been    trained on generic data (web, reddit etc),
 
 \begin{itemize}
     \item The result is a single-task model.
-(sequential transfer learning instead of multi-task learning)
+\item Sequential transfer learning instead of multi-task learning
     \item Generalization of the model 
         \begin{itemize}
             \item only w.r.t. to one task / data distribution
-            \item \ques what about other tasks? Do they also benefit?
-            \item \ques what about related domains? other languages?
         \end{itemize} 
-    \item Still requires (quite) large amounts of annotated data
+    \item Still requires (quite) large amounts of annotated
+        data (e.g., $k=100$)
     \item Poor few-shot capabilities of fine-tuned models
+            \item \ques Could there be other tasks that
+        might benefit?
+            \item \ques What about related domains / languages?
 \end{itemize}
 
 \vfill
@@ -268,8 +271,25 @@ incorrect internal reasoning etc)
 
 % ------------------------------------------------------------------------------
 
+\begin{frame}{issues with prompting}
+
+\vfill
+
+\begin{itemize}
+\item Prompting works best if the task has occurred during
+unsupervised training.
+    \item \ques For which tasks is this expected to the case
+    / not the case?
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
 \begin{frame}{T5: best of both worlds, fine-tuning on tasks
-and prompting}
+and prompting-like behavior}
 
 \vfill
 	
@@ -293,7 +313,11 @@ and prompting}
     \item \ques \textbf{How does multi-task learning happen?}
     \item[$\to$] IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
     \item \ques How can we make the \textit{EXPLICIT}?
-    \item[$\to$] Mapping any natural language tasks into a \textit{human-readable} prompted form \citebutton{Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+    \item[$\to$] Mapping any natural language tasks into
+    a \textit{human-readable} prompted form
+\citebutton{Schick et al.,
+        2020}{https://arxiv.org/abs/2009.07118},
+\citebutton{Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
 \end{itemize}
 
 \vfill
@@ -323,8 +347,8 @@ and prompting}
 \vfill
 
 \begin{itemize}
-    \item \textit{Multitask Prompted Training:} Novel
-    training method that involves learning from multiple
+    \item \textit{Multitask Prompted Training:} This
+    training method involves learning from multiple
     tasks using unified prompt formats as a means to improve
     generalization to new, unseen tasks.
     \item This means that the model can perform well on tasks it hasn't been explicitly trained for.
@@ -346,7 +370,7 @@ and prompting}
         \begin{itemize}
             \item Held-out \textit{tasks} instead of just held-out samples as a test set\\
             (data sets are grouped according to task beforehand)
-            \item All data sets belonging to as held-out task go to the test set
+            \item All data sets belonging to a held-out task go to the test set
             \item Generalization across tasks / data distributions
         \end{itemize}
     \item Highlights the Importance of Prompts: The paper
