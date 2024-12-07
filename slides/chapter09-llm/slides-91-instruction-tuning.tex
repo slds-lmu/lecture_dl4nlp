@@ -58,9 +58,10 @@
         		\citebutton{Schick et al.,
         2020}{https://arxiv.org/abs/2009.07118}
         \item this was the typical way encoder models like
-        BERT were used
+        BERT are used
         \item still very much relevant if you need to deploy
         a small efficient model for a focused task
+\item draw picture
         \end{itemize}
 \end{itemize}
 
@@ -80,13 +81,27 @@ supposed to do
         just based on analogy to these few shots
         \item this is the most typical way of using current
         autoregressive models for tasks
-\item no change to the parameters of the model!
+\item no change to the parameters of the model, i.e., no training
 \end{itemize}
 \end{itemize}
 
 \vfill
 
 \end{frame}
+
+\begin{frame}{few-shot prompting example}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[height = 6cm]{figure/fewshotprompting} 
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
 
 \begin{frame}{How to solve a task with language models? (3)}
 
@@ -96,11 +111,11 @@ supposed to do
 \item multi-task finetuning
         \begin{itemize}
         \item finetuning on a large training set of *many* tasks
-        \item the more the better
+        \item the more tasks the better
         \item method 1: consistent task format, e.g., each
         task is reformulated into a question-answering format
         \item method 2: more open task format
-\item ideally: 
+\item ideally: task format is
 consistent with language model
             objective (similar to verbalizer)
             \item Examples: T5 and FLAN, see below
@@ -154,6 +169,7 @@ that has been    trained on generic data (web, reddit etc),
     \item This results in a language model that has all the
     nice capabilities of a generic language model (e.g.,
     MISTRAL family), but also understands the special domain.
+\item Not trivial to do well
 \end{itemize}
 
 \vfill
@@ -167,8 +183,9 @@ that has been    trained on generic data (web, reddit etc),
 \begin{itemize}
 \item single-task finetuning
 \item multi-task finetuning
-\item instruction tuning
-\item prompting
+\item instruction tuning\\ (can be seen as a form of finetuning)
+\item prompting\\
+(this is definitely not finetuning)
 \item continued pretraining
 \item \ques terminology clear?
 \end{itemize}
@@ -232,7 +249,7 @@ that has been    trained on generic data (web, reddit etc),
              only w.r.t. to one task / data distribution
     \item Requires quite a bit of annotated
         data (e.g., $k=100$)
-    \item Poor few-shot capabilities of fine-tuned models
+    \item Single-task models have poor few-shot capabilities
             \item \ques Could there be other tasks that
         might benefit?
             \item \ques What about related domains / languages?
@@ -249,7 +266,8 @@ that has been    trained on generic data (web, reddit etc),
 
 \begin{itemize}
     \item Assumption: Model has learned about the task during (unsupervised) pre-training 
-    \item A direct response is expected
+    \item Write prompt so that  a direct response must be
+    given by the language model.
         \item Just a label, just yes/no answer, just a name
     in QA
     \item This is not natural dialogic behavior: humans
@@ -260,15 +278,18 @@ that has been    trained on generic data (web, reddit etc),
 \item Again: Prompting works best if the task has occurred during
 unsupervised training.
     \item \ques For which tasks is this expected to work well?
+% machine translation example:  example of what works well
+% complex reasoning example: example of what does notw ork well
+%    \item \textit{Lack of interpretability}
+%    \begin{itemize}
+%        \item Just the answer w/o explanation
+%        \item Big concern about LLMs in general
+
 %    \item \textit{Misalignment with human needs}
 %    \begin{itemize}
 %        \item Out of context answers
 %        \item Harmful answers
 %    \end{itemize}
-%    \item \textit{Lack of interpretability}
-%    \begin{itemize}
-%        \item Just the answer w/o explanation
-%        \item Big concern about LLMs in general
 \end{itemize}
 
 \vfill
@@ -325,7 +346,8 @@ unsupervised training.
 
 \pause
 
-     \ques \textbf{Why does this result in multi-task learning?}
+     \ques What exactly does the model learn here? How well
+    would we expect this to generalize to new tasks?
     % IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
 
 
@@ -336,7 +358,7 @@ unsupervised training.
 % ------------------------------------------------------------------------------
 
 
-\begin{frame}{One format consistently used for all tasks}
+\begin{frame}{Construction of training set}
 
 \vfill
 	
@@ -349,9 +371,11 @@ unsupervised training.
 \pause
 
 \begin{itemize}
-\item A consistent format (as in T5) is desirable.
     \item \ques The format used in T5 is not just any
     format, but it has a special property. Which property is this?
+
+%\item A consistent format (as in T5) is desirable.
+
 
 %How can we make the \textit{EXPLICIT}?
 %    \item[$\to$] Mapping any natural language tasks into
@@ -386,7 +410,8 @@ unsupervised training.
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Multitask Prompted Training}
+\begin{frame}{T0 authors call this ``Multitask Prompted
+		Training''}
 
 \vfill
 
@@ -417,7 +442,7 @@ unsupervised training.
         \item \ldots we now use held-out *tasks*
 %            \item Held-out \textit{tasks} instead of just held-out samples as a test set\\
             \item All data sets belonging to a held-out task go to the test set
-            \item Generalization across tasks / data distributions
+            \item Generalization across tasks %/ data distributions
         \end{itemize}
     \item Highlights the importance of prompts: The paper
         emphasizes the importance of prompts in facilitating
@@ -430,14 +455,16 @@ unsupervised training.
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{t0 -- data splits}
+\begin{frame}{T0: training and test tasks}
 
 \vfill
 	
 	\begin{figure}
 		\centering
 		\includegraphics[width = 11cm]{figure/81-t0-data.png}\\ 
-		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+		\citebutton{Source: Sanh et al.,
+		2021}{https://arxiv.org/abs/2110.08207} \ques
+		What is an easy task? What is a hard task?
 	\end{figure}
 
 \vfill
@@ -452,7 +479,21 @@ unsupervised training.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[width = 11cm]{figure/81-t0-prompts.png}\\ 
+		\includegraphics[height=7cm]{figure/t0ex1}\\ 
+		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{t0 -- prompt templates}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[height=7cm]{figure/t0ex2}\\ 
 		\citebutton{Source: Sanh et al., 2021}{https://arxiv.org/abs/2110.08207}
 	\end{figure}
 
@@ -616,6 +657,22 @@ is now included under
 \vfill
 
 \end{vbframe}
+
+
+
+\begin{frame}{T0 vs Flan: Difference?}
+
+\vfill
+	
+	\begin{figure}
+		\includegraphics[width=5cm]{figure/t0comparison}
+		\includegraphics[width=5cm]{figure/flancomparison}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
 
 \endlecture
 \end{document}
@@ -783,4 +840,3 @@ common prompt template
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
-
