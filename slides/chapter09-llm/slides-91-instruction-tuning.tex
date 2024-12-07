@@ -74,13 +74,14 @@
 \begin{itemize}
     \item few-shot prompting
         \begin{itemize}
-            \item provide $k$ (where $k$ is small, e.g., $k=5$) examples of what the model is
+            \item provide, in-context,  $k$ (where $k$ is small, e.g., $k=5$) examples of what the model is
 supposed to do
         \item the model will then often complete the task
         just based on analogy to these few shots
         \item this is the most typical way of using current
         autoregressive models for tasks
-        \end{itemize}
+\item no change to the parameters of the model!
+\end{itemize}
 \end{itemize}
 
 \vfill
@@ -120,7 +121,7 @@ consistent with language model
             \item you teach the model a *general*
             capability of being ``helpful''
             \item it then solves arbitrary tasks without few-shot
-            prompting and without finetuning beyond instruction tuning
+            prompting and without additional finetuning
             \item theory/hope: you no longer have to explicitly
             train on specific tasks, the instruction-tuned
             model can solve new tasks without having been
@@ -169,7 +170,7 @@ that has been    trained on generic data (web, reddit etc),
 \item instruction tuning
 \item prompting
 \item continued pretraining
-\item \ques about terminology?
+\item \ques terminology clear?
 \end{itemize}
 
 \vfill
@@ -228,10 +229,8 @@ that has been    trained on generic data (web, reddit etc),
     \item The result is a single-task model.
 \item Sequential transfer learning instead of multi-task learning
     \item Generalization of the model 
-        \begin{itemize}
-            \item only w.r.t. to one task / data distribution
-        \end{itemize} 
-    \item Still requires (quite) large amounts of annotated
+             only w.r.t. to one task / data distribution
+    \item Requires quite a bit of annotated
         data (e.g., $k=100$)
     \item Poor few-shot capabilities of fine-tuned models
             \item \ques Could there be other tasks that
@@ -253,15 +252,14 @@ that has been    trained on generic data (web, reddit etc),
     \item A direct response is expected
         \item Just a label, just yes/no answer, just a name
     in QA
-    \item This is not natural dialogic behavior: human
+    \item This is not natural dialogic behavior: humans
     typically don't
     just answer with a label, yes/no, a name (although
     sometimes they do)
     \item See next lecture
 \item Again: Prompting works best if the task has occurred during
 unsupervised training.
-    \item \ques For which tasks is this expected to be the case
-    / not the case?
+    \item \ques For which tasks is this expected to work well?
 %    \item \textit{Misalignment with human needs}
 %    \begin{itemize}
 %        \item Out of context answers
@@ -327,7 +325,7 @@ unsupervised training.
 
 \pause
 
-    \item \ques \textbf{Why does this result in multi-task learning?}
+     \ques \textbf{Why does this result in multi-task learning?}
     % IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
 
 
@@ -337,12 +335,21 @@ unsupervised training.
 
 % ------------------------------------------------------------------------------
 
+
 \begin{frame}{One format consistently used for all tasks}
 
 \vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/62-t5.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+
+\pause
 
 \begin{itemize}
-\item So a consistent format (as in T5) is desirable.
+\item A consistent format (as in T5) is desirable.
     \item \ques The format used in T5 is not just any
     format, but it has a special property. Which property is this?
 
@@ -357,6 +364,8 @@ unsupervised training.
 \vfill
 
 \end{frame}
+
+
 
 
 % ------------------------------------------------------------------------------
@@ -386,7 +395,7 @@ unsupervised training.
     training method involves learning from multiple
     tasks using unified prompt formats as a means to improve
     generalization to new, unseen tasks.
-    \item This means that the model can perform well on tasks it hasn't been explicitly trained for.
+    \item This means that the model can perform well on tasks it hasn't been explicitly trained on.
     \item The key for this lies in the set of shared prompts it has learned from during fine-tuning.
 \end{itemize}
 
@@ -410,7 +419,7 @@ unsupervised training.
             \item All data sets belonging to a held-out task go to the test set
             \item Generalization across tasks / data distributions
         \end{itemize}
-    \item Highlights the Importance of Prompts: The paper
+    \item Highlights the importance of prompts: The paper
         emphasizes the importance of prompts in facilitating
         transfer to new tasks, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
 \end{itemize}
@@ -587,8 +596,8 @@ is now included under
 \begin{itemize}
 \item The  more the better
     \begin{itemize}
-    \item Larger models will improve performance
-    \item More fine-tuning tasks will improve performance
+    \item The more parameters the better
+    \item The more training tasks the better
     \end{itemize}
 \item Multi-task finetuning generalizes across models
     \begin{itemize}
@@ -598,6 +607,8 @@ is now included under
 %and mitigates some harms
 \item It is relatively compute-efficient
     \begin{itemize}
+    \item Pretraining is hugely expensive, finetuning and
+    instruction tuning are usually much cheaper.
     \item For PaLM 540\,B it takes 0.2\,\% of pre-training compute, but improves by 9.4\,\%
     \end{itemize}
 \end{itemize}
