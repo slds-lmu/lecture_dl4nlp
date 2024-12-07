@@ -100,17 +100,14 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples (1)}
+\begin{vbframe}{Examples for chain of thought}
 
 \vfill
 
 \textbf{Examples of $<$input, chain of thought, output$>$ triples for  commonsense and symbolic reasoning}
 
-\begin{figure}
-    \centering
-    \includegraphics{figure/cot_examples_1.png}\\
     \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
-\end{figure}
+
 
 \vfill
 
@@ -118,16 +115,78 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples (2)}
+\begin{vbframe}{Examples}
 
 \vfill
 
-\textbf{Examples of $<$input, chain of thought, output$>$ triples for  commonsense and symbolic reasoning}
+\begin{figure}
+    \centering
+    \includegraphics[height=7cm]{figure/cotex1.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Examples}
+
+\vfill
 
 \begin{figure}
     \centering
-    \includegraphics{figure/cot_examples_2.png}\\
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
+    \includegraphics[height=7cm]{figure/cotex2.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Examples}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[height=7cm]{figure/cotex3.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Examples}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[height=7cm]{figure/cotex4.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Examples}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[height=7cm]{figure/cotex5.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Examples}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[height=7cm]{figure/cotex6.png}
 \end{figure}
 
 \vfill
@@ -252,6 +311,30 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
+
+\begin{frame}{Chain of thought: What could go wrong?}
+
+\vfill
+
+\begin{itemize}
+    \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps
+    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
+    \item It is closer to how humans solve tasks using language
+    \item By designing a prompt, existing large language models are able to perform chain-of-thought reasoning.
+\item \ques What could go wrong?
+% no guarantee that the reasoning given is the reasoning employed
+% is this true for humans?
+% only one answer, but what happens if there is no good single answer?
+% clearly a great thing for the examples given, but how
+%    typical is this for what we need from language models?
+%    -> go back to six examples that were blown up
+%    inearlier slides
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
 
 \endlecture
 \end{document}
