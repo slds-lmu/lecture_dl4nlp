@@ -104,7 +104,6 @@
         BERT are used
         \item still very much relevant if you need to deploy
         a small efficient model for a focused task
-\item draw picture
         \end{itemize}
 \end{itemize}
 
@@ -299,7 +298,7 @@ that has been    trained on generic data (web, reddit etc),
 
 \begin{itemize}
     \item The result is a single-task model.
-\item Sequential transfer learning instead of multi-task learning
+\item Sequential transfer learning instead of true multi-task learning
     \item Generalization of the model 
              only w.r.t. to one task / data distribution
     \item Requires quite a bit of annotated
@@ -315,7 +314,7 @@ that has been    trained on generic data (web, reddit etc),
 \end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{frame}{issues with prompting}
+\begin{frame}{issues with (traditional) prompting}
 
 \vfill
 
@@ -332,6 +331,8 @@ that has been    trained on generic data (web, reddit etc),
     \item See next lecture
 \item Again: Prompting works best if the task has occurred during
 unsupervised training.
+\item Current use of prompting is more general: basically
+anything you type into the LLM context window
     \item \ques For which tasks is this expected to work well?
 % machine translation example:  example of what works well
 % complex reasoning example: example of what does notw ork well
@@ -388,6 +389,21 @@ unsupervised training.
 %\end{frame}
 
 
+\begin{frame}{Multi-task learning: FLAN and T0}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/81-flan.png}\\ 
+		\citebutton{Source: Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
+
 \begin{frame}{Multitask finetuning: best of both worlds
 (finetuning and  prompting)}
 
@@ -426,7 +442,7 @@ unsupervised training.
 \pause
 
 \begin{itemize}
-    \item \ques The format used in T5 is not just any
+    \item \ques The format used here is not just any
     format, but it has a special property. Which property is this?
 
 %\item A consistent format (as in T5) is desirable.
