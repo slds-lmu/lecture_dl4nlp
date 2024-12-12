@@ -785,9 +785,42 @@ is now included under
 \end{frame}
 
 
+
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\begin{frame}{Prompting: Definition}
+
+\vfill
+
+\begin{itemize}
+
+\item Prompting always means that you \myblue{do not finetune the model},
+i.e., you don't change the parameters of the model.
+
+\item The term prompting is generally used when you \myblue{carefully design the
+input to the language model}, so that you will get the
+desired output.
+
+\item \myblue{But nowadays any type of input to the model can be called
+a prompt.}
+
+\item \myblue{Few-shot or k-shot prompting} means that you give a few
+examples or k examples of what you want the model to do
+as part of the input to the model.
+
+\item \myblue{Zero-shot prompting} means that you do not give an example.
+The term zero-shot prompting is often used in the context of
+few-shot prompting (contrasting using $k>0$ examples vs 0
+examples).
+
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
 \endlecture
 \end{document}
-
 
 
 
