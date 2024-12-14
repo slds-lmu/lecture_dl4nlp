@@ -36,7 +36,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \end{itemize}
 \item Standard few-shot learning via prompting works for many tasks
     \begin{itemize}
-    \item Still, it works poorly on many tasks that require reasoning
+    \item Still, it works poorly for many tasks that require reasoning
     \end{itemize}
 \item Chain of thought (CoT) prompting
     \begin{itemize}
@@ -54,7 +54,8 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 \end{vbframe}
 
-\begin{frame}{Neurosymbolic approach}
+\begin{frame}{Neurosymbolic approach\\ (currently
+    infrequently used)}
 
 \vfill
 	
@@ -77,6 +78,9 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 		\includegraphics[height = 6cm]{figure/is450,90,of,500} 
 	\end{figure}
 
+\ques What is the problem here?
+% left-to-right next-token prediction
+
 \vfill
 
 \end{frame}
@@ -84,7 +88,8 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{Chain-of-thought prompting paradigm}
+\begin{vbframe}{Chain-of-thought prompting paradigm\\
+(move to next slide for chain of thought)}
 
 \vfill
 
@@ -122,8 +127,9 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps
     \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
     \item It is closer to how humans solve tasks using language
-    \item Existing large language models can do
-    chain-of-thought reasoning if given a well designed prompt.
+    \item Language models, if
+given a well designed prompt chain-of-thought prompt, can
+    solve problems they otherwise would not be able to solve.
 \end{itemize}
 
 \vfill
@@ -294,10 +300,10 @@ subgraph of the KG.
     \item Tasks where initial decisions play a pivotal role
     \item Tasks requiring exploration or strategic lookahead
     \end{itemize}
-\item Potential strategy to solve those:
+\item Strategy to solve those:
     \begin{itemize}
     \item Maintain and explore diverse alternatives instead of just picking one
-    \item Evaluates current status and looks ahead or backtrack to make global decisions
+    \item Evaluate current status and look ahead or backtrack to make global decisions
     \end{itemize}
 
 \end{itemize}
@@ -312,7 +318,8 @@ subgraph of the KG.
 
 \vfill
 
-Schematic illustrating various approaches to problem solving with LLMs. Each rectangle box represents a \textit{thought}, a coherent language sequence serving as an intermediate step toward problem solving.
+Schematic illustrating three approaches to problem solving
+with LLMs. Rectangle box = \textit{thought} = a coherent language sequence serving as an intermediate step in problem solving.
 
 \begin{figure}
     \centering
@@ -367,8 +374,9 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
     \item Decompose complex problems into a sequence of reasoning steps
     \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
     \item It is closer to how humans solve tasks using language
-    \item Existing large language models can do
-    chain-of-thought reasoning if given a well designed prompt.
+    \item Language models, if
+given a well designed prompt chain-of-thought prompt, can
+    solve problems they otherwise would not be able to solve.
 
 \item \ques What could go wrong?
 % no guarantee that the reasoning given is the reasoning employed
@@ -395,6 +403,28 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 % allocate additional compute
 % LLMs are good at finding their own mistakes if
 %    they look over there own output
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
+\begin{frame}{Chain of thought: Why does it work?}
+
+\vfill
+
+\begin{itemize}
+    \item \ques Do top-of-the-line LLMs use chain of thought?
+% show metricalfoot5.o.txt
+% so this model uses chain of thought without chain of
+%    thought prompting: how come?
+% one possibility system prompt
+% show system prompt
+% e.g., "organize responses to flow well, not by source or citation
+% another possibiley: standard training
+% a third possibilty: new methdology, reasoning tokesn
 \end{itemize}
 
 \vfill

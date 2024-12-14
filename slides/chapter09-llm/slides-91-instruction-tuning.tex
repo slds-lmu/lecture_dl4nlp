@@ -47,7 +47,9 @@
 \begin{itemize}
     \item ``old-style'' single-task fine-tuning 
         \begin{itemize}
-            \item supervised training on a task-specific
+            \item supervised training
+of the pretrained model
+on a task-specific
         training set of size $k$ (where $k$ is not small,
         e.g., $k=100$)
         \end{itemize}
@@ -90,7 +92,9 @@
 \begin{itemize}
     \item ``old-style'' single-task fine-tuning 
         \begin{itemize}
-            \item supervised training on a task-specific
+            \item supervised training
+of the pretrained model
+on a task-specific
         training set of size $k$ (where $k$ is not small,
         e.g., $k=100$)
         \item the output can be an arbitrary category (e.g.,
@@ -163,6 +167,10 @@ supposed to do
 		\centering
 		\includegraphics[height = 6cm]{figure/fewshotprompting} 
 	\end{figure}
+
+(from gpt3 paper -- ``Translate English to French'' should
+appear four times to make it a 3-shot example that has 3
+identical shots as required by the definition of few-shot prompting)
 
 \vfill
 
@@ -353,8 +361,10 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
+
+
 % ------------------------------------------------------------------------------
-\begin{frame}{issues with (traditional) prompting}
+\begin{frame}{issues with few-shot prompting: (1) classification}
 
 \vfill
 
@@ -374,6 +384,7 @@ unsupervised training.
 \item Current use of prompting is more general: basically
 anything you type into the LLM context window
     \item \ques For which tasks is this expected to work well?
+% key: does the task (or as imilar task) occur in preatraing
 % machine translation example:  example of what works well
 % complex reasoning example: example of what does notw ork well
 %    \item \textit{Lack of interpretability}
@@ -391,6 +402,30 @@ anything you type into the LLM context window
 \vfill
 
 \end{frame}
+
+
+\begin{frame}{issues with few-shot prompting: (2) text generation}
+
+\vfill
+
+\begin{itemize}
+\item Very similar to (1) classification
+    \item Assumption: Model has learned about the task during (unsupervised) pre-training 
+    \item Write prompt so that  a direct response must be
+    given by the language model.
+\item Works best if the task has occurred during
+unsupervised training.
+    \item \ques For which tasks is this expected to work well?
+% summarization, translation because they occur in
+% pretraining data
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
 % ------------------------------------------------------------------------------
 
 %\begin{vbframe}{issues with prompting}
@@ -460,6 +495,10 @@ anything you type into the LLM context window
      \ques What exactly does the model learn here? How well
     would we expect this to generalize to new tasks?
     % IMPLICITLY, i.e. the model learns via fine-tuning which task prefix to associate with which set of labels
+% how similar is the new task to an old task
+% how good is the formulation to the new task
+% does the new task occur in training data
+% is the prompt self-explanatory? e.g., it is not for "cola sentence"
 
 
 \vfill
@@ -559,6 +598,27 @@ anything you type into the LLM context window
         emphasizes the importance of prompts in facilitating
         transfer to new tasks, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
 \end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+
+\begin{frame}{Coreference resolution}
+
+\vfill
+
+\begin{itemize}
+    \item One of the tasks on the next slide
+    \item In the simplest case the task is to determine
+    which noun phrase a referring expression like ``she'' or
+    ``this person'' is referring to.
+    \item Example: ``Peter helped Paul because he was
+    familiar with the problem.''
+    \item ``he'' refers to Peter, not to Paul.
+    \end{itemize}
 
 \vfill
 
@@ -769,6 +829,20 @@ is now included under
 
 \end{vbframe}
 
+\begin{vbframe}{Slido}
+
+\vfill
+
+\begin{itemize}
+		\item \href{https://app.sli.do/event/egqn27QqTsvFUZPeQvZtVU}{\beamergotobutton{slido}}
+
+\item \#1312409
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
 
 
 \begin{frame}{T0 vs Flan: Difference?}
@@ -810,7 +884,7 @@ as part of the input to the model.
 
 \item \myblue{Zero-shot prompting} means that you do not give an example.
 The term zero-shot prompting is often used in the context of
-few-shot prompting (contrasting using $k>0$ examples vs 0
+few-shot prompting (contrasting using $k>0$ examples vs $k=0$
 examples).
 
 \end{itemize}
@@ -818,6 +892,20 @@ examples).
 \vfill
 
 \end{frame}
+
+
+\begin{frame}{How to LLMs do math, e.g., addition?}
+
+\vfill
+	
+	\begin{figure}
+		\includegraphics[height=8cm]{figure/heuristicsmath}
+	\end{figure}
+
+\vfill
+
+\end{frame}
+
 
 \endlecture
 \end{document}
