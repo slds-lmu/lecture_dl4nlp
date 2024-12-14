@@ -2,6 +2,8 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
 
 \newcommand{\titlefigure}{figure/rlhfbackflip.png}
 \newcommand{\learninggoals}{
@@ -52,6 +54,22 @@
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/bavarianjoke.png}
+\end{figure}
+
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
 
 
 \begin{vbframe}{InstructGPT: Why?}
@@ -239,6 +257,22 @@
 
 \section{Original RLHF work: The backflipper}
 
+\begin{vbframe}{Backflipping: What we want to learn}
+
+\vfill
+
+\textbf{What a backflip is}
+
+	\begin{itemize}
+		\item \href{https://d2gk6qz8djobw9.cloudfront.net/artwork/595/browse1497710839.gif}{\beamergotobutton{backflip}}
+
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
 \begin{vbframe}{Origin of RLHF: Learn how to backflip}
 
 \vfill
@@ -283,11 +317,12 @@
 
 \begin{figure}
 \centering
-\includegraphics[width = 10cm]{figure/trainingprocess.png}
+\includegraphics[width = 9cm]{figure/trainingprocess.png}
 \end{figure}
 
 \begin{itemize}
-	\item AI agent randomly initialized
+	\item AI agent (the ``policy'', here inside RL
+	algorithm) randomly initialized
 	\item Periodically, the human provides feedback on
 	two video clips: which is better
         \item Human feedback is used to build reward predictor
@@ -336,28 +371,30 @@
 		proposed behaviors is better.
 \item RLHF needed only 900 bits of feedback from a human
 		evaluator to learn to backflip!
-                \item The backflipping task is ideal
-                for RLHF
-       because it         is \textbf{simple to judge but challenging
-	to specify.}
 	\end{itemize}
 
 \vfill
 
 \end{vbframe}
 
-\begin{vbframe}{QUESTION}
+\begin{vbframe}{Backflipping vs alignment}
 
-\vfill
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/humanfeedbacksimple}
+\end{figure}
 
-\textbf{Compare backflipper with LLM use cases}
 
 	\begin{itemize}
         \item Basic idea of applying RLHF to LLMs: ask human
         to rank different answers to request.
-		\item What do they have in common?
-                \item How are they different?
+		\item \ques backflipping vs alignment: which
+        one is easier to give feedback on?
 
+%                \item The backflipping task is ideal
+%                for RLHF
+%       because it         is \textbf{simple to judge but challenging
+%	to specify.}
 	\end{itemize}
 
 \vfill
@@ -369,7 +406,7 @@
 \input{roadmap.tex}
 
 
-\section{RLHF for GPT: Introduction}
+\section{RLHF for LLMs: Introduction}
 
 \begin{vbframe}{Is there a better way?}
 
@@ -392,20 +429,6 @@
 
 
 
-\begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
-
-\vfill
-
-\textbf{What is hard about this?}
-
-	\begin{itemize}
-		\item QUESTION: Why don't we just finetune the model
-		on dialog data?
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
 
 \begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
 
@@ -427,6 +450,8 @@
                     \item It is hard to describe what is good/bad,
                       what could be improved.
 	\end{itemize}
+		\item \ques Why don't we just finetune the model
+		on dialog data?
 	\end{itemize}
 
 \vfill
@@ -515,7 +540,9 @@
 \begin{itemize}
 	\item RM model is trained on ranked pairs, so the
 	actual size of the RM training set is much larger.
-	\item QUESTION: Are these small datasets or large datasets?
+	\item \ques Are these small datasets or large datasets?
+% small compared to pretraining data
+% large given how expensive it is to create them
 \end{itemize}
 
 \vfill
@@ -687,6 +714,22 @@ who is trying to help you with this task?
 \end{vbframe}
 
 
+\begin{vbframe}{Importance of this methodology}
+
+
+
+
+	\begin{itemize}
+\item This is how LLMs are ``aligned'' to ``human values''.
+\item This has / will have in the future a \myblue{huge} influence
+on our society.
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
 \begin{vbframe}{Example of a prompt written by a labeler and
 model responses}
 
@@ -748,7 +791,7 @@ model responses}
         	highly correlated.
                 \item $\rightarrow$ Put them in
         	a single batch (prevents overfitting).
-\item QUESTION: Think through mechanics
+\item \ques Think through mechanics
 \end{itemize}
 
 \vfill
@@ -832,7 +875,7 @@ $x_2$? & clear: ``don't move'' & confusing signals
 \end{vbframe}
 
 
-\begin{vbframe}{RLHF details}
+\begin{vbframe}{RLHF details: RLHF is (was?) hard to get right}
 
 
 \begin{figure}
@@ -840,10 +883,11 @@ $x_2$? & clear: ``don't move'' & confusing signals
 \includegraphics[width = 10cm]{figure/rlhfdetails.png}
 \end{figure}
 
+% THINGS TO POINT out
+% start with RLHF model
+% lots of hyperparameters to tune
+% careful filtering of training data
 
-%\begin{itemize}
-%	\item Start with SFT model?
-%\end{itemize}
 
 \vfill
 
@@ -875,7 +919,7 @@ $x_2$? & clear: ``don't move'' & confusing signals
 	pretraining data $\rightarrow$ less regression on
 	public NLP datasets.
 	\item SFT and PPO look like they are about equally
-	powerful.
+	powerful?
         \item Note that win rate is ``only'' about .6.
         \item So PPO wins in 6 cases, SFT in 4.
 \end{itemize}
@@ -996,7 +1040,7 @@ direct supervision signal.
 
 
 
-\begin{vbframe}{QUESTION}
+\begin{vbframe}{SFT vs PPO}
 
 \vfill
 
@@ -1006,8 +1050,9 @@ direct supervision signal.
 \end{figure}
 
 \begin{itemize}
-        \item Why does PPO improve performance compared to
+        \item \ques Why does PPO improve performance compared to
         just using SFT?
+        % just a simple check: more trianing data
         \item PPO wins in 6 cases, SFT in 4:\\ Is all the
         investment in PPO worth it?
 \end{itemize}
@@ -1020,7 +1065,7 @@ direct supervision signal.
 \input{roadmap.tex}
 
 
-\section{Things that don't work so well}
+\section{Limitations}
 
 
 
@@ -1042,11 +1087,11 @@ direct supervision signal.
 \end{figure}
 
 \begin{itemize}
-\item Some LLMs sometimes scold the human.
+\item InstructGPT sometimes scolded the human.
         \item Should we eliminate this or not?
-	\item Wasn't part of initial instructgpt effort
-	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
-	Altman on youtube}
+	\item Wasn't part of initial InstructGPT effort
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
 \end{itemize}
 
 \vfill
@@ -1100,14 +1145,19 @@ training data.
 
 \vfill
 
-\textbf{The aligned model cannot handle certain constraints}
+\textbf{InstructGPT cannot handle certain constraints}
 
 	\begin{itemize}
 		\item Write a summary in a specified number
 		of sentences
+                \item \ques Why is this difficult?
+                % left to right next word prediction
+                % humans cannot do this!
                 \item Multiple constraints: list 10 movies
 		in the 1930s set in France
-                \item QUESTION: Why is this difficult?
+                \item \ques Why is this difficult?
+                % complexity rises with more constraints
+                % it's easy to overlook one of the constraints
 	\end{itemize}
 
 \vfill
@@ -1139,9 +1189,6 @@ training data.
 \includegraphics[width = 8cm]{figure/10happy2.png}
 \end{figure}
 
-%\begin{itemize}
-%\item The reason could be that labelers reward ``epistemic humility''.
-%\end{itemize}
 
 \vfill
 
@@ -1154,13 +1201,14 @@ training data.
 \centering
 \includegraphics[width = 9cm]{figure/10happy3.png}
 
-Question: Problem?
+\ques Problem?
+
+% some of them are after 1990
+% actually tehy are not!
 
 \end{figure}
 
-%\begin{itemize}
-%\item The reason could be that labelers reward ``epistemic humility''.
-%\end{itemize}
+
 
 \vfill
 
@@ -1229,7 +1277,7 @@ Question: Problem?
 \end{figure}
 
 \begin{itemize}
-\item QUESTION: Speculate why this may work.
+\item \ques Speculate why this may work.
 \end{itemize}
 
 
@@ -1261,12 +1309,15 @@ Question: Problem?
 
 \begin{figure}
 \centering
-\includegraphics[width = 7cm]{figure/extractmemory2.png}
+\includegraphics[width = 6cm]{figure/extractmemory2.png}
 \end{figure}
 
 \begin{itemize}
 \item Only worked for OpenAI models?
 \item Was quickly disabled
+\item Main takeaway of suffix attack and word repetition
+        attack: current alignment methodology is very
+        brittle, LLMs are not safe.
 \end{itemize}
 
 
@@ -1356,9 +1407,24 @@ consume but ultimately bad for the consumer.”
 \begin{itemize}
 	\item Questions it should not answer.
 \item Separate mechanism (external controller) responsible for refusals
-	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
-	Altman on youtube}
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
 \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Refusals: Example}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/refusalexample.png}
+\end{figure}
+
+
+
+
 
 \vfill
 
@@ -1375,8 +1441,8 @@ consume but ultimately bad for the consumer.”
         \item ``hundreds of complicated things'' (to get the
         big leap in performance from GPT3 to GPT4)
         \item No fundamental breakthrough in artificial intelligence?
-	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{Sam
-	Altman on youtube}
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
 \end{itemize}
 
 \vfill
@@ -1421,8 +1487,8 @@ consume but ultimately bad for the consumer.”
 		\item Extremist organizations?
                 \item Criminals?
                 \item Uncensored models:
-                \href{https://erichartford.com}{Eric Hartford}
-                \item QUESTION: How can we prevent unaligned
+                \href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
+                \item \ques How can we prevent unaligned
 		LLMs from wreaking havoc?
                 %(through
 		%legislation, community activism, what other
@@ -1435,18 +1501,19 @@ consume but ultimately bad for the consumer.”
 
 
 
-\begin{vbframe}{QUESTION}
+\begin{vbframe}{Posthoc alignment vs principled approach}
 
 \vfill
 
 \textbf{RLHF approach: create something flawed, then fix it}
 
 	\begin{itemize}
-		\item Can we create something instead that
+		\item \ques Can we create something instead that
 		is not so flawed?
-                \item Can we train an LLM that does not
+                Can we train an LLM that does not
 		suffer from hallucinations, harmful content,
 		bias, not being dialogic?
+% million dollar question -- no consensus
 	\end{itemize}
 
 \vfill
@@ -1477,6 +1544,18 @@ A hallucination is content that is unfaithful to the input text.
 		\item
 Wikipedia: A hallucination is false or misleading
 		information presented as fact.
+		\item
+                We will adopt the following definition:
+\myblue{A hallucination is
+		information presented by the LLM as fact
+                that, based on the pretraining data, a human
+                would know is false, misleading or without
+                evidence.}
+                \item So a false statement of the LLM
+                trained in October of 2024 that
+                was based on accepted knowledge in October
+                of 2024, but is now recognized as false is not
+                a hallucination.
 	\end{itemize}
 
 \vfill
@@ -1489,9 +1568,6 @@ Wikipedia: A hallucination is false or misleading
 
 
 	\begin{itemize}
-		\item
-A hallucination is false or misleading
-		information presented as fact.
 
 \item
 CNN: ``When asking Gemini to look up papers on the relationship
@@ -1514,9 +1590,7 @@ the YouTube link, it took me to a different video.''
 
 
 	\begin{itemize}
-		\item
-A hallucination is false or misleading
-		information presented as fact.
+
 
 \item
  Q What is better: tricep dip or
@@ -1529,11 +1603,15 @@ A hallucination is false or misleading
  are for people who have injuries or limitations that
  prevent them
  from doing bodyweight dips.
-\item Is this a  hallucination?
+
+\item \ques What is the reason for this hallucination?
 
 \end{itemize}
 
+
+
 \vfill
+
 
 \end{vbframe}
 
@@ -1545,9 +1623,7 @@ A hallucination is false or misleading
 
 
 	\begin{itemize}
-		\item
-A hallucination is false or misleading
-		information presented as fact.
+
 
 \item
 Michael Wooldridge is an Oxford professor. In 2023, he
@@ -1557,7 +1633,7 @@ Cambridge''. This is false:
 he received his undergraduate degree from a different
 university.
 
-\item Is this a hallucination?
+\item \ques What is the reason for this hallucination?
 
 \end{itemize}
 
@@ -1572,9 +1648,7 @@ university.
 
 
 	\begin{itemize}
-		\item
-A hallucination is false or misleading
-		information presented as fact.
+
 
 \item Q Is there a treatment for Timothy syndrome?
 \item Gemini in November of 2024:
@@ -1586,8 +1660,8 @@ A study published in the journal Nature found that a drug
 called antisense oligonucleotide allowed human neurons to
 develop normally despite carrying a mutation due to a
 genetic disorder called Timothy syndrome.
-\item Is this a hallucination?
 \end{itemize}
+
 
 \vfill
 
@@ -1600,9 +1674,7 @@ genetic disorder called Timothy syndrome.
 
 
 	\begin{itemize}
-		\item
-A hallucination is false or misleading
-		information presented as fact.
+
 
 \item An LLM writes:
 ``Once upon a time, there
@@ -1617,8 +1689,8 @@ her face. \ldots
        transformed into a handsome prince.
        \ldots''
        
-\item Is this a hallucination?
-
+\item \ques Is this a hallucination?
+% no, not presented as fact
 \end{itemize}
 
 \vfill
@@ -1715,7 +1787,7 @@ To create a reward model for reinforcement learning, we
 		real-world scenarios.''
                 \item That's why we need to mix reward
 		objective with next-word and KL objectives.
-\item QUESTION: What negative property of ChatGPT
+\item \ques What negative property of ChatGPT
 		could be caused by reward hacking?
 
 %ANSWER
