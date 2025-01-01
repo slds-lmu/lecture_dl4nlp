@@ -41,7 +41,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 \item Chain of thought (CoT) prompting
     \begin{itemize}
     \item A new form of few-shot prompting
-    \item Prompts in the form <input, \textit{chain of thought}, output>
+    \item Each ``training example'' has the form <input, \textit{chain of thought}, output>
     \item chain of thought:\\ series of reasoning steps that
     lead to the final answer
     \item applications: complex, commonsense, symbolic
@@ -128,7 +128,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
     \item It is closer to how humans solve tasks using language
     \item Language models, if
-given a well designed prompt chain-of-thought prompt, can
+given a well designed chain-of-thought prompt, can
     solve problems they otherwise would not be able to solve.
 \end{itemize}
 
@@ -394,7 +394,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
     \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
     \item It is closer to how humans solve tasks using language
     \item Language models, if
-given a well designed prompt chain-of-thought prompt, can
+given a well designed  chain-of-thought prompt, can
     solve problems they otherwise would not be able to solve.
 
 \item \ques What could go wrong?
@@ -444,6 +444,24 @@ given a well designed prompt chain-of-thought prompt, can
 % e.g., "organize responses to flow well, not by source or citation
 % another possibiley: standard training
 % a third possibilty: new methdology, reasoning tokesn
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Chain of thought: Terminology}
+
+\vfill
+
+\begin{itemize}
+    \item Shot = ``training example''
+    \item few-shot prompting = few-shot learning
+    \item The prompt ``think step by step'' by itself
+    (without shots) is not
+    COT prompting is defined as includig shots.
+    \item 
+    \item 
 \end{itemize}
 
 \vfill
