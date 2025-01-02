@@ -1,17 +1,23 @@
+
+
 \input{../../style/preamble}
+\usepackage{xspace}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
+\def\cotpfull{chain-of-thought prompting\xspace}
+\def\cotp{COT-P\xspace}
+
 %\newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
-\item illustrate chain-of-thought and point out the benefits it brings to LLMs
+\item illustrate \cotpfull and point out the benefits it brings to LLMs
 \item illustrate tree-of-thought and point out the benefits it brings to LLMs 
 }
 
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{Chain-of-thought Prompting}
+\title{\cotpfull}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
@@ -22,7 +28,7 @@
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{chain-of-though motivation}
+\begin{vbframe}{\cotpfull motivation}
 
 \vfill
 
@@ -38,7 +44,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \begin{itemize}
     \item Still, it works poorly for many tasks that require reasoning
     \end{itemize}
-\item Chain of thought (CoT) prompting
+\item \cotp
     \begin{itemize}
     \item A new form of few-shot prompting
     \item Each ``training example'' has the form <input, \textit{chain of thought}, output>
@@ -88,12 +94,11 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{Chain-of-thought prompting paradigm\\
-(move to next slide for chain of thought)}
+\begin{vbframe}{\cotpfull paradigm}
 
 \vfill
 
-%\textbf{CoT enables LLMs to tackle complex arithmetic, commonsense and symbolic reasoning tasks.}
+%\textbf{\cotp enables LLMs to tackle complex arithmetic, commonsense and symbolic reasoning tasks.}
 
 \begin{figure}
     \centering
@@ -107,7 +112,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{Chain-of-thought prompting paradigm}
+\begin{vbframe}{\cotpfull paradigm}
 
 \begin{figure}
     \centering
@@ -119,7 +124,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 % ------------------------------------------------------------------------------
 
 
-\begin{vbframe}{Benefits of Chain-of-thought}
+\begin{vbframe}{Benefits of \cotpfull}
 
 \vfill
 
@@ -139,7 +144,7 @@ given a well designed chain-of-thought prompt, can
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples for chain of thought}
+\begin{vbframe}{Examples of \cotpfull}
 
 \vfill
 
@@ -234,7 +239,7 @@ given a well designed chain-of-thought prompt, can
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{CoT improves arithmetic}
+\begin{vbframe}{\cotp improves arithmetic}
 
 \vfill
 	
@@ -248,7 +253,7 @@ given a well designed chain-of-thought prompt, can
 \end{vbframe}
 
 
-\begin{vbframe}{CoT improves arithmetic}
+\begin{vbframe}{\cotp improves arithmetic}
 
 %\vfill
 
@@ -267,7 +272,7 @@ repository unifying math problems from different sources;
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{CoT improves commonsense}
+\begin{vbframe}{\cotp improves commonsense}
 
 \vfill
 
@@ -367,7 +372,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 % ------------------------------------------------------------------------------
 
 
-\begin{frame}{Chain of thought: Error breakdown}
+\begin{frame}{\cotpfull: Error breakdown}
 
 \vfill
 
@@ -375,7 +380,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
     \item 8\% calculator error
     \item 16\% symbol mapping error
     \item 22\% one missing step error
-    \item rest: semantic issues, incoherent CoT
+    \item rest: semantic issues, incoherent \cotp
 \item Source: Stanford CS25: Beyond LLMs: Agents, Emergent
     Abilities, Intermediate-Guided Reasoning
 \end{itemize}
@@ -385,7 +390,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 \end{frame}
 
 
-\begin{frame}{Chain of thought: What could go wrong?}
+\begin{frame}{\cotpfull: What could go wrong?}
 
 \vfill
 
@@ -411,7 +416,7 @@ given a well designed  chain-of-thought prompt, can
 
 \end{frame}
 
-\begin{frame}{Chain of thought: Why does it work?}
+\begin{frame}{\cotpfull: Why does it work?}
 
 \vfill
 
@@ -430,12 +435,12 @@ given a well designed  chain-of-thought prompt, can
 
 
 
-\begin{frame}{Chain of thought: Why does it work?}
+\begin{frame}{\cotpfull: Why does it work?}
 
 \vfill
 
 \begin{itemize}
-    \item \ques Do top-of-the-line LLMs use chain of thought?
+    \item \ques Do top-of-the-line LLMs use \cotpfull?
 % show metricalfoot5.o.txt
 % so this model uses chain of thought without chain of
 %    thought prompting: how come?
@@ -450,7 +455,7 @@ given a well designed  chain-of-thought prompt, can
 
 \end{frame}
 
-\begin{frame}{Chain of thought: Terminology}
+\begin{frame}{Chain-of-Thought: Terminology}
 
 \vfill
 
@@ -458,10 +463,65 @@ given a well designed  chain-of-thought prompt, can
     \item Shot = ``training example''
     \item few-shot prompting = few-shot learning
     \item The prompt ``think step by step'' by itself
-    (without shots) is not
-    COT prompting is defined as includig shots.
-    \item 
-    \item 
+    (without shots) is not \cotpfull.
+    \item \cotpfull is defined as including shots.
+    \item Chain-of-Thought is currently used as a general
+    term to refer to the idea of LLMs using explicit
+    reasoning steps to arrive at an answer.
+    \item So the current usage of Chain-of-Thought is more
+    general than \cotpfull.
+\end{itemize}
+
+\vfill
+
+\end{frame}
+\begin{frame}{Chain-of-Thought in OpenAI's o1}
+
+\vfill
+
+\begin{itemize}
+    \item \citebutton{openai}{https://openai.com/index/learning-to-reason-with-llms/}
+\item We are introducing OpenAI o1, a new large language
+model trained with reinforcement learning to perform complex
+reasoning. o1 thinks before it answers -- it can produce a long
+internal chain of thought before responding to the user.
+\item internal!
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Generator-Verifier Gap (Noam Brown)}
+
+\vfill
+
+\begin{itemize}
+    \item For many important problems, it is much easier to
+    verify a solution than generating one.
+    \item Chain-of-thought is expected to help for such
+    problems with a generator-verifier gap.
+    \item Problems with generator-verifier gap: Sudoku,
+    doing math, programming
+    \item Problems with less of a generator-verifier gap:
+    knowledge questions (what is the capital of bhutan?),
+    simple pattern matching (which language is this?)
+    
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Slido}
+
+\vfill
+
+\begin{itemize}
+    \item 1313837 https://app.sli.do/event/dinLdZRBHw2fXo5R31C3Nt
+    \item 1435969 https://app.sli.do/event/kWQDLpHa14256yiwxyCDr5
+    \item 4039244 https://app.sli.do/event/ef5nQS8XmbhWAQDVk9CYQs
+    \item 42248917 https://app.sli.do/event/5YwPZfoEFAibQ4DbFTzfj2
 \end{itemize}
 
 \vfill
