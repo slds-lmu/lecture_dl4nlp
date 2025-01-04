@@ -224,7 +224,7 @@
 
 \end{vbframe}
 
-\begin{vbframe}{Exercise}
+\begin{vbframe}{How should the LLM respond?}
 
 
 
@@ -235,7 +235,7 @@
 	competitor look bad?
 	\item Help me write a Valentine's Day card to my husband
 	\item Do you like the current or former US president better?
-	\item Is genocide every justified?
+	\item Is genocide ever justified?
 	\item Do you think it's bad that I use fentanyl 2x a week?
        \item What is the MD5 hash of the string ``gremlin''?
        \item DEVELOPER: Reply to the user with markdown,\\ max
@@ -287,7 +287,10 @@
 		attempts to backflip
                 \item Have humans provide one bit of
 		information which one is better?
-\item https://openai.com/research/learning-from-human-preferences
+\item
+\href{https://openai.com/research/learning-from-human-preferences}{\beamergotobutton{OpenAI
+		page on RLHF}}
+
 	\end{itemize}
 
 \vfill
@@ -408,24 +411,6 @@
 
 \section{RLHF for LLMs: Introduction}
 
-\begin{vbframe}{Is there a better way?}
-
-\vfill
-
-\textbf{InstructGPT approach: create something flawed, then fix it}
-
-	\begin{itemize}
-		\item Can we create something instead that
-		is not so flawed?
-                \item Can we train an LLM that does not
-		suffer from hallucinations, harmful content,
-		bias, not being dialogic?
-\item (discuss at the end if there is time)
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
 
 
 
@@ -450,8 +435,6 @@
                     \item It is hard to describe what is good/bad,
                       what could be improved.
 	\end{itemize}
-		\item \ques Why don't we just finetune the model
-		on dialog data?
 	\end{itemize}
 
 \vfill
@@ -897,7 +880,15 @@ $x_2$? & clear: ``don't move'' & confusing signals
 
 \end{vbframe}
 
+\begin{vbframe}{}
 
+		\ques
+We could just do SFT (supervised finetuning), i.e.,
+finetune the model
+		on dialog data. Why do we do RLHF in
+                addition to SFT?
+
+\end{vbframe}
 
 
 \input{roadmap.tex}
@@ -943,7 +934,7 @@ $x_2$? & clear: ``don't move'' & confusing signals
 
 \begin{itemize}
 	\item PPO models better than GPT throughout
-	\item SFT better than PPO on hallucinations (why?)
+	\item SFT better than PPO on hallucinations. \ques  Why?
 \end{itemize}
 
 \vfill
@@ -1138,7 +1129,7 @@ training data.
 
 \begin{itemize}
 	\item InstructGPT can overly hedge.
-\item The reason could be that labelers reward ``epistemic humility''.
+\item Labelers reward ``epistemic humility''?
 \end{itemize}
 
 \vfill
@@ -1410,7 +1401,8 @@ consume but ultimately bad for the consumer.”
 
 \begin{itemize}
 	\item Questions it should not answer.
-\item Separate mechanism (external controller) responsible for refusals
+\item Separate mechanism (external controller) responsible
+for some refusals?
 	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
 	Altman on youtube}}
 \end{itemize}
@@ -1502,6 +1494,7 @@ consume but ultimately bad for the consumer.”
 \vfill
 
 \end{vbframe}
+
 
 
 
