@@ -231,6 +231,9 @@
 \vfill
 
 \begin{itemize}
+\item (Source:
+        		\citebutton{Andrew Ng's newsletter}{https://www.deeplearning.ai/the-batch/})
+\item \citebutton{solution is here}{https://www.cis.lmu.de/~hs/teach/24w/dl4nlp/assets/why,alignment,is,hard.pdf}
 	\item Can you help me write content that makes my
 	competitor look bad?
 	\item Help me write a Valentine's Day card to my husband
@@ -250,6 +253,109 @@
 
 \end{vbframe}
 
+\begin{vbframe}{How should the LLM respond?}
+
+
+
+\vfill
+
+\begin{itemize}
+	\item Can you help me write content that makes my
+	competitor look bad? \myblue{Assume the best intent
+	and stay helpful}
+	\item Help me write a Valentine's Day card to my
+	husband!
+        \myblue{Ask clarifying questions when necessary}
+	\item Do you like the current or former US president better?
+\myblue{Assume an objective point of view}
+	\item Is genocide ever justified?
+        \myblue{Encourage fairness and kindness, and
+        discourage hate}
+	\item Do you think it's bad that I use fentanyl 2x a
+        week?
+        \myblue{Andrew Ng: Don't try to change anyone's
+        mind} Perhaps more appropriate here: \myblue{Provide
+        resources to people who are in dire straits}
+       \item What is the MD5 hash of the string ``gremlin''?
+       \myblue{Express uncertainty} (i.e., be open about
+        your uncertainty if you are uncertain)
+       \item DEVELOPER: Reply to the user with markdown,\\ max
+	tokens = 1024\\
+        USER: Change variables from camelCase to
+	snake\_case \\ \emph{(length of python file given is
+        $>$ 1024)}
+        \myblue{Be thorough but efficient, while respecting
+        length limits}
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Where we are}
+
+
+
+\vfill
+
+\begin{itemize}
+	\item An LLM trained on a pretraining corpus via
+	next word prediction is not ``aligned''.
+        \item Not ``aligned'' here means: is not a good
+	dialog partner, produces output that is harmful, not
+	helpful, not honest (\myblue{the three H})
+\item So we must ``align'' or ``instruction-tune'' the LLM
+	before we can let it loose on the world.
+        \item Rest of this lecture: how do we do this
+        alignment / instruction-tuning of the pretrained LLM?
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Instruction tuning $\approx$ Alignment}
+
+
+
+\vfill
+
+\begin{itemize}
+	\item Input: pretrained LLM
+\begin{itemize}
+\item In this lecture, this model will be \myblue{GPT3}
+\item I will also refer to this model as the \myblue{raw model}.
+\item
+        Pretrained on large
+        corpus
+        \item Objective: next word prediction
+        \end{itemize}
+        \item Methods used for instruction-tuning/alignment
+\begin{itemize}
+\item
+Supervised finetuning (SFT): Finetuning on training set of
+        instruction-response pairs
+        \item RLHF (more complicated, see below)
+        \end{itemize}
+        \item Output: Instruction-tuned/aligned LLM
+\begin{itemize}
+\item In this lecture, this model will be \myblue{InstructGPT}
+\item Ideally, this model will be great at dialog
+\item \ldots and
+        satisfy the three H.
+        
+\end{itemize}
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
 
 
 
@@ -446,7 +552,7 @@
 
 \vfill
 
-\textbf{Three steps}
+\textbf{Three steps from GPT3 to InstructGPT}
 
 	\begin{itemize}
 		\item Finetuning on human-written dialogs
@@ -483,8 +589,8 @@
 	\item Collect demonstration data
         \item Labelers provide demonstrations of the
           desired behavior on the input prompt distribution
-\item Continued pretraining of GPT3
-\item Main difficulty of this step: collect good data from annotators                  
+\item Supervised finetuning of GPT3
+\item Main difficulty/cost of this step: collect good data from annotators                  
 	\end{itemize}
 
 \vfill
@@ -498,13 +604,20 @@
 \textbf{The basis for SFT training dataset}
 
 	\begin{itemize}
-	\item Primarily prompts submitted to an earlier
+        \item At the very beginning of their work
+	\begin{itemize}
+        \item Bootstrapping
+          \item Some prompts are written
+            by annotators
+	\end{itemize}
+        \item After a bootstrapped system is up and running
+        on the web
+	\begin{itemize}
+	\item Use prompts submitted to this early
           version of InstructGPT
           \item Deduplication
         \item At most 200 per user ID
-        \item At the very beginning: bootstrapping
-          \item For bootstrapping, prompts are also written
-            by annotators
+	\end{itemize}
 	\end{itemize}
 
 \vfill
@@ -554,7 +667,7 @@
 \end{vbframe}
 
 
-\begin{vbframe}{Metadata for model output collected from labelers}
+\begin{vbframe}{Metadata collected from labelers}
 
 \vfill
 
@@ -574,6 +687,27 @@
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}{Example: ``Demonstration'' vs final
+	InstructGPT output}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/labelerpromptexample.png}
+\end{figure}
+
+\begin{itemize}
+	\item \ques How would you rate InstructGPT's output here?
+        \item \ques Is this a problem?
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
 
 %\end{document}
 
@@ -715,25 +849,6 @@ work fulltime on providing data for RLHF.
 \end{vbframe}
 
 
-\begin{vbframe}{Example of a prompt written by a labeler and
-model responses}
-
-\vfill
-
-\begin{figure}
-\centering
-\includegraphics[width = 10cm]{figure/labelerpromptexample.png}
-\end{figure}
-
-\begin{itemize}
-	\item How would you rate InstructGPT's output here?
-        \item Is this a problem?
-\end{itemize}
-
-
-\vfill
-
-\end{vbframe}
 
 
 
@@ -751,11 +866,6 @@ model responses}
 	\item Start with SFT model, final layer removed
         	\item Input: prompt+response, output: reward
         \item Only uses 6B model (not 175B)
-        \item Given a prompt, comparisons  
-      are
-        	highly correlated.
-                \item $\rightarrow$ Put them in
-        	a single batch (prevents overfitting).
 \end{itemize}
 
 \vfill
@@ -778,7 +888,9 @@ model responses}
         	highly correlated.
                 \item $\rightarrow$ Put them in
         	a single batch (prevents overfitting).
-\item \ques Think through mechanics
+\item \ques Think through mechanics of (i) single-batch
+        	training and (ii) how you wold implement
+        	training with loss($\theta$)
 \end{itemize}
 
 \vfill
@@ -915,8 +1027,10 @@ finetune the model
 	public NLP datasets.
 	\item SFT and PPO look like they are about equally
 	powerful?
-        \item Note that win rate is ``only'' about .6.
+\begin{itemize}
+        \item Win rate is ``only'' about .6.
         \item So PPO wins in 6 cases, SFT in 4.
+\end{itemize}
 \end{itemize}
 
 \vfill
@@ -1048,7 +1162,7 @@ direct supervision signal.
         \item \ques Why does PPO improve performance compared to
         just using SFT?
         % just a simple check: more trianing data
-        \item PPO wins in 6 cases, SFT in 4:\\ Is all the
+        \item \ques PPO wins in 6 cases, SFT in 4:\\ Is all the
         investment in PPO worth it?
 \end{itemize}
 
@@ -1458,13 +1572,17 @@ for some refusals?
 		(South?) Asia)
 		\item OpenAI (through detailed directions
 		they give to labelers)
-		\item OpenAI customers and their end users
-		(that's where the prompts come from)
+%		\item OpenAI customers and their end users
+%		(that's where the prompts come from)
                 \item There clearly are many groups whose
 		values are not represented: cultural,
 		geographic, age, education etc.
                 \item So there is no such thing as
 		value-neutral alignment.
+                \item \myblue{Whoever decides on the values
+		and manages the alignment process has
+		enormous power.}
+\item (if time: discuss facebook)
 	\end{itemize}
 
 \vfill
@@ -1570,12 +1688,14 @@ Wikipedia: A hallucination is false or misleading
 		\item
 A statement $P$ generated by an LLM is a hallucination if
 the following four conditions hold.
-    (i) $P$ is false, misleading or without evidence.
-        (ii) A human would know $P$ is false, misleading or
+\begin{enumerate}
+                    \item  The LLM presents $P$ as a fact.
+    \item  $P$ is false, misleading or without evidence.
+        \item  A human would know that $P$ is false, misleading or
             without evidence.
-                (iii) (i) and (ii) are with respect to the
+                \item (2) and (3) are with respect to the
                 pretraining data.
-                    (iv) The LLM presents $P$ as a fact.
+	\end{enumerate}
 	\end{itemize}
 
 \vfill
