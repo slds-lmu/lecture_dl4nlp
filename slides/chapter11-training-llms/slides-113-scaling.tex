@@ -139,7 +139,7 @@
 
 	\item ``Convergence is inefficient''
 	\begin{itemize}
-	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achived by training very large models and stopping significantly short of convergence  
+	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achieved by training very large models and stopping significantly short of convergence  
         \item That is: early stopping
 	\end{itemize}
 
@@ -262,15 +262,15 @@ Given a fixed FLOPs budget $C$, how should we trade-off model size and text size
 
 Given a fixed FLOPs budget, how should one trade off model size and
 the number of training tokens? We find that all three methods predict
-that current large models should be substantially smaller and therefore
-trained much longer than is currently done. Based on our estimated
+that \myblue{current large models should be substantially smaller and therefore
+trained much longer than is currently done}. Based on our estimated
 compute-optimal frontier, we predict that for the compute budget used
 to train Gopher, an optimal model should be 4 times smaller, while
 being training on 4 times more tokens. We verify this by training a more
 compute-optimal 70B model, called Chinchilla, on 1.4 trillion tokens.
 Not only does Chinchilla outperform its much larger counterpart,
-Gopher, but its reduced model size reduces inference cost considerably
-and greatly facilitates downstream uses on smaller hardware. The
+Gopher, but its \myblue{reduced model size reduces inference cost considerably
+and greatly facilitates downstream uses on smaller hardware}. The
 energy cost of a large language model is amortized through its usage
 for inference and fine-tuning. The benefits of a more optimally trained
 smaller model, therefore, extend beyond the immediate benefits of its
@@ -309,7 +309,9 @@ improved performance.
 \begin{figure}
 	\centering
 	\includegraphics[width = 8cm]{./figure/chinchilla_mmlu.png} \\ 
-	\citebutton{Source: Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+	\citebutton{Source: Hoffmann et al.,
+	2022}{https://arxiv.org/abs/2203.15556}, compared
+	with human forecasts
 \end{figure}
 
 \vfill
@@ -366,28 +368,26 @@ improved performance.
 % ------------------------------------------------------------------------------
 
 
-\begin{vbframe}{Doubts about scaling (1)}
+\begin{vbframe}{Doubts about scaling: Reuters}
 
 \vfill
 
 \begin{itemize}
-\item \citebutton{Reuters}{https://www.reuters.com/technology/artificial-intelligence/openai-rivals-seek-new-path-smarter-ai-current-methods-hit-limitations-2024-11-11/}
-\begin{itemize}
+\item \citebutton{Reuters}{https://www.reuters.com/technology/artificial-intelligence/openai-rivals-seek-new-path-smarter-ai-current-methods-hit-limitations-2024-11-11/}, 2024-11-15
 \item Ilya Sutskever, co-founder of AI labs Safe Superintelligence
 	(SSI) and OpenAI, told Reuters recently that results
-	from scaling up pre-training -- the phase of training
+	from \myblue{scaling up pre-training} -- the phase of training
 	an AI model that uses a vast amount of unlabeled
 	data to understand language patterns and structures
-	-- have plateaued.
+	-- \myblue{have plateaued}.
 	\item
 But now, some of the most prominent AI scientists are
-speaking out on the limitations of this “bigger is better”
-philosophy.
+speaking out on the \myblue{limitations of this “bigger is better”
+philosophy.}
 \item “The 2010s were the age of scaling, now we're back in
 	the age of wonder and discovery once again. Everyone
 	is looking for the next thing,” Sutskever
-	said. “Scaling the right thing matters more now than ever.”
-\end{itemize}
+	said. \myblue{“Scaling the right thing matters more now than ever.”}
 \end{itemize}
 
 
@@ -401,13 +401,12 @@ philosophy.
 \vfill
 
 \begin{itemize}
-\item \citebutton{The Verge}{https://www.theverge.com/2024/10/25/24279600/google-next-gemini-ai-model-openai-december}
-\begin{itemize}
-\item I've heard that the model (December Gemini release) isn't showing the
+\item \citebutton{The
+	Verge}{https://www.theverge.com/2024/10/25/24279600/google-next-gemini-ai-model-openai-december}, 2024-10-25:
+ I've heard that the model (December Gemini release) isn't showing the
 	performance
         gains the Demis Hassabis-led team had hoped for \ldots
-\end{itemize}
-\item Andrew Ng's news letter:
+\item Andrew Ng'snews letter:
 ``Orion’s improvement over GPT-4 was
 far smaller than that from GPT-3 to GPT-4.'',
 ``OpenAI found that pretraining Orion on
@@ -440,13 +439,11 @@ cost \ldots'',
 \end{vbframe}
 
 
-\begin{vbframe}{It's not simply brute-force scaling (1)}
+\begin{vbframe}{It's not simply brute-force scaling:\\ Data}
 
 \vfill
 
 \begin{itemize}
-	\item Data
-	\begin{itemize}
 	\item If you run out of data, then increase \# epochs
         \item The Stack v2
 	already contais all public code! arxiv.org/abs/2305.16264
@@ -457,7 +454,6 @@ cost \ldots'',
         \item For higher quality datasets, allocate more
 	compute to model size. arxiv.org/abs/2401.02954
         \item See Stanford CS25: StarCoder Use Case
-	\end{itemize}
 
 \end{itemize}
 
@@ -466,13 +462,12 @@ cost \ldots'',
 \end{vbframe}
 
 
-\begin{vbframe}{It's not simply brute-force scaling (2)}
+\begin{vbframe}{It's not simply brute-force scaling:\\
+	Scaling laws ignore cost per (input/output) token}
 
 \vfill
 
 \begin{itemize}
-	\item Scaling laws ignore cost per (input/output) token 
-	\begin{itemize}
 	\item Even if a humongous model gives me the best
 	possible performance, cost per token may be
 	prohibitively expensive.
@@ -491,8 +486,6 @@ cost \ldots'',
         budgets and researchers to focus on more
 	cost-effective,
         application-specific approaches. (Andrew Ng)
-         
-	\end{itemize}
 
 \end{itemize}
 
@@ -508,7 +501,7 @@ cost \ldots'',
 \begin{itemize}
 \item released by Microsoft Dec 2024
 	\item 14 billion parameters (small!)
-	\item pretraining data: 9.8 trillion tokens
+	\item pretraining data: 9.8 trillion tokens (pretty big)
         \item pretraining data curated / synthesized
 \end{itemize}
 
@@ -583,13 +576,13 @@ end-to-end monolithic model.
 \begin{itemize}
 	\item The original scaling laws were exclusively
         about \myblue{(pre)training}: What is the best model
-        I can train given
+        I can pretrain given
         constraints such as compute budget.
 
 \item This has shifted to \myblue{``joint optimization''} of training
         and testing: even if a trillion parameter model is the optimal
-        model given training constraints, a much smaller
-        model may be preferable since its so much cheaper at
+        model given pretraining constraints, a much smaller
+        model may be preferable since it is so much cheaper at
         inference time.
 
 \item Trend towards \myblue{systems of smaller models}, trend away
