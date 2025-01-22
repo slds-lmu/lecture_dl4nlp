@@ -158,7 +158,17 @@
 
 \begin{figure}
     \centering
-    \includegraphics{figure/optimalbatchsize.png}
+    \includegraphics[height = 6cm]{figure/optimalbatchsize.png}
+\end{figure}
+
+
+\end{vbframe}
+
+\begin{vbframe}{Optimal Batch Size}
+
+\begin{figure}
+    \centering
+    \includegraphics[height = 3cm]{figure/optimalbatchsize.png}
 \end{figure}
 
 \begin{itemize}
@@ -178,7 +188,6 @@
 \vfill
 
 \begin{itemize}
-\item BASE OF LOGARITHM
     \item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}} + \frac{410.7}{D^{0.28}}$
     \item $L(N,D)$ is cross entropy on new text
 \end{itemize}
@@ -355,7 +364,7 @@ improved performance.
 \item Ilya Sutskever, co-founder of AI labs Safe Superintelligence
 	(SSI) and OpenAI, told Reuters recently that results
 	from scaling up pre-training -- the phase of training
-	an AI model that use s a vast amount of unlabeled
+	an AI model that uses a vast amount of unlabeled
 	data to understand language patterns and structures
 	-- have plateaued.
 	\item
@@ -389,12 +398,12 @@ philosophy.
 \item Andrew Ng's news letter:
 ``Orion’s improvement over GPT-4 was
 far smaller than that from GPT-3 to GPT-4.'',
+``OpenAI found that pretraining Orion on
+synthetic data made it too much like earlier models \ldots'',
 ``Anthropic’s schedule for \ldots\ Claude 3.5 Opus \ldots\
 has slipped. It
 hasn’t shown the expected performance given its size and
 cost \ldots'',
-``OpenAI found that pretraining Orion on
-synthetic data made it too much like earlier models \ldots'',
 \end{itemize}
 
 
@@ -457,6 +466,7 @@ synthetic data made it too much like earlier models \ldots'',
 	prohibitively expensive.
         \item Example: Llama models are small-ish because
 	that's the size that makes economic sense right now.
+        \item huge openai models may not make economic sense
         \item The
         latest models cost as much as \$100 million to train,
 	and
@@ -472,6 +482,22 @@ synthetic data made it too much like earlier models \ldots'',
          
 	\end{itemize}
 
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Phi-4}
+
+\vfill
+
+\begin{itemize}
+\item release by Microsoft Dec 2024
+	\item 14 billion parameters (small!)
+	\item pretraining data: 9.8 trillion tokens
+        \item pretraining data curated / synthesized
 \end{itemize}
 
 \vfill
@@ -521,6 +547,48 @@ end-to-end monolithic model.
 \vfill
 
 \end{vbframe}
+
+
+\begin{vbframe}{If there's one thing you should take away (1)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 12cm]{./figure/3thingserrorratescaleswith.png} \\ 
+%	\includegraphics[width = 12cm]{./figure/linear,tokens,pars.png} 
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{If there's one thing you should take away (2)}
+
+
+\vfill
+
+\begin{itemize}
+	\item The original scaling laws were exclusively
+        about \myblue{(pre)training}: What is the best model
+        I can train given
+        constraints such as compute budget.
+
+\item This has shifted to \myblue{``joint optimization''} of training
+        and testing: even if a trillion parameter model is the optimal
+        model given training constraints, a much smaller
+        model may be preferable since its so much cheaper at
+        inference time.
+
+\item Trend towards \myblue{systems of smaller models}, trend away
+        from a single huge monolithic model.
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
 
 
 \endlecture

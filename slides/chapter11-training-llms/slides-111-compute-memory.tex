@@ -48,7 +48,7 @@ $$C \approx \tau T = 6 P D$$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Compute Requirements}
+\begin{vbframe}{Compute Requirements $$C \approx \tau T = 6 P D$$ }
 
 \textbf{where:}
 
@@ -80,7 +80,7 @@ $C$  can be measured in different units:\newline
 \begin{itemize}
      \item FLOP-seconds which is [Floating Point Ops / Second] 
  	\begin{itemize}
- 	    \item We also use multiples GFLOP-seconds, TFLOP-seconds etc.
+ 	    \item We also use multiples: GFLOP-seconds, TFLOP-seconds etc.
  		\item Other multiples like PFLOP-days are used in papers
  		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
             \item Actual FLOPs are always lower than the advertised theoretical FLOPs
@@ -104,7 +104,7 @@ $C$  can be measured in different units:\newline
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
 	\item \textbf{We need to decide about $P$ and $D$, so that we get the best performance within the compute budget.}
-	\item The optimal tradeoff between $P$ and $D$ is: $D = 20 P$
+	\item One proposed optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
 	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
 	\end{itemize}
