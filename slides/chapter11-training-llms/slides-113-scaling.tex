@@ -56,9 +56,10 @@
 	\item Shape means: depth and width
 	\end{itemize}
 
-	\item Smooth power laws
+%	\item Smooth power laws
+	\item Power laws
 	\begin{itemize}
-	\item Performance has power-law relation with each factor $N$, $D$, $C$
+	\item Performance has power law relation with each factor $N$, $D$, $C$
 	\item When not bottlenecked by the other two 
 	\item Trend spanning more than six orders of magnitude
 	\end{itemize}
@@ -84,7 +85,7 @@
 
 	\item Universality of training
 	\begin{itemize}
-	\item Training curves follow predictable power-laws
+	\item Training curves follow predictable power laws
 	\item Their parameters are roughly independent of model size
 	\item It is possible to predict by extrapolating the early part of the training curve
 	\end{itemize}
@@ -119,6 +120,16 @@
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
+\begin{vbframe}{Power Law (GPT3 Paper): Questions?}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/losscompute.png}
+\end{figure}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
 
 \begin{vbframe}{Scaling Laws}
 
@@ -126,9 +137,10 @@
 
 \begin{itemize}
 
-	\item Convergence is inefficient
+	\item ``Convergence is inefficient''
 	\begin{itemize}
 	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achived by training very large models and stopping significantly short of convergence  
+        \item That is: early stopping
 	\end{itemize}
 
 	\item Optimal batch size
@@ -146,7 +158,7 @@
 
 \vskip3mm
 
-\textbf{Claim: Larger language models will perform better and be more sample efficient than current models.} 
+\textbf{Claim in 2020: Larger language models will perform better and be more sample efficient than current models.} 
 
 \vfill
 
@@ -200,7 +212,7 @@
 
 \begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
 
-Given a fixed FLOPs budget, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+Given a fixed FLOPs budget $C$, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 
 \vfill
 
@@ -494,7 +506,7 @@ cost \ldots'',
 \vfill
 
 \begin{itemize}
-\item release by Microsoft Dec 2024
+\item released by Microsoft Dec 2024
 	\item 14 billion parameters (small!)
 	\item pretraining data: 9.8 trillion tokens
         \item pretraining data curated / synthesized
