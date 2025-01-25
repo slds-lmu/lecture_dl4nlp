@@ -60,12 +60,12 @@
 	\item Power laws
 	\begin{itemize}
 	\item Performance has power law relation with each factor $N$, $D$, $C$
-	\item When not bottlenecked by the other two 
 	\item Trend spanning more than six orders of magnitude
 	\end{itemize}
 
-	\item Universality of overfitting 
+	\item Limits of power laws
 	\begin{itemize}
+	\item Power law for one variable only holds when not bottlenecked by the other two 
 	\item Performance enters regime of diminishing returns if $N$ or $D$ held fixed while the other increases
 	\end{itemize}
 
@@ -83,10 +83,10 @@
 
 \begin{itemize}
 
-	\item Universality of training
+	\item Why power laws help us a lot in practice
 	\begin{itemize}
-	\item Training curves follow predictable power laws
-	\item Their parameters are roughly independent of model size
+	\item Loss (performance of LLM) follows predictable power laws
+	\item Power law parameters are roughly independent of model size
 	\item It is possible to predict by extrapolating the early part of the training curve
 	\end{itemize}
 
@@ -141,6 +141,8 @@
 	\begin{itemize}
 	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achieved by training very large models and stopping significantly short of convergence  
         \item That is: early stopping
+\item Claim: Larger language models will perform better and be more sample efficient than current models.
+
 	\end{itemize}
 
 	\item Optimal batch size
@@ -155,10 +157,6 @@
 	\end{itemize}
 
 \end{itemize}
-
-\vskip3mm
-
-\textbf{Claim in 2020: Larger language models will perform better and be more sample efficient than current models.} 
 
 \vfill
 
@@ -185,9 +183,11 @@
 
 \begin{itemize}
     \item Estimate gradient as accurately as possible $\rightarrow$ large batch
-    \item Increase training speed as much as possible $\rightarrow$ large step size
+    \item Exploit stochasticity (epoch batches would not be
+    a good thing even if we could compute them efficiently)
+    $\rightarrow$ small batch    \item Increase training speed as much as possible $\rightarrow$ large step size
     \item Based on the estimated gradient, choose a step size such that the cost of the landing position does not deviate too much from the cost of the ideal landing position $\rightarrow$ small step size
-    \item Exploit stochasticity (epoch batches would not be a good thing even if we could compute them efficiently) $\rightarrow$ small step size
+
 
 \end{itemize}
 
@@ -202,6 +202,30 @@
 \begin{itemize}
     \item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}} + \frac{410.7}{D^{0.28}}$
     \item $L(N,D)$ is cross entropy on new text
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Scaling Law for next word prediction}
+
+\vfill
+
+\begin{itemize}
+    \item $L(N,D) = 2 + \frac{1000}{N^{1/3}} + \frac{1000}{D^{1/4}}$
+    \item \ques Compute $L(N,D)$ for
+    $N=10^9,D=10^8$,\\
+    $N=10^{12},D=10^{16}$,\\
+    $N=10^3,D=10^{100}$ and\\
+    $N=10^{100},D=10^4$
+    \item \ques Which configuration is best?
+    \item \ques Which values of $N$ and $D$ would you choose
+    to create an even more powerful model?
+% 2 + 1 + 1
+% 2 + 0.1 + 0.1
+% 2 + 100 + 0
+% 2 + 0 + 100
 \end{itemize}
 
 \vfill
@@ -405,8 +429,8 @@ philosophy.}
 	Verge}{https://www.theverge.com/2024/10/25/24279600/google-next-gemini-ai-model-openai-december}, 2024-10-25:
  I've heard that the model (December Gemini release) isn't showing the
 	performance
-        gains the Demis Hassabis-led team had hoped for \ldots
-\item Andrew Ng'snews letter:
+        gains that Demis Hassabis-led team had hoped for \ldots
+\item Andrew Ng's news letter:
 ``Orion’s improvement over GPT-4 was
 far smaller than that from GPT-3 to GPT-4.'',
 ``OpenAI found that pretraining Orion on
@@ -431,7 +455,10 @@ cost \ldots'',
 	\includegraphics[height = 6cm]{./figure/epochai.png} 
 \end{figure}
 
-\citebutton{Epoch AI}{https://epoch.ai/blog/can-ai-scaling-continue-through-2030}
+\citebutton{Epoch
+	AI}{https://epoch.ai/blog/can-ai-scaling-continue-through-2030}
+%	random internet page claims GPT4 required $2\cdot
+%	10^{25}$ FLOPS
 
 
 \vfill
@@ -560,7 +587,7 @@ end-to-end monolithic model.
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 12cm]{./figure/3thingserrorratescaleswith.png} \\ 
+	\includegraphics[width = 11cm]{./figure/3thingserrorratescaleswith.png} \\ 
 %	\includegraphics[width = 12cm]{./figure/linear,tokens,pars.png} 
 \end{figure}
 
@@ -577,7 +604,7 @@ end-to-end monolithic model.
 	\item The original scaling laws were exclusively
         about \myblue{(pre)training}: What is the best model
         I can pretrain given
-        constraints such as compute budget.
+        constraints such as compute budget?
 
 \item This has shifted to \myblue{``joint optimization''} of training
         and testing: even if a trillion parameter model is the optimal
