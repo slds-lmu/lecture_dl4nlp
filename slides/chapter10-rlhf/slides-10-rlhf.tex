@@ -1685,7 +1685,7 @@ for some refusals?
 		\item Governments?
 		\item Extremist organizations?
                 \item Criminals?
-                \item Uncensored models:
+                \item Uncensored models: Musk /
                 \href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
                 \item \ques How can we prevent unaligned
 		LLMs from wreaking havoc?
@@ -2128,10 +2128,14 @@ To create a reward model for reinforcement learning, we
 		assessment.
                 
 \item Hallucinations are most likely a result of reward
-		hacking: if a generation is fluent,
+		hacking: if a response is fluent,
 	interesting, responsive, helpful, authoritative, but
-	contains an inaccuracy, the human may still give it a
-	high reward.
+	contains an inaccuracy,
+the reward model, due to its training, may rate it as a
+	high-reward
+        response.
+%, the human may still give it a
+	%high reward.
         \item Divergence of the learned ``proxy award'' (the
 	reward model) and the true reward function (what
 	OpenAI wants)
