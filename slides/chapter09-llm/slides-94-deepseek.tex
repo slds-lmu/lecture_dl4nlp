@@ -5,49 +5,118 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\def\cotpfull{chain-of-thought prompting\xspace}
-\def\cotp{COT-P\xspace}
+\def\cotpfull{chain-of-thought few-shot prompting\xspace}
+\def\cotp{COT-FS-P\xspace}
 
 %\newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
-\item illustrate \cotpfull and point out the benefits it brings to LLMs
-\item illustrate tree-of-thought and point out the benefits it brings to LLMs 
+\item understand how reasoning works beyond \cotpfull
+\item understand how reasoning models are trained
 }
 
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{\cotpfull}
+\title{DeepSeek Reasoning}
 % \author{}
 \institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
 \date{}
 
 \begin{document}
 
+
 \lecturechapter{Large Language Models (LLMs)}
 
 \begin{vbframe}{REINSTATE LECTURE COMMAND}
 \end{vbframe}
 
-\begin{vbframe}{CHANGE COT-P TO COT-FSP}
-\end{vbframe}
+\input{newway}
 
-\begin{frame}{Reasoning training}
+
+\begin{frame}{Sources}
 
 \vfill
 
 \begin{itemize}
+    \item First major public
+    reasoning LLM (as opposed to proprietary closed):
+    DeepSeek 
 \item \citebutton{DeepSeek-AI, 2025}{https://arxiv.org/abs/2501.12948}
-DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via
-Reinforcement Learning
-    \item deepseek math
-\item RL
-\item distillation
+\item \citebutton{Nature, 2025}{https://www.nature.com/articles/s41586-025-09422-z}
 \end{itemize}
 
 \vfill
 
 \end{frame}
+
+\begin{vbframe}{Data for SFT: 40B tokens!}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm]{figure/deepseekmath.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Reinforcement learning}
+
+\vfill
+
+\begin{itemize}
+\item In reinforcement learning, an agent takes a sequence
+    of actions towards a goal and gets feedback on the
+    success of that sequence at the end.
+    \item Details: Next lecture
+    \item For reasoning trajectories, the feedback is:
+    correct or incorrect.
+\item (thanks to Emma Brunskill) \begin{tabular}{l@{\hspace{0.2cm}}ll}
+& supervised learning & reinforcement learning\\\hline
+goal&optimal predictor & optimal policy\\ 
+learn from experience? & yes & yes\\
+generalization? & yes & yes\\
+feedback & rich (translation) & sparse (in/correct)\\
+feedback when? & immediately & delayed\\
+exploration? & no & yes
+\end{tabular}
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{frame}{Synthetic data generation}
+
+\vfill
+
+\begin{block}{No new-shot prompt required}
+A conversation between User and Assistant. The User asks a
+question and the Assistant solves it. The Assistant first
+thinks about the reasoning process in the mind and then
+provides the User with the answer. The reasoning process and
+answer are enclosed within <think>...</think> and
+<answer>...</answer> tags, respectively, that is, <think>
+reasoning process here </think><answer> answer here
+</answer>. User: prompt.  Assistant:”, in which the prompt
+is replaced with the specific reason- ing question during
+training. We intentionally limit our constraints to this
+structural format, avoiding any content-specific biases to
+ensure that we can accurately observe the natural
+progression of the model during the RL process.
+\end{block}
+
+\vfill
+
+\end{frame}
+
 
 \begin{frame}{Inference time scaling}
 
@@ -67,18 +136,32 @@ Reinforcement Learning
 
 \end{frame}
 
-\begin{vbframe}{Reasoning trace}
+\begin{vbframe}{Automatic verifier/verifiable rewards: AIME example}
 
 \vfill
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.1]{figure/reasoningtrace}
+    \includegraphics[width=11.5cm]{figure/aime,example}
 \end{figure}
-\ques Is this chain of thought prompting?
+
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}{Example of a reasoning trace}
+
+\vfill
+
+\begin{tabular}{lp{2cm}}
+    \includegraphics[width=8cm]{figure/reasoning,trace}&
+\vspace{-5cm} \ques Is this chain of thought prompting? 
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
+
 
 \begin{frame}{What elements of reasoning are learned?}
 
@@ -98,118 +181,48 @@ Reinforcement Learning
 
 \end{frame}
 
- human-defined reasoning patterns may limit model
- exploration,
 
- unrestricted RL training can better incentivize the
- emergence
- of new reasoning capabilities in LLMs
-
-
-
-
-“A conversation between User and Assistant. The User asks a
-question
-and the Assistant solves it. The Assistant first thinks
-about the reasoning
-process in the mind and then provides the User with the
-answer. The
-reasoning process and answer are enclosed within
-<think>...</think>
-and <answer>...</answer> tags, respectively, that is,
-<think> reasoning
-process here </think><answer> answer here </answer>. User:
-prompt.
-Assistant:”, in which the prompt is replaced with the
-specific reason-
-ing question during training. We intentionally limit our
-constraints to
-this structural format, avoiding any content-specific biases
-to ensure
-that we can accurately observe the natural progression of
-the model
-during the RL process. SO THIS IS NOT COT PROMPTING.
-
-
-
-
-Notably, during training,
-DeepSeek-R1-Zero exhibits an ‘aha moment’, shown in Table 1,
-character-
-ized by a sudden increase in the use of the word ‘wait’
-during reflections,
-provided in Extended Data Fig. 1b. 
-
-
-\begin{vbframe}{R1 scaling}
+\begin{vbframe}{Example for Aha moment: ``wait''}
 
 \vfill
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.1]{figure/r1scaling}
+    \includegraphics[width=10cm]{figure/raspberry,wait}
 \end{figure}
 
 \vfill
 
 \end{vbframe}
-
-\begin{vbframe}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/accuracy,aime}
-\end{figure}
+\begin{vbframe}{The rise of reflective terms}
 
 \vfill
 
-\end{vbframe}
-
-\begin{vbframe}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/reasonling}
-\end{figure}
-
- Frequency of representative
- reflective terms in model-generated outputs throughout the
- training process.
- Reflective terms—including ‘wait’, ‘mistake’, ‘however’,
+\begin{tabular}{ll}
+    \includegraphics[width=8cm]{figure/reasonling}
+  \begin{minipage}[b]{3cm}
+Frequency of
+ reflective terms
+(‘wait’, ‘mistake’, ‘however’,
  ‘but’, ‘retry’, ‘error’,
- ‘verify’, ‘wrong’, ‘evaluate’ and ‘check’—were identified
- and curated by a panel
- of three human experts. 
+ ‘verify’, ‘wrong’, ‘evaluate’, ‘check’)
+in model output during
+ training
+\end{minipage}
+\end{tabular}
 
 \vfill
 
 \end{vbframe}
 
 
-\begin{vbframe}{Automatic verifier: AIME example}
+\begin{vbframe}{Accuracy AIME: Above human average}
 
 \vfill
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{One slide definition of RL}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
+    \includegraphics[width=8cm]{figure/accuracy,aime.png}
 \end{figure}
 
 \vfill
@@ -217,13 +230,13 @@ provided in Extended Data Fig. 1b.
 \end{vbframe}
 
 
-\begin{vbframe}{One slide definition of RL}
+\begin{vbframe}{R1 scaling: Without explicit length signal}
 
 \vfill
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.1]{figure/raspberry,wait}
+    \includegraphics[width=10cm]{figure/r1scaling}
 \end{figure}
 
 \vfill
@@ -231,527 +244,57 @@ provided in Extended Data Fig. 1b.
 \end{vbframe}
 
 
-\end{document}
 
-\end{document}
-
-
-
-%\lecture{Deep Learning for NLP}
-
-% ------------------------------------------------------------------------------ 
-
-\begin{vbframe}{\cotpfull motivation}
-
-\vfill
-
-How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
-
-\begin{itemize}
-\item Use formal approaches, e.g., logic, symbolic reasoning
-    \begin{itemize}
-    \item Example: \citebutton{BeliefBank}{https://arxiv.org/abs/2109.14723}
-\item Difficult to train and deploy, not widely used
-    \end{itemize}
-\item Standard few-shot learning via prompting works for many tasks
-    \begin{itemize}
-    \item Still, it works poorly for many tasks that require reasoning
-    \end{itemize}
-\item \cotp
-    \begin{itemize}
-    \item A new form of few-shot prompting
-    \item Each ``training example'' has the form <input, \textit{chain of thought}, output>
-    \item chain of thought:\\ series of reasoning steps that
-    lead to the final answer
-    \item applications: complex, commonsense, symbolic
-    reasoning tasks etc
-    \end{itemize}
-
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-\begin{frame}{Neurosymbolic approach\\ (currently
-    infrequently used)}
-
-\vfill
-	
-	\begin{figure}
-		\centering
-		\includegraphics[height = 6cm]{figure/beliefbank} 
-	\end{figure}
-
-\vfill
-
-\end{frame}
-
-
-\begin{frame}{LLMs not good at reasoning tasks}
-
-\vfill
-	
-	\begin{figure}
-		\centering
-		\includegraphics[height = 6cm]{figure/is450,90,of,500} 
-	\end{figure}
-
-\ques What is the problem here?
-% left-to-right next-token prediction
-
-\vfill
-
-\end{frame}
-
-
-% ------------------------------------------------------------------------------ 
-
-\begin{vbframe}{\cotpfull paradigm}
-
-\vfill
-
-%\textbf{\cotp enables LLMs to tackle complex arithmetic, commonsense and symbolic reasoning tasks.}
-
-\begin{figure}
-    \centering
-    \includegraphics{figure/chain_of_thought.png}\\
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------ 
-
-\begin{vbframe}{\cotpfull paradigm}
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/chain_of_thought2.png}
-\end{figure}
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-
-\begin{vbframe}{Benefits of \cotpfull}
+\begin{frame}{Things we have not covered}
 
 \vfill
 
 \begin{itemize}
-    \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps
-    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
-    \item It is closer to how humans solve tasks using language
-    \item Language models, if
-given a well designed chain-of-thought prompt, can
-    solve problems they otherwise would not be able to solve.
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Examples of \cotpfull}
-
-\vfill
-
-\textbf{Examples of $<$input, chain of thought, output$>$ triples for  commonsense and symbolic reasoning}
-
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
-
-THE FEW SHOTS (TRAINING EXAMPLES) ARE OMITTED FROM THESE
-EXAMPLES TO SAVE SPACE, BUT THIS IS CHAIN OF THOUGHT
-PROMPTING, THAT IS, THE MODEL IS PROMPTED WITH EXAMPLES OF
-CHAIN OF THOUGHT REASONING.
-
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex1.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex2.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex3.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex4.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex5.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Examples}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[height=7cm]{figure/cotex6.png}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{\cotp improves arithmetic}
-
-\vfill
-	
-	\begin{figure}
-		\centering
-		\includegraphics[height = 7cm]{figure/cotperformance} 
-	\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-
-\begin{vbframe}{\cotp improves arithmetic}
-
-%\vfill
-
-SVAMP: math word problems with varying structures; MAWPS:
-repository unifying math problems from different sources;
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.6\textwidth]{figure/cot_performance1.png}
-\end{figure}
-
-%\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{\cotp improves commonsense}
-
-\vfill
-
-CSQA: Contains around 200K dialogs with a total of 1.6M
-turns. Further, unlike existing large scale QA datasets
-which contain simple questions that can be answered from a
-single tuple, the questions in the dialogs require a larger
-subgraph of the KG. 
-
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\textwidth]{figure/cot_performance2.png}\\
-    \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------ 
-
-\begin{vbframe}{tree-of-thought: motivation}
-
-\vfill
-
-\begin{itemize}
-\item The token-level and left-to-right decisions of the autoregressive mechanism pose a limitation for:
-    \begin{itemize}
-    \item Tasks where initial decisions play a pivotal role
-    \item Tasks requiring exploration or strategic lookahead
-    \end{itemize}
-\item Strategy to solve those:
-    \begin{itemize}
-    \item Maintain and explore diverse alternatives instead of just picking one
-    \item Evaluate current status and look ahead or backtrack to make global decisions
-    \end{itemize}
-
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Tree-of-thought: prompting paradigm}
-
-\vfill
-
-Schematic illustrating three approaches to problem solving
-with LLMs. Rectangle box = \textit{thought} = a coherent language sequence serving as an intermediate step in problem solving.
-
-\begin{figure}
-    \centering
-    \includegraphics{figure/tot_vs_cot.png}\\
-\citebutton{Yao et al., 2023}{https://arxiv.org/pdf/2305.10601.pdf}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-
-\begin{vbframe}{Tree-of-thought for creative writing}
-
-\vfill
-
-A step of deliberate search in a randomly picked Creative Writing task. Given the input, the LM samples five different plans, and then votes five times to decide which plan is best.
-    
-\begin{figure}
-    \centering
-    \includegraphics{figure/tot_creative_writing.png}\\
-\citebutton{Yao et al., 2023}{https://arxiv.org/pdf/2305.10601.pdf}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Tree-of-thought for creative writing (2)}
-
-\vfill
-    
-\begin{figure}
-\raisebox{0pt}[\height][\depth]{\hspace{-0.85cm}%
-    \includegraphics[width=1.15\textwidth]{figure/totcreativebig.png}
-}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-
-\begin{frame}{\cotpfull: Error breakdown}
-
-\vfill
-
-\begin{itemize}
-    \item 8\% calculator error
-    \item 16\% symbol mapping error
-    \item 22\% one missing step error
-    \item rest: semantic issues, incoherent \cotp
-\item Source: Stanford CS25: Beyond LLMs: Agents, Emergent
-    Abilities, Intermediate-Guided Reasoning
+\item use an eco system of several models
+\item for distillation, generation, verification
+\item some ``light'' human post-editing of training data
+\item rejection sampling: keep only high-quality,
+    high-confidence training data
+\item apart from math, the also do this for code and other domains
+\item major hardware optimization work
+\item claim: cost of training $<$ 1 000 000 million dollar
 \end{itemize}
 
 \vfill
 
 \end{frame}
 
-
-\begin{frame}{\cotpfull: What could go wrong?}
-
-\vfill
-
-\begin{itemize}
-    \item Decompose complex problems into a sequence of reasoning steps
-    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
-    \item It is closer to how humans solve tasks using language
-    \item Language models, if
-given a well designed  chain-of-thought prompt, can
-    solve problems they otherwise would not be able to solve.
-
-\item \ques What could go wrong?
-% no guarantee that the reasoning given is the reasoning employed
-% is this true for humans?
-% only one answer, but what happens if there is no good single answer?
-% clearly a great thing for the examples given, but how
-%    typical is this for what we need from language models?
-%    -> go back to six examples that were blown up
-%    inearlier slides
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{\cotpfull: Why does it work?}
-
-\vfill
-
-\begin{itemize}
-    \item \ques Why does it work?
-% make clear that reasoning is required
-% make clear what kind o reasoning is rquirecd
-% allocate additional compute
-% LLMs are good at finding their own mistakes if
-%    they look over there own output
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-
-
-\begin{frame}{\cotpfull: Why does it work?}
-
-\vfill
-
-\begin{itemize}
-    \item \ques Do top-of-the-line LLMs use \cotpfull?
-% show metricalfoot5.o.txt
-% so this model uses chain of thought without chain of
-%    thought prompting: how come?
-% one possibility system prompt
-% show system prompt
-% e.g., "organize responses to flow well, not by source or citation
-% another possibiley: standard training
-% a third possibilty: new methdology, reasoning tokesn
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-
-REASONING NEW
-
-
-
-\begin{frame}{Chain-of-Thought: Terminology}
-
-\vfill
-
-\begin{itemize}
-    \item Shot = ``training example''
-    \item few-shot prompting = few-shot learning
-    \item The prompt ``think step by step'' by itself
-    (without shots) is not \cotpfull.
-    \item \cotpfull is defined as including shots.
-    \item Chain-of-Thought is currently used as a general
-    term to refer to the idea of LLMs using explicit
-    reasoning steps to arrive at an answer.
-    \item So the current usage of Chain-of-Thought is more
-    general than \cotpfull.
-\end{itemize}
-
-\vfill
-
-\end{frame}
-\begin{frame}{Chain-of-Thought in OpenAI's o1}
-
-\vfill
-
-\begin{itemize}
-    \item \citebutton{openai}{https://openai.com/index/learning-to-reason-with-llms/}
-\item We are introducing OpenAI o1, a new large language
-model trained with reinforcement learning to perform complex
-reasoning. o1 thinks before it answers -- it can produce a long
-internal chain of thought before responding to the user.
-\item internal!
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Generator-Verifier Gap (Noam Brown)}
-
-\vfill
-
-\begin{itemize}
-    \item For many important problems, it is much easier to
-    verify a solution than generating one.
-    \item Chain-of-thought is expected to help for such
-    problems with a generator-verifier gap.
-    \item Problems with generator-verifier gap: Sudoku,
-    doing math, programming
-    \item Problems with less of a generator-verifier gap:
-    knowledge questions (what is the capital of bhutan?),
-    simple pattern matching (which language is this?)
-    
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Slido}
-
-\vfill
-
-\begin{itemize}
-    \item 1313837 https://app.sli.do/event/dinLdZRBHw2fXo5R31C3Nt
-    \item 1435969 https://app.sli.do/event/kWQDLpHa14256yiwxyCDr5
-    \item 4039244 https://app.sli.do/event/ef5nQS8XmbhWAQDVk9CYQs
-    \item 42248917 https://app.sli.do/event/5YwPZfoEFAibQ4DbFTzfj2
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-
+\input{newway}
 
 \endlecture
 \end{document}
+
+
+
+% human-defined reasoning patterns may limit model
+% exploration,
+% unrestricted RL training can better incentivize the
+% emergence
+% of new reasoning capabilities in LLMs
+
+%    •	Cold-start SFT data: collect thousands of long CoT
+%    examples via few-shot prompting, direct prompting for
+%    reflected/verified answers, and cleaned outputs from
+%    R1-Zero, with light human post-processing for
+%    readability.  ￼
+%•	Reasoning-oriented RL with
+%		  rule-based, verifiable rewards (math
+%		  answers in a specified format; code
+%		  checked with tests).  ￼
+%•    Rejection sampling → new SFT
+%			  set (curated prompts; keep only
+%			  correct traces; ~600k reasoning
+%			  samples), then another RL round.
+			  ￼
+
+
+
+
+
+
+
