@@ -5,8 +5,8 @@
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\def\cotpfull{chain-of-thought few-shot prompting\xspace}
-\def\cotp{COT-FS-P\xspace}
+\def\cotpfull{chain-of-thought prompting\xspace}
+\def\cotp{COT-P\xspace}
 
 %\newcommand{\titlefigure}{figure/gpt_sq.png}
 \newcommand{\learninggoals}{
@@ -23,221 +23,8 @@
 \date{}
 
 \begin{document}
-
 \lecturechapter{Large Language Models (LLMs)}
-
-\begin{vbframe}{REINSTATE LECTURE COMMAND}
-\end{vbframe}
-
-\begin{vbframe}{CHANGE COT-P TO COT-FSP}
-\end{vbframe}
-
-\begin{frame}{Reasoning training}
-
-\vfill
-
-\begin{itemize}
-\item \citebutton{DeepSeek-AI, 2025}{https://arxiv.org/abs/2501.12948}
-DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via
-Reinforcement Learning
-    \item deepseek math
-\item RL
-\item distillation
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Inference time scaling}
-
-\vfill
-
-\begin{itemize}
-    \item For a hard problem, it often helps to think for a
-    long time to come up with the solution.
-    \item Inference time scaling: teach the model to think
-    for a while before giving the answer.
-    \item Here, thinking means that the model produces
-    potentially long output, the reasoning trace, that leads
-    to the correct answer.
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{vbframe}{Reasoning trace}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/reasoningtrace}
-\end{figure}
-\ques Is this chain of thought prompting?
-\vfill
-
-\end{vbframe}
-
-\begin{frame}{What elements of reasoning are learned?}
-
-\vfill
-
-\begin{itemize}
-\item dynamic strategy adaptation
-    \item self-verification
-    \item reflection
-    \item backtracking
-    \item reasoning traces are getting longer
-\item exploration of altenative approches
-\item diverse and sophisticated reasoning behaviours.
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
- human-defined reasoning patterns may limit model
- exploration,
-
- unrestricted RL training can better incentivize the
- emergence
- of new reasoning capabilities in LLMs
-
-
-
-
-“A conversation between User and Assistant. The User asks a
-question
-and the Assistant solves it. The Assistant first thinks
-about the reasoning
-process in the mind and then provides the User with the
-answer. The
-reasoning process and answer are enclosed within
-<think>...</think>
-and <answer>...</answer> tags, respectively, that is,
-<think> reasoning
-process here </think><answer> answer here </answer>. User:
-prompt.
-Assistant:”, in which the prompt is replaced with the
-specific reason-
-ing question during training. We intentionally limit our
-constraints to
-this structural format, avoiding any content-specific biases
-to ensure
-that we can accurately observe the natural progression of
-the model
-during the RL process. SO THIS IS NOT COT PROMPTING.
-
-
-
-
-Notably, during training,
-DeepSeek-R1-Zero exhibits an ‘aha moment’, shown in Table 1,
-character-
-ized by a sudden increase in the use of the word ‘wait’
-during reflections,
-provided in Extended Data Fig. 1b. 
-
-
-\begin{vbframe}{R1 scaling}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/r1scaling}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/accuracy,aime}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/reasonling}
-\end{figure}
-
- Frequency of representative
- reflective terms in model-generated outputs throughout the
- training process.
- Reflective terms—including ‘wait’, ‘mistake’, ‘however’,
- ‘but’, ‘retry’, ‘error’,
- ‘verify’, ‘wrong’, ‘evaluate’ and ‘check’—were identified
- and curated by a panel
- of three human experts. 
-
-\vfill
-
-\end{vbframe}
-
-
-\begin{vbframe}{Automatic verifier: AIME example}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{One slide definition of RL}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-
-\begin{vbframe}{One slide definition of RL}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/raspberry,wait}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-
-\end{document}
-
-\end{document}
-
-
-
-%\lecture{Deep Learning for NLP}
+\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------ 
 
@@ -463,7 +250,7 @@ CHAIN OF THOUGHT REASONING.
 	
 	\begin{figure}
 		\centering
-		\includegraphics[height = 7cm]{figure/cotperformance} 
+		\includegraphics[height = 6cm]{figure/cotperformance} 
 	\end{figure}
 
 \vfill
@@ -481,7 +268,7 @@ repository unifying math problems from different sources;
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\textwidth]{figure/cot_performance1.png}
+    \includegraphics[width=0.5\textwidth]{figure/cot_performance1.png}
 \end{figure}
 
 %\vfill
@@ -503,7 +290,7 @@ subgraph of the KG.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\textwidth]{figure/cot_performance2.png}\\
+    \includegraphics{figure/cot_performance2.png}\\
     \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
 \end{figure}
 
@@ -672,11 +459,6 @@ given a well designed  chain-of-thought prompt, can
 \vfill
 
 \end{frame}
-
-
-REASONING NEW
-
-
 
 \begin{frame}{Chain-of-Thought: Terminology}
 
