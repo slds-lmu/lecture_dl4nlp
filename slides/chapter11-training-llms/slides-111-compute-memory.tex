@@ -54,6 +54,10 @@ $$C \approx \tau T = 6 P D$$
 \textbf{where:}
 
 \begin{itemize}
+	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
+	\item $T$ is the time spent training the model, in seconds
+	\item $P$ is the number of parameters in the model
+	\item $D$ is the dataset size (in tokens)
     \item $C$: No. of floating-point operations (FLOPs) to train the model:\\
           $C = C_{forward} + C_{backward}$
 	\item $C_{forward} \approx 2 P D$; $\quad C_{backward} \approx 4 P D$
@@ -61,11 +65,7 @@ $$C \approx \tau T = 6 P D$$
 	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
         \item $4PD$: backward pass approximately twice the compute of the forward pass
 	\end{itemize}
-    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers output, so that the gradient of the previous layers's weights can be calculated
-	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
-	\item $T$ is the time spent training the model, in seconds
-	\item $P$ is the number of parameters in the model
-	\item $D$ is the dataset size (in tokens)
+    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' output, so that the gradient of the previous layers' weights can be calculated
 \end{itemize}
 
 \end{vbframe}
@@ -81,7 +81,7 @@ $C$  can be measured in different units:\newline
 \begin{itemize}
      \item FLOP-seconds which is [Floating Point Ops / Second] 
  	\begin{itemize}
- 	    \item We also use multiples: GFLOP-seconds, TFLOP-seconds etc.
+ 	    \item We also use multiples:\\ GFLOP-seconds, TFLOP-seconds etc.
  		\item Other multiples like PFLOP-days are used in papers
  		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
             \item Actual FLOPs are always lower than the advertised theoretical FLOPs
@@ -98,19 +98,23 @@ $C$  can be measured in different units:\newline
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Parameter vs Dataset}
+\begin{vbframe}{Parameters vs Dataset}
 
 \vfill
 
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
-	\item \textbf{We need to decide about $P$ and $D$, so that we get the best performance within the compute budget.}
+	\item \textbf{We want to fix $P$ and $D$, so that we
+	get the best possible performance given an available compute budget.}
 	\item One proposed optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
-	    \item This is usually true for Chinchilla models \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556},\\but not for all LLMs
+	    \item This was true for Chinchilla
+	models \citebutton{Hoffmann et al.,
+	2022}{https://arxiv.org/abs/2203.15556},\\but does
+	not hold for all LLMs
 	\end{itemize}
-	\item Training a LLM for less than 200 billion tokens is not recommended
-	\item Rule of thumb: First determine the upmost inference cost, and then train the biggest model within that boundary
+	\item Training a LLM on less than 200 billion tokens is not recommended
+	\item Rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
     \item Different ways to determine P: based on available data, compute budget or inference time 
 \end{itemize}
 
@@ -128,7 +132,7 @@ Common questions: \newline
 
 \begin{itemize}
  	\item How big is this model in bytes?
-	\item Will it fit/train in my GPUs?
+	\item Will it fit/train on my GPUs?
 \end{itemize}
 
 \vskip8mm
@@ -165,19 +169,17 @@ Model size components: \newline
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{FP32/FP16}
+\def\nocaphack{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}
 
-\begin{figure}
-	\centering
-	\includegraphics[width = 11cm]{./figure/float.png} \\ 
-	{\footnotesize Source: \href{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}{Maxime Labonne}}
-\end{figure}
 
-\hspace{0.5cm}
+\begin{vbframe}{FP32/FP16 (\citebutton{(Maxime Labonne)}{\nocaphack})}
+
+\hspace{-0.8cm} \includegraphics[width = 12.5cm]{./figure/float.png} 
+
+
 
 You can represent every float like this:
-
-$$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bias} \cdot 1.\textcolor[RGB]{255,128,237}{m}$$
+$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bias} \cdot 1.\textcolor[RGB]{255,128,237}{m}$
     
 \end{vbframe}
 
@@ -243,7 +245,7 @@ Parameter size depends on chosen representation: \newline
 
 \vskip8mm
 
-It is practically common to use mixed representations: \newline
+It is common to use mixed representations: \newline
 
 \begin{itemize}
  	\item fp32 + fp16
@@ -324,13 +326,13 @@ Their memory overhead contribution is: \newline
 
 \vskip5mm
 
-Total memory when training \textbf{using} activations: \newline
-$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
+Total memory when training \textbf{without} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
 
 \vskip5mm
 
-Total memory when training \textbf{without} activations: \newline
-$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
+Total memory when training \textbf{with} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
 
 \vskip5mm
 
