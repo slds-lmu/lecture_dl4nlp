@@ -1,0 +1,325 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+BERT
+}{
+ARLMs vs. MLM
+}{
+figure/arlm-mlm
+}{
+\item Understand the concept of self-supervision
+\item Gain ability to distinguish different types of language models
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{again: what is a language model?}
+
+\vfill
+
+\begin{itemize}
+	\item Statistical model that predicts text that fits well for a given context (typically also text)
+	\item Auto-regressive LMs (ARLMs)
+	\begin{itemize}
+		\item Predict one word that is highly likely given a prompt (previous words)
+		\item For predicting an entire text, repeat the process (i.e., extend the prompt with previously predicted words)
+		\item To predict a text from scratch, use an extra symbol \texttt{<START>} as the initial prompt
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=1]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=2]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=3]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=4]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=5]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=6]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=7]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=8]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=9]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=10]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=11]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=12]{figure/arlm.pdf}
+	\end{figure}
+	\vfill
+\end{frame}
+\begin{frame}[noframenumbering]{arlm: toy example}
+	\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm,page=13]{figure/arlm.pdf}
+	\end{figure}
+	
+	\vfill
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{arlm: probabilistic interpretation}
+
+\vfill
+
+\begin{itemize}
+	\item Gives an estimate for the probability of a sentence using conditional probabilities
+	\item In general: $$ P(A \cap B) = P(B) \cdot P(A | B)$$
+	\item For $P(sentence)$:
+	$$ P(w_1, w_2, \dots, w_n | w_0)$$ $$ = P(w_1 | w_0) \cdot P(w_2 | w_0, w_1) \cdot \hdots \cdot P(w_n | w_0, \dots, w_{n-1})$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Examples of ARLMs (1)}
+
+\vfill
+
+\textbf{Neural Machine Translation:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=12cm]{figure/arlm1.png}
+	\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Examples of ARLMs (1)}
+
+\vfill
+
+\textbf{Image Captioning:}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=8cm]{figure/arlm2.png}
+	\end{figure}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Masked language models (MLM)}
+
+\vfill
+
+\begin{itemize}
+	\item We have seen auto-regressive LMs
+			\begin{itemize}
+				\item context: previous words
+				\item predict: next word
+			\end{itemize}
+	\item Another type: \textit{Masked} LMs (MLMs)
+			\begin{itemize}
+				\item context: surrounding words
+				\item predict: masked word
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{mlm: toy example}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/mlm.pdf}
+	\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{mlm: probabilistic interpretation}
+
+\vfill
+
+\begin{itemize}
+	\item Estimates $P(w_i | w_0, w_1, w_{i-1}, \dots, w_{i+1}, w_n)$
+	\item No ``clean`` estimate for $P(sentence)$, as
+	$$ P(w_1, w_2, \dots, w_n | w_0)$$ $$\neq P(w_1 | w_0, w_2, \dots, w_n) \cdot P(w_2 | w_0, w_1, w_3, \dots, w_n)$$
+	\item ARLMs are better than MLMs for generating texts 
+	\item Advantage of MLMs: Learning contextualized representations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{self-supervision}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/selfsup.jpeg}
+	\end{figure}
+	
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Definition}
+
+	\vfill 
+	
+	\textit{Unsupervised Learning:}
+
+	\begin{itemize}
+		\item No labels attached to the data
+		\item Learn patterns / clusters from the features only
+	\end{itemize}
+	
+	\textit{Supervised Learning:}
+
+	\begin{itemize}
+		\item (Gold) Labels attached to the data
+		\item Learn from the association between features and labels
+	\end{itemize}
+	
+	\textbf{Self-Supervised Learning:}
+
+	\begin{itemize}
+		\item No \textit{external} labels attached to the data\\
+					$\to$ Samples with suitable labels can be generated from the known structure of the data itself 
+		\item \textit{Technically} supervised learning, but \textit{no labeling effort} $+$ simultan-\\eous ability to generate massive amounts of labeled data points
+	\end{itemize}
+	
+	\vfill 
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Self-supervised objectives}
+
+\vfill
+
+\textbf{Self-supervised objectives:}
+	
+	\begin{itemize}
+		\item Skip-gram objective (cf. word2vec)
+		\item Language modeling objective
+		\item \textit{Masked language modeling (MLM)} objective
+		\item ... and many more possibilities for text data
+	\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

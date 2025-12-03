@@ -1,0 +1,270 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+\usepackage{colortbl}
+
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+Transfer Learning
+}{
+Basic definitions and challenges
+}{
+figure/transfer_learning_taxonomy-1
+}{
+\item Differentiate the different flavors of transfer learning
+\item Understand the challenges we might be able to overcome by using transfer learning
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{feature-based transfer learning}
+
+\vfill
+
+	\textbf{How it works with word2vec}
+	
+	\begin{itemize}
+		\item Train word2vec on some "fake task" (CBOW or Skip-gram)
+		\item Extract the stored knowledge (a.k.a. embedding)\\
+					\textit{or:} Directly download embeddings from the web 
+		\item Perform a different (supervised) task using the embeddings
+	\end{itemize}
+	
+	\vspace{.3cm}
+	
+	\textbf{How it works with ELMo}
+	
+	\begin{itemize}
+		\item Do not \textit{extract} the stored knowledge, but use the whole embedding model \textit{as is}
+		\item Only train/fine-tune task specific weights on top of ELMo
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+	\begin{figure}
+		\centering
+		\includegraphics[width = 8cm]{figure/transfer_learning_taxonomy-1.png}\\ 
+		\footnotesize{Source:} \href{https://ruder.io/thesis/}{\footnotesize \it Sebastian Ruder}
+	\end{figure}
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+
+\vfill
+
+	\textbf{Transductive Transfer learning}
+
+	\begin{itemize}
+		\item Domain adaptation:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on labeled data from domain X to performing task A in domain Y.}"\\\mbox{}
+		\item Cross-lingual learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on labeled data from language X to performing task A in language Y.}"\\\mbox{}
+		\item \textit{Important:} No labeled data in target domain/language \textit{Y}.
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Taxonomy of transfer learning \href{https://ruder.io/thesis/}{\beamergotobutton{Ruder, 2019}}}
+
+\vfill
+
+	\textbf{Inductive Transfer learning}
+
+	\begin{itemize}
+		\item Multi-task learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on data from domain X to performing multiple (simultaneous) tasks B, C, D, .. in domain Y.}"\\\mbox{}
+		\item Sequential transfer learning:\\
+					$\rightarrow$ "\textit{Transfer knowledge learned from performing task A on data from domain X to performing multiple (sequential) tasks B, C, D, .. in domain Y.}"\\\mbox{}
+		\item \textit{Important:} Labeled data only for task(s) from target domain \textit{Y}.
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{remark on multilinguality}
+
+\vfill
+
+\textbf{Cross-lingual transfer:}
+
+\begin{itemize}
+	\item Languages can be grouped into certain families
+	\item Patterns that a model learns for one language, might be beneficial for learning a second language 
+				(just as it is for us humans as well: For those who learned French in high school, learning Spanish
+				afterwards might be easier)
+	\item Again: Scarcity of resources; assume the following scenario:
+		\begin{itemize}
+			\item \textbf{Large} parallel corpus for languages A and B
+			\item \textbf{Large} parallel corpus for languages A and C
+			\item \textit{Small} parallel corpus for languages B and C
+			\item[$\to$] Training a model for B and C in isolation not the best idea
+		\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Definition: self-supervision}
+
+	\vfill 
+	
+	\textit{Unsupervised Learning:}
+
+	\begin{itemize}
+		\item No labels attached to the data
+		\item Learn patterns / clusters from the features only
+	\end{itemize}
+	
+	\textit{Supervised Learning:}
+
+	\begin{itemize}
+		\item (Gold) Labels attached to the data
+		\item Learn from the association between features and labels
+	\end{itemize}
+	
+	\textbf{Self-Supervised Learning:}
+
+	\begin{itemize}
+		\item No \textit{external} labels attached to the data\\
+					$\to$ Samples with suitable labels can be generated from the known structure of the data itself 
+		\item \textit{Technically} supervised learning, but \textit{no labeling effort} $+$ simultan-\\eous ability to generate massive amounts of labeled data points
+	\end{itemize}
+	
+	\vfill 
+	
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Self-supervised objectives}
+
+\vfill
+
+\textbf{Recap: Language modeling}
+	
+	\begin{itemize}
+		\item \textit{Training objective:} Given a context, predict the next word
+	\end{itemize}
+	
+\begin{block}{Illustration (context size $=$ 2)}
+\begin{tabular}{|c|c|c|cccccc|}
+\hline
+\cellcolor{blue!15}The & \cellcolor{blue!65}quick & brown & fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad (the, quick)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+\cellcolor{blue!15}The & \cellcolor{blue!15}quick & \cellcolor{blue!65}brown & fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad ([the, quick], brown)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+The & \cellcolor{blue!15}quick & \cellcolor{blue!15}brown & \cellcolor{blue!65}fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad ([quick, brown], fox)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+The & quick & \cellcolor{blue!15}brown & \cellcolor{blue!15}fox & \cellcolor{blue!65}jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad ([brown, fox], jumps)
+\end{block}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Self-supervised objectives}
+
+\vfill
+
+\textbf{Recap: Skip-gram}
+	
+	\begin{itemize}
+		\item \textit{Training objective:} Given a word, predict the neighbouring words
+    \item \textit{Generation of samples:} Sliding fixed-size window over the text
+	\end{itemize}
+	
+\begin{block}{Illustration}
+\begin{tabular}{|c|c|c|cccccc|}
+\hline
+\cellcolor{blue!15}The & \cellcolor{blue!65}quick & \cellcolor{blue!65}brown & fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad (the, quick); (the, brown)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+\cellcolor{blue!65}The & \cellcolor{blue!15}quick & \cellcolor{blue!65}brown & \cellcolor{blue!65}fox & jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad (quick, the); (quick, brown); (quick, fox)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+\cellcolor{blue!65}The & \cellcolor{blue!65}quick & \cellcolor{blue!15}brown & \cellcolor{blue!65}fox & \cellcolor{blue!65}jumps & over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad (brown, the); (brown, quick); (brown, fox); (brown, blue)
+\begin{tabular}{|c|c|c|c|ccccc|}
+\hline
+The & \cellcolor{blue!65}quick & \cellcolor{blue!65}brown & \cellcolor{blue!15}fox & \cellcolor{blue!65}jumps & \cellcolor{blue!65}over & the & lazy & dog \\
+\hline
+\end{tabular}\\
+$\Rightarrow$ \quad (fox, quick); (fox, brown); (fox, jumps); (fox, over)
+\end{block}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Self-supervised objectives}
+
+\vfill
+
+\textbf{Self-supervised objectives:}
+	
+	\begin{itemize}
+		\item Skip-gram objective (cf. word2vec \citebutton{Mikolov et al., 2013}{https://arxiv.org/pdf/1301.3781.pdf})
+		\item Language modeling objective (cf. e.g. \citebutton{Bengio et al., 2003}{http://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf})
+		\item \textit{Masked language modeling (MLM)} objective (cf. BERT)\\
+					$\rightarrow$ Replace words by a \texttt{[MASK]} token and train the model to predict
+		\item \textit{Permutation language modeling (PLM)} objective (cf. chapter 6)\\
+					$\rightarrow$ Autoregressive objective of XLNet
+		\item \textit{Replaced token detection} objective (cf. chapter 6)\\
+					$\rightarrow$ Requires two models: One performing MLM \& the second model to discriminate between actual and the predicted tokens
+	\end{itemize}
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

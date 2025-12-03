@@ -13,8 +13,8 @@
 \date{}
 
 \begin{document}
-\lecturechapter{The Encoder}
-\lecture{Deep Learning for NLP}
+%\lecturechapter{The Encoder}
+%\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
@@ -590,7 +590,7 @@ $$ \vec O = \mathcal{F}^\mathrm{attn}(\vec X, \vec X; \theta) = \mathrm{softmax}
 \item For every head, compute in parallel:
 $$ \vec O^{(m)} = \mathcal{F}^\mathrm{attn}(\vec X, \vec Y; \theta^{(m)}) $$
 \item Choice of dimensionality: $d_k = d_v = d_{x}/M$ 
-\item Concatenate all $\vec {O}^{(m)}$ along their last axis; then down-project the concatenation with an additional parameter matrix $\vec W^{(o)} \in \mathbb{R}^{Md_v \times d_v}$:
+\item Concatenate all $\vec {O}^{(m)}$ along their last axis; then down-project the concatenation with an additional parameter matrix $\vec W^{(o)} \in \mathbb{R}^{Md_v \times d_x}$:
 $$ \vec O = [\vec O^{(1)}; \ldots;  \vec O^{(M)}] \vec W^{(o)}$$
 \end{itemize}
 

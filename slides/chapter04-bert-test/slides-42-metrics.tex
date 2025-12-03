@@ -1,0 +1,479 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+\usepackage{animate}
+
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+BERT
+}{
+Measuring Performance
+}{
+figure/metrics
+}{
+\item Task-specific metrics
+\item Metrics for text output
+\item How to evaluate retrieval
+\item Subtle aspects of evaluation
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: classification}
+
+\vfill
+
+\textbf{(Binary) Document-level Classification}
+
+\begin{itemize}
+	\item Accuracy
+	\item Recall / Precision
+	\item F1-Score
+	\item ROC-Curve / AUC
+	\item ...
+\end{itemize}
+
+\textbf{(Multi-Class) Document-level classification}
+
+\begin{itemize}
+	\item Micro- / Macro-averaged F1
+	\item Class-specific accuracies
+	\item ...
+\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (1)}
+
+\vfill
+
+\textbf{Ranking:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+\begin{itemize}
+		\item Use Cases:
+				\begin{itemize}
+					\item Retrieval systems output a ranking of relevant documents
+					\item Search engines return top $k$ results
+					\item ...
+				\end{itemize}
+		\item Ranking evaluation metrics
+				\begin{itemize}
+					\item Mean average precision (MAP)
+					\item Mean reciprocal rank (MRR)
+					\item Precision@k / Recall@k
+					\item ...
+				\end{itemize}
+\end{itemize}
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (2)}
+
+\vfill
+
+\textbf{MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (3)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex1.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (4)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex2.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (5)}
+
+\vfill
+
+\textbf{Example MAP:}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex3.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (6)}
+
+\vfill
+
+\textbf{MAP:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+$$MAP = \dfrac{1}{|Q|} \sum_{q \in Q} Ap_q@k,\; with\; Q = \text{set of queries}$$
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/42-ap-ex4.png}
+		\citebutton{Source: towardsdatascience}{https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{task-specific evaluation: ranking (7)}
+
+\vfill
+
+\textbf{MRR:}
+%https://towardsdatascience.com/comprehensive-guide-to-ranking-evaluation-metrics-7d10382c1025
+
+$$RR = \dfrac{1}{\text{rank of first relevant item}}$$
+$$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{ARLMs}
+
+\vspace{-1cm}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm,page=13]{figure/arlm.pdf}
+	\end{figure}
+	
+\begin{itemize}
+	\item \ques How can we measure ``performance`` on this task? 
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm perplexity (1)}
+
+\vfill
+
+\begin{itemize}
+	\item Natural choice for evaluating generated text
+	\item Well-defined for ARLMs; trickier for MLMs
+	\item Intuitively: \textit{Amount of the model's surprisal when confronted with a sequence} (higher value means higher ``surprisal``)
+	\item More technically: Measure of uncertainty of a probabilistic model
+	\item Example: Perplexity of a fair $k$-sided die (uniform distribution) is $k$
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm perplexity (2)}
+
+\vfill
+\begin{itemize}
+	\item Autoregressive factorization of the sequence:
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \animategraphics[loop,autoplay,height=1.5cm]{2}{figure/ppl_full/frame_}{0}{11}
+		\citebutton{Source: huggingface}{https://huggingface.co/docs/transformers/perplexity}
+\end{figure}
+
+\begin{itemize}
+	\item Log-probability of i-th token given context: $\log(p_\theta(w_i|w_{<i}))$
+	\item[] more ``certain`` model $\to$ higher log-probability
+	\item Aggregate$^1$ over the whole sequence:
+				$$PPL = \exp\left(- \frac{1}{t} \sum_{i=1}^t \log(p_\theta(w_i|w_{<i}))\right)$$
+\end{itemize}
+
+\vfill
+
+\footnotesize{$^1$The choice of the log’s base is basically arbitrary.}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm perplexity (3)}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Lower bound} is \textbf{1}, i.e. the model predicts \textit{every} token correctly (with a certainty of 100\%)
+	\item \ques Is this really desirable?
+	\item \textit{Upper bound} is $|V|$, i.e. the model only provides a random guess for every token with a probability of $\frac{1}{|V|}$
+	\item Selection of state-of-the-art perplexities:
+			\begin{itemize}
+				\item \textbf{1B Word Benchmark} \citebutton{Chelba et al., 2013}{https://arxiv.org/abs/1312.3005} ($|V| = 800k$)\\
+				PPL = 21,8 \citebutton{Dai et al., 2019}{https://aclanthology.org/P19-1285/}
+				\item \textbf{WikiText-103} \citebutton{Merity et al., 2016}{https://arxiv.org/abs/1609.07843} ($|V|$ = 270k)\\
+				PPL = 10,8 \citebutton{Shoeybi et al., 2019}{https://arxiv.org/abs/1909.08053}
+				\item \textbf{Penn Treebank} \citebutton{Marcus et al., 1994}{https://aclanthology.org/H94-1020/} ($|V| = 10k$)\\
+				PPL = 20,5 \citebutton{Brown et al., 2020}{https://proceedings.neurips.cc/paper_files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf}
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm perplexity (4)}
+
+\vfill
+
+\begin{itemize}
+	\item \textit{Problem:} Fixed context size of models (e.g. 1024 for GPT-2) 
+\end{itemize}
+
+\begin{figure}
+    \centering
+    \animategraphics[loop,autoplay,height=1.5cm]{2}{figure/ppl_sliding/frame_}{18}{23}
+		\citebutton{Source: huggingface}{https://huggingface.co/docs/transformers/perplexity}
+\end{figure}
+
+\begin{itemize}
+	\item \textit{Possible solution:} Sliding window strategy
+	\item Close approximation to ``true`` autoregressive decomposition
+	\item \textit{Drawback:} Computationally expensive (individual forward pass for each token)
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{arlm perplexity (5)}
+
+\vfill
+
+\ques\\ Is a language model with lower perplexity always a ``better`` model?
+
+\vspace{.5cm}
+
+\textbf{Some (Dis)Advantages of perplexity:}
+
+\begin{itemize}
+	\item \textbf{Pro:} Straight-forward applicable
+	\item \textbf{Pro:} Does not depend on ``external`` labels
+	\item \textbf{Con:} Not clear what value can be considered ``good``
+	\item \textbf{Con:} Corpus-/language-specific measure
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (1)}
+
+\vfill
+
+\begin{itemize}
+	\item \ques How else can we evaluate the quality of generated text?
+	\item[]
+	\item \textit{Use cases:} 
+			\begin{itemize}
+				\item Machine translation
+				\item Question answering (extractive or abstractive)
+				\item Dialogue generation
+				\item Text summarization
+				\item Image Captioning
+				\item Code generation
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (2)}
+
+\vfill
+
+\textbf{Machine Translation}
+
+\begin{itemize}
+	\item Metrics based on N-gram-overlap
+			\begin{itemize}
+				\item BLEU (cf. Chap. 3.1) \citebutton{Papineni et al., 2002}{https://aclanthology.org/P02-1040/}
+				\item ROUGE \citebutton{Lin, 2004}{https://aclanthology.org/W04-1013/}
+				\item METEOR \citebutton{Banerjee and Lavie, 2005}{https://aclanthology.org/W05-0909/}
+			\end{itemize}
+	\item Metrics based pre-trained (neural) models
+			\begin{itemize}
+				\item BertScore \citebutton{Zhang et al., 2019}{https://arxiv.org/abs/1904.09675}
+				\item BLEURT \citebutton{Sellam et al., 2020}{https://aclanthology.org/2020.acl-main.704/}
+				\item COMET \citebutton{Rei et al., 2020}{https://aclanthology.org/2020.emnlp-main.213/}
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (3)}
+
+\vfill
+
+\begin{itemize}
+	\item BLEU, ROUGE, METEOR:
+			\begin{itemize}
+				\item "Bilingual evaluation understudy", originally for machine translation
+				\item Measures overlap of words, and longer word sequences of different sizes
+				\item BLEU: unreliable per-example, but correlates with human judgments on an aggregate level \citebutton{Reiter, 2018}{https://aclanthology.org/J18-3002/}
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (3)}
+
+\vfill
+
+\begin{itemize}
+	\item BERTScore
+			\begin{itemize}
+				\item Based on pre-trained BERT model
+				\item Also able to consider contextual similarities
+				\item Correlates better with human judgements
+			\end{itemize}
+	\item BLEURT
+			\begin{itemize}
+				\item Better per-example quality estimation by fine-tuning on examples with judgements
+				\item But: potential bias if tested systems are very different than training examples
+			\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{evaluating generated text (4)}
+
+\vfill
+
+\textbf{Question Answering / Summarization / Dialogues}
+
+\begin{itemize}
+	\item Aspects to consider
+			\begin{itemize}
+				\item Factual correctness
+				\item Fluency
+				\item Stylistic aspects
+				\item Engagement
+				\item ...
+			\end{itemize}
+	\item Human evaluation?! (cf. next slide)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{human evaluatoin}
+
+\vfill
+
+\textbf{Pros}
+
+\begin{itemize}
+	\item Possible where simply using metrics fails (esp. generated texts)
+	\item Probably gold standard (given trained human evaluator)
+	\item \textit{Strong} learning signal for models (cf. RLHF, chapter 9)
+	\item ...
+\end{itemize}
+
+\vspace{.3cm}
+
+\textbf{Pros}
+
+\begin{itemize}
+	\item Manual, tedious work
+  \item Costs and working conditions
+	\item Subjectiveness
+	\item Ambiguity
+	\item ...
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
