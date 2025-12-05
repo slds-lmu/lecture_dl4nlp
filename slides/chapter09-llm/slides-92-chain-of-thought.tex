@@ -1,36 +1,39 @@
-
-
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
 \usepackage{xspace}
+
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
 
 \def\cotpfull{chain-of-thought few-shot prompting\xspace}
 \def\cotp{COT-FS-P\xspace}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
-\newcommand{\learninggoals}{
+\begin{document}
+
+\titlemeta{
+Large Language Models (LLMs)
+}{
+\cotpfull
+}{
+figure/bertfinetune1
+}{
 \item illustrate \cotpfull and point out the benefits it brings to LLMs
 \item illustrate tree-of-thought and point out the benefits it brings to LLMs 
 }
 
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{\cotpfull}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+%\lecturechapter{Large Language Models (LLMs)}
 
-\begin{document}
 
-\lecturechapter{Large Language Models (LLMs)}
 
-\begin{vbframe}{REINSTATE LECTURE COMMAND}
-\end{vbframe}
-
-\begin{vbframe}{CHANGE COT-P TO COT-FSP}
-\end{vbframe}
+\begin{frame}{CHANGE COT-P TO COT-FSP}
+\end{frame}
 
 \begin{frame}{Reasoning training}
 
@@ -67,7 +70,7 @@ Reinforcement Learning
 
 \end{frame}
 
-\begin{vbframe}{Reasoning trace}
+\begin{frame}{Reasoning trace}
 
 \vfill
 
@@ -78,7 +81,7 @@ Reinforcement Learning
 \ques Is this chain of thought prompting?
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 \begin{frame}{What elements of reasoning are learned?}
 
@@ -141,7 +144,7 @@ during reflections,
 provided in Extended Data Fig. 1b. 
 
 
-\begin{vbframe}{R1 scaling}
+\begin{frame}{R1 scaling}
 
 \vfill
 
@@ -152,9 +155,9 @@ provided in Extended Data Fig. 1b.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Accuracy AIME}
+\begin{frame}{Accuracy AIME}
 
 \vfill
 
@@ -165,9 +168,9 @@ provided in Extended Data Fig. 1b.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Accuracy AIME}
+\begin{frame}{Accuracy AIME}
 
 \vfill
 
@@ -187,23 +190,10 @@ provided in Extended Data Fig. 1b.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 
-\begin{vbframe}{Automatic verifier: AIME example}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{One slide definition of RL}
+\begin{frame}{Automatic verifier: AIME example}
 
 \vfill
 
@@ -214,10 +204,23 @@ provided in Extended Data Fig. 1b.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
+
+\begin{frame}{One slide definition of RL}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.1]{figure/aime,example}
+\end{figure}
+
+\vfill
+
+\end{frame}
 
 
-\begin{vbframe}{One slide definition of RL}
+\begin{frame}{One slide definition of RL}
 
 \vfill
 
@@ -228,8 +231,9 @@ provided in Extended Data Fig. 1b.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
+\endlecture
 
 \end{document}
 
@@ -241,7 +245,7 @@ provided in Extended Data Fig. 1b.
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{\cotpfull motivation}
+\begin{frame}{\cotpfull motivation}
 
 \vfill
 
@@ -271,7 +275,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 \begin{frame}{Neurosymbolic approach\\ (currently
     infrequently used)}
@@ -307,7 +311,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{\cotpfull paradigm}
+\begin{frame}{\cotpfull paradigm}
 
 \vfill
 
@@ -321,23 +325,23 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{\cotpfull paradigm}
+\begin{frame}{\cotpfull paradigm}
 
 \begin{figure}
     \centering
     \includegraphics[height=7cm]{figure/chain_of_thought2.png}
 \end{figure}
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
 
-\begin{vbframe}{Benefits of \cotpfull}
+\begin{frame}{Benefits of \cotpfull}
 
 \vfill
 
@@ -352,12 +356,12 @@ given a well designed chain-of-thought prompt, can
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of \cotpfull}
+\begin{frame}{Examples of \cotpfull}
 
 \vfill
 
@@ -373,11 +377,11 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -388,9 +392,9 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -401,9 +405,9 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -414,9 +418,9 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -427,9 +431,9 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -440,9 +444,9 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Examples}
+\begin{frame}{Examples}
 
 \vfill
 
@@ -453,11 +457,11 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{\cotp improves arithmetic}
+\begin{frame}{\cotp improves arithmetic}
 
 \vfill
 	
@@ -468,10 +472,10 @@ CHAIN OF THOUGHT REASONING.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 
-\begin{vbframe}{\cotp improves arithmetic}
+\begin{frame}{\cotp improves arithmetic}
 
 %\vfill
 
@@ -486,11 +490,11 @@ repository unifying math problems from different sources;
 
 %\vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{\cotp improves commonsense}
+\begin{frame}{\cotp improves commonsense}
 
 \vfill
 
@@ -509,11 +513,11 @@ subgraph of the KG.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------ 
 
-\begin{vbframe}{tree-of-thought: motivation}
+\begin{frame}{tree-of-thought: motivation}
 
 \vfill
 
@@ -533,11 +537,11 @@ subgraph of the KG.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tree-of-thought: prompting paradigm}
+\begin{frame}{Tree-of-thought: prompting paradigm}
 
 \vfill
 
@@ -552,12 +556,12 @@ with LLMs. Rectangle box = \textit{thought} = a coherent language sequence servi
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
 
-\begin{vbframe}{Tree-of-thought for creative writing}
+\begin{frame}{Tree-of-thought for creative writing}
 
 \vfill
 
@@ -571,9 +575,9 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Tree-of-thought for creative writing (2)}
+\begin{frame}{Tree-of-thought for creative writing (2)}
 
 \vfill
     
@@ -585,7 +589,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -753,5 +757,4 @@ internal chain of thought before responding to the user.
 
 
 
-\endlecture
 \end{document}

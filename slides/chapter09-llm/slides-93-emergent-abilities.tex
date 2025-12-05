@@ -1,32 +1,32 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\begin{document}
+
+\titlemeta{
+Large Language Models (LLMs)
+}{
+Emergent Abilities
+}{
+figure/bertfinetune1
+}{
 \item illustrate emergent abilities that LLMs reveal when they are scaled up
 \item discuss counter-arguments
 and counter-counter-arguments
 for the concept of emergence
 }
 
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Emergent Abilities}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Large Language Models (LLMs)}
-\begin{vbframe}{REINSTATE LECTURE COMMAND}
-\end{vbframe}
-%\lecture{Deep Learning for NLP}
-
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Emergent abilities}
+\begin{frame}{Emergent abilities}
 
 \vfill
 
@@ -49,11 +49,11 @@ present in small models but is present in large models.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Emergent abilities and model size}
+\begin{frame}{Emergent abilities and model size}
 
 \vfill
 
@@ -65,8 +65,8 @@ present in small models but is present in large models.
 
 \vfill
 
-\end{vbframe}
-\begin{vbframe}{Emergent abilities and model size}
+\end{frame}
+\begin{frame}{Emergent abilities and model size}
 
 \vfill
 
@@ -79,11 +79,11 @@ present in small models but is present in large models.
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Emergent tasks in Big-Bench}
+\begin{frame}{Emergent tasks in Big-Bench}
 
 \vfill
 
@@ -100,11 +100,11 @@ TASK with SIZE, but not with less than SIZE (hence emerging)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Emergent tasks in MMLU}
+\begin{frame}{Emergent tasks in MMLU}
 
 \vfill
 
@@ -115,11 +115,11 @@ TASK with SIZE, but not with less than SIZE (hence emerging)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Other emergent tasks}
+\begin{frame}{Other emergent tasks}
 
 \vfill
 
@@ -132,21 +132,21 @@ TASK with SIZE, but not with less than SIZE (hence emerging)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-% \begin{vbframe}{Impact of Model Size}
+% \begin{frame}{Impact of Model Size}
 
 % \vfill
 
 % \vfill
 
-% \end{vbframe}
+% \end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{counter argument}
+\begin{frame}{counter argument}
 
 \citebutton{Source: Schaeffer et al., 2023}{https://arxiv.org/pdf/2304.15004.pdf}
 
@@ -173,11 +173,11 @@ Claim: Emergent abilities appear only under metrics that nonlinearly or disconti
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % -----------------------------------------------------------------------------
 
-\begin{vbframe}{counter argument}
+\begin{frame}{counter argument}
 
 \vfill
 
@@ -189,11 +189,11 @@ Claim: Emergent abilities appear only under metrics that nonlinearly or disconti
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Counterargument: Summary}
+\begin{frame}{Counterargument: Summary}
 
 \vfill
 
@@ -222,13 +222,13 @@ may require adapting the measuring process
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{counter counter argument (1)}
+\begin{frame}{counter counter argument (1)}
 
 \vfill
 
@@ -246,10 +246,10 @@ may require adapting the measuring process
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 
-\begin{vbframe}{counter counter argument (2)}
+\begin{frame}{counter counter argument (2)}
 
 \vfill
 
@@ -269,9 +269,9 @@ may require adapting the measuring process
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
-\begin{vbframe}{Back to finetuning}
+\begin{frame}{Back to finetuning}
 
 \vfill
 
@@ -289,12 +289,12 @@ Nummer fuer Dich erreichbar''). How would you do this?
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 
 % ------------------------------------------------------------------------------
 
-% \begin{vbframe}{Summary}
+% \begin{frame}{Summary}
 
 % \vfill
 
@@ -308,7 +308,7 @@ Nummer fuer Dich erreichbar''). How would you do this?
 
 % \vfill
 
-% \end{vbframe}
+% \end{frame}
 
 % ------------------------------------------------------------------------------
 
