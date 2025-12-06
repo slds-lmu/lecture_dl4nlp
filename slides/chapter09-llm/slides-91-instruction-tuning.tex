@@ -14,7 +14,7 @@
 \titlemeta{
 Large Language Models (LLMs)
 }{
-Fine-Tuning
+Fine-Tuning and Prompting
 }{
 figure/bertfinetune1
 }{
@@ -34,9 +34,9 @@ figure/bertfinetune1
 \vfill
 
 \begin{itemize}
-    \item language modeling objectives
+    \item language modeling objective
         \begin{itemize}
-            \item token prediction
+            \item next token prediction
             \item no explicit understanding of tasks
         \end{itemize}
     \item this is true for encoder and decoder models
@@ -113,7 +113,7 @@ on a task-specific
         ``positive'' for sentiment analysis)
         		\citebutton{Schick et al.,
         2020}{https://arxiv.org/abs/2009.07118}
-        \item this was the typical way encoder models like
+        \item this is the typical way encoder models like
         BERT are used
         \item still very much relevant if you need to deploy
         a small efficient model for a focused task
@@ -158,7 +158,7 @@ on a task-specific
 supposed to do
         \item the model will then often complete the task
         just based on analogy to these few shots
-        \item this is the most typical way of using current
+        \item this is a typical way of using current
         autoregressive models for tasks
 \item no change to the parameters of the model, i.e., no training
 \end{itemize}
@@ -198,10 +198,9 @@ identical shots as required by the definition of few-shot prompting)
         \item method 1: consistent task format, e.g., each
         task is reformulated into a question-answering format
         \item method 2: more open task format
-\item ideally: task format is
-consistent with language model
-            objective (similar to verbalizer)
-            \item Examples: T5 and FLAN, see below
+\item ideally: task format includes ``instructions'',
+similar to verbalizer
+            \item Examples: T0, T5 and FLAN, see below
         \end{itemize}
 \end{itemize}
 
@@ -253,14 +252,15 @@ that has been    trained on generic data (web, reddit etc),
     training it on a large corpus from this new domain.
 \item objective: standard language modeling objective
     \item This results in a language model that has all the
-    nice capabilities of a generic language model (e.g.,
-    MISTRAL family), but also understands the special domain.
+    nice capabilities of a generic language model, but also understands the special domain.
 \item Not trivial to do well
 \end{itemize}
 
 \vfill
 
 \end{frame}
+
+\devour{
 
 \begin{frame}{Continued pretraining}
 
@@ -275,6 +275,7 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
+}
 
 \begin{frame}{Continued pretraining}
 
@@ -289,21 +290,9 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
-\begin{frame}{Other types of finetuning (2)}
-
-\vfill
-
-\begin{itemize}
-    \item reinforcement learning
-
-\end{itemize}
-
-\vfill
-
-\end{frame}
 
 
-\begin{frame}{Finetuning: Terminology}
+\begin{frame}{Terminology}
 
 \vfill
 
@@ -372,15 +361,17 @@ that has been    trained on generic data (web, reddit etc),
 
 \begin{itemize}
     \item The result is a single-task model.
-\item Sequential transfer learning instead of true multi-task learning
+%\item Sequential transfer learning instead of true multi-task learning
+\begin{itemize}
     \item Generalization of the model 
              only w.r.t. to one task / data distribution
+\end{itemize}
     \item Requires quite a bit of annotated
         data (e.g., $k=100$)
-    \item Single-task models have poor few-shot capabilities
+%    \item Single-task models have poor few-shot capabilities
             \item \ques Could there be other tasks that
         might benefit?
-            \item \ques What about related domains / languages?
+ %           \item \ques What about related domains / languages?
 \end{itemize}
 
 \vfill
@@ -405,11 +396,11 @@ that has been    trained on generic data (web, reddit etc),
     just answer with a label, yes/no, a name (although
     sometimes they do)
     \item See next lecture
-\item Again: Prompting works best if the task has occurred during
-unsupervised training.
-\item Current use of prompting is more general: basically
+%\item Again: Prompting works best if the task has occurred during
+%unsupervised training.
+\item Current use of the word ``prompt'' is more general: basically
 anything you type into the LLM context window
-    \item \ques For which tasks is this expected to work well?
+ %   \item \ques For which tasks is this expected to work well?
 % key: does the task (or as imilar task) occur in preatraing
 % machine translation example:  example of what works well
 % complex reasoning example: example of what does notw ork well
@@ -430,7 +421,7 @@ anything you type into the LLM context window
 \end{frame}
 
 
-\begin{frame}{issues with few-shot prompting: (2) text generation}
+\begin{frame}{issues with few-shot prompting:\\ (2) text generation}
 
 \vfill
 
@@ -533,7 +524,7 @@ unsupervised training.
 
 % ------------------------------------------------------------------------------
 
-
+\devour{
 \begin{frame}{Construction of training set}
 
 \vfill
@@ -583,7 +574,7 @@ unsupervised training.
 \vfill
 
 \end{frame}
-
+}
 % ------------------------------------------------------------------------------
 
 \begin{frame}{T0 authors call this ``Multitask Prompted
@@ -620,9 +611,9 @@ unsupervised training.
             \item All data sets belonging to a held-out task go to the test set
             \item Generalization across tasks %/ data distributions
         \end{itemize}
-    \item Highlights the importance of prompts: The paper
-        emphasizes the importance of prompts in facilitating
-        transfer to new tasks, as the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
+    \item The ``prompts'' are key here to
+facilitate
+        transfer to new tasks:  the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
 \end{itemize}
 
 \vfill
@@ -832,11 +823,8 @@ is now included under
 \vfill
 
 \begin{itemize}
-\item The  more the better
-    \begin{itemize}
-    \item The more parameters the better
-    \item The more training tasks the better
-    \end{itemize}
+\item 
+     The more training tasks the better
 \item Multi-task finetuning generalizes across models
     \begin{itemize}
     \item It works well on different architectures
@@ -869,7 +857,7 @@ is now included under
 
 \end{frame}
 
-
+\devour{
 
 \begin{frame}{T0 vs Flan: Difference?}
 
@@ -884,7 +872,7 @@ is now included under
 
 \end{frame}
 
-
+}
 
 \def\myblue#1{\textcolor{texblue}{#1}}
 

@@ -12,6 +12,7 @@
 \long\def\devour#1{}
 
 \def\cotpfull{chain-of-thought few-shot prompting\xspace}
+\def\cotpfullcap{Chain-of-thought few-shot prompting\xspace}
 \def\cotp{COT-FS-P\xspace}
 
 \begin{document}
@@ -19,7 +20,7 @@
 \titlemeta{
 Large Language Models (LLMs)
 }{
-\cotpfull
+\cotpfullcap
 }{
 figure/bertfinetune1
 }{
@@ -32,220 +33,8 @@ figure/bertfinetune1
 
 
 
-\begin{frame}{CHANGE COT-P TO COT-FSP}
-\end{frame}
 
-\begin{frame}{Reasoning training}
-
-\vfill
-
-\begin{itemize}
-\item \citebutton{DeepSeek-AI, 2025}{https://arxiv.org/abs/2501.12948}
-DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via
-Reinforcement Learning
-    \item deepseek math
-\item RL
-\item distillation
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Inference time scaling}
-
-\vfill
-
-\begin{itemize}
-    \item For a hard problem, it often helps to think for a
-    long time to come up with the solution.
-    \item Inference time scaling: teach the model to think
-    for a while before giving the answer.
-    \item Here, thinking means that the model produces
-    potentially long output, the reasoning trace, that leads
-    to the correct answer.
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Reasoning trace}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/reasoning,trace}
-\end{figure}
-\ques Is this chain of thought prompting?
-\vfill
-
-\end{frame}
-
-\begin{frame}{What elements of reasoning are learned?}
-
-\vfill
-
-\begin{itemize}
-\item dynamic strategy adaptation
-    \item self-verification
-    \item reflection
-    \item backtracking
-    \item reasoning traces are getting longer
-\item exploration of altenative approches
-\item diverse and sophisticated reasoning behaviours.
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
- human-defined reasoning patterns may limit model
- exploration,
-
- unrestricted RL training can better incentivize the
- emergence
- of new reasoning capabilities in LLMs
-
-
-
-
-“A conversation between User and Assistant. The User asks a
-question
-and the Assistant solves it. The Assistant first thinks
-about the reasoning
-process in the mind and then provides the User with the
-answer. The
-reasoning process and answer are enclosed within
-<think>...</think>
-and <answer>...</answer> tags, respectively, that is,
-<think> reasoning
-process here </think><answer> answer here </answer>. User:
-prompt.
-Assistant:”, in which the prompt is replaced with the
-specific reason-
-ing question during training. We intentionally limit our
-constraints to
-this structural format, avoiding any content-specific biases
-to ensure
-that we can accurately observe the natural progression of
-the model
-during the RL process. SO THIS IS NOT COT PROMPTING.
-
-
-
-
-Notably, during training,
-DeepSeek-R1-Zero exhibits an ‘aha moment’, shown in Table 1,
-character-
-ized by a sudden increase in the use of the word ‘wait’
-during reflections,
-provided in Extended Data Fig. 1b. 
-
-
-\begin{frame}{R1 scaling}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/r1scaling}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/accuracy,aime}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{Accuracy AIME}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/reasonling}
-\end{figure}
-
- Frequency of representative
- reflective terms in model-generated outputs throughout the
- training process.
- Reflective terms—including ‘wait’, ‘mistake’, ‘however’,
- ‘but’, ‘retry’, ‘error’,
- ‘verify’, ‘wrong’, ‘evaluate’ and ‘check’—were identified
- and curated by a panel
- of three human experts. 
-
-\vfill
-
-\end{frame}
-
-
-\begin{frame}{Automatic verifier: AIME example}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-\begin{frame}{One slide definition of RL}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-
-\begin{frame}{One slide definition of RL}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.1]{figure/raspberry,wait}
-\end{figure}
-
-\vfill
-
-\end{frame}
-
-\endlecture
-
-\end{document}
-
-\end{document}
-
-
-
-%\lecture{Deep Learning for NLP}
-
-% ------------------------------------------------------------------------------ 
-
-\begin{frame}{\cotpfull motivation}
+\begin{frame}{\cotpfullcap motivation}
 
 \vfill
 
@@ -311,7 +100,7 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 
 % ------------------------------------------------------------------------------ 
 
-\begin{frame}{\cotpfull paradigm}
+\begin{frame}{\cotpfullcap paradigm}
 
 \vfill
 
@@ -361,18 +150,19 @@ given a well designed chain-of-thought prompt, can
 
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Examples of \cotpfull}
+\begin{frame}{\cotpfull}
 
 \vfill
 
-\textbf{Examples of $<$input, chain of thought, output$>$ triples for  commonsense and symbolic reasoning}
+\textbf{Following slides: Examples of $<$input, chain of thought, output$>$ triples for  commonsense and symbolic reasoning}
 
     \citebutton{Source: Wei et al., 2022}{https://arxiv.org/pdf/2201.11903.pdf}
 
-THE FEW SHOTS (TRAINING EXAMPLES) ARE OMITTED FROM THESE
-EXAMPLES TO SAVE SPACE, BUT THIS IS CHAIN OF THOUGHT
-PROMPTING, THAT IS, THE MODEL IS PROMPTED WITH EXAMPLES OF
-CHAIN OF THOUGHT REASONING.
+The few shots (training examples) are omitted from these
+examples to save space, but this is
+\cotpfull,
+ that is, the model is prompted with examples of
+chain of thought reasoning.
 
 
 \vfill
@@ -525,7 +315,7 @@ subgraph of the KG.
 \item The token-level and left-to-right decisions of the autoregressive mechanism pose a limitation for:
     \begin{itemize}
     \item Tasks where initial decisions play a pivotal role
-    \item Tasks requiring exploration or strategic lookahead
+    \item Tasks requiring exploration 
     \end{itemize}
 \item Strategy to solve those:
     \begin{itemize}
@@ -545,8 +335,7 @@ subgraph of the KG.
 
 \vfill
 
-Schematic illustrating three approaches to problem solving
-with LLMs. Rectangle box = \textit{thought} = a coherent language sequence serving as an intermediate step in problem solving.
+Rectangle box = \textit{thought} = a coherent language sequence serving as an intermediate step in problem solving.
 
 \begin{figure}
     \centering
@@ -594,25 +383,7 @@ A step of deliberate search in a randomly picked Creative Writing task. Given th
 % ------------------------------------------------------------------------------
 
 
-\begin{frame}{\cotpfull: Error breakdown}
-
-\vfill
-
-\begin{itemize}
-    \item 8\% calculator error
-    \item 16\% symbol mapping error
-    \item 22\% one missing step error
-    \item rest: semantic issues, incoherent \cotp
-\item Source: Stanford CS25: Beyond LLMs: Agents, Emergent
-    Abilities, Intermediate-Guided Reasoning
-\end{itemize}
-
-\vfill
-
-\end{frame}
-
-
-\begin{frame}{\cotpfull: What could go wrong?}
+\begin{frame}{\cotpfullcap: Summary}
 
 \vfill
 
@@ -638,6 +409,26 @@ given a well designed  chain-of-thought prompt, can
 
 \end{frame}
 
+
+\begin{frame}{\cotpfullcap: Error breakdown}
+
+\vfill
+
+\begin{itemize}
+    \item 8\% calculator error
+    \item 16\% symbol mapping error
+    \item 22\% one missing step error
+    \item rest: semantic issues, incoherent \cotp
+\item Source: Stanford CS25: Beyond LLMs: Agents, Emergent
+    Abilities, Intermediate-Guided Reasoning
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\devour{
+
 \begin{frame}{\cotpfull: Why does it work?}
 
 \vfill
@@ -654,10 +445,10 @@ given a well designed  chain-of-thought prompt, can
 \vfill
 
 \end{frame}
+}
 
 
-
-\begin{frame}{\cotpfull: Why does it work?}
+\begin{frame}{\cotpfullcap}
 
 \vfill
 
@@ -678,7 +469,6 @@ given a well designed  chain-of-thought prompt, can
 \end{frame}
 
 
-REASONING NEW
 
 
 
@@ -691,17 +481,21 @@ REASONING NEW
     \item few-shot prompting = few-shot learning
     \item The prompt ``think step by step'' by itself
     (without shots) is not \cotpfull.
-    \item \cotpfull is defined as including shots.
-    \item Chain-of-Thought is currently used as a general
+    \item \cotpfullcap is defined as including shots.
+    \item Chain-of-thought is currently used as a general
     term to refer to the idea of LLMs using explicit
     reasoning steps to arrive at an answer.
-    \item So the current usage of Chain-of-Thought is more
+    \item So the current usage of chain-of-thought is more
     general than \cotpfull.
 \end{itemize}
 
 \vfill
 
+
 \end{frame}
+
+\devour{
+
 \begin{frame}{Chain-of-Thought in OpenAI's o1}
 
 \vfill
@@ -718,6 +512,8 @@ internal chain of thought before responding to the user.
 \vfill
 
 \end{frame}
+
+}
 
 \begin{frame}{Generator-Verifier Gap (Noam Brown)}
 
@@ -756,5 +552,6 @@ internal chain of thought before responding to the user.
 \end{frame}
 
 
+\endlecture
 
 \end{document}
