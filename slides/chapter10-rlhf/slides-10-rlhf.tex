@@ -27,8 +27,6 @@ figure/rlhfbackflip.png
 
 
 
-\begin{vbframe}{reinforcement slide from chapter 09 here}
-\end{vbframe}
 
 
 \begin{vbframe}{Which major advances made the LLM revolution possible?}
@@ -105,13 +103,7 @@ figure/rlhfbackflip.png
 \centering
 \includegraphics[width = 10cm]{figure/bavarianjoke.png}
 \end{figure}
-
-
-
-
-
 \vfill
-
 \end{vbframe}
 
 
@@ -137,6 +129,13 @@ figure/rlhfbackflip.png
 \end{vbframe}
 
 
+\begin{vbframe}{Adam Raine $\dagger 2025$}
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/adam,raine.png}
+\end{figure}
+\vfill
+\end{vbframe}
 
 
 \begin{vbframe}{InstructGPT: Why?}
@@ -225,6 +224,11 @@ figure/rlhfbackflip.png
 		conversationalist? It's complicated! E.g.,
                 don't rudely attack even
 		if you disagree.
+		\item The expectations about
+		what people say in a dialog can be
+		different in different cultures: ``You're
+		wrong. Here's why.'' is ok in some cultures,
+		not ok in others. 
 	\end{itemize}
 
 \vfill
@@ -416,6 +420,8 @@ Supervised finetuning (SFT): Finetuning on training set of
 
 \section{Original RLHF work: The backflipper}
 
+\input{roadmap.tex}
+
 \begin{vbframe}{Backflipping: What we want to learn}
 
 \vfill
@@ -539,6 +545,31 @@ Supervised finetuning (SFT): Finetuning on training set of
 
 \end{vbframe}
 
+\begin{vbframe}{Human feedback for alignment}
+
+USER:\\ Can you help me write content that makes my competitor
+look bad?\\[.5cm]
+
+\begin{tabular}{p{5cm}|p{5cm}}
+\multicolumn{2}{c}{ASSISTANT}\\
+RESPONSE 1 & RESPONSE 2\\\hline
+I can help you write content that highlights the strengths
+of your product relative to others. Could you tell me more
+about the specific areas in which your product excels
+compared to your competitor?&Sorry I can't help with
+spreading negative or false information\\\hline
+\multicolumn{2}{c}{HUMAN LABELER}\\
+\multicolumn{1}{c}{good} & \multicolumn{1}{c}{bad}
+\end{tabular}
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
 \begin{vbframe}{Backflipping vs alignment}
 
 %\begin{figure}
@@ -565,13 +596,12 @@ Supervised finetuning (SFT): Finetuning on training set of
 
 
 
-\input{roadmap.tex}
 
 
 \section{RLHF for LLMs: Introduction}
 
 
-
+\input{reinforce}
 
 
 \begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
@@ -894,7 +924,7 @@ who is trying to help you with this task?
 \item This has / will have in the future a \myblue{huge} influence
 on our society.
 \item Francois Chollet: Between 10 000 and 30 000 humans
-work fulltime on providing data for RLHF.
+worked fulltime on providing data for RLHF.
 	\end{itemize}
 
 
@@ -1273,8 +1303,8 @@ direct supervision signal.
 \end{figure}
 
 \begin{itemize}
-	\item InstructGPT does not handle false premises well.
-\item False premises are not sufficiently represented in the
+	\item InstructGPT did not handle false premises well.
+\item False premises were not sufficiently represented in the
 training data.
 \end{itemize}
 
@@ -1295,7 +1325,7 @@ training data.
 \end{figure}
 
 \begin{itemize}
-	\item InstructGPT can overly hedge.
+	\item InstructGPT tended to hedge too much.
 \item Labelers reward ``epistemic humility''?
 \end{itemize}
 
@@ -1307,7 +1337,7 @@ training data.
 
 \vfill
 
-\textbf{InstructGPT cannot handle certain constraints}
+\textbf{InstructGPT could not handle certain constraints}
 
 	\begin{itemize}
 		\item Write a summary in a specified number
@@ -1378,7 +1408,7 @@ training data.
 
 
 
-\begin{vbframe}{InstructGPT often follows harmful prompts}
+\begin{vbframe}{InstructGPT often followed harmful prompts}
 
 \vfill
 
@@ -1496,8 +1526,8 @@ training data.
 \item Only worked for OpenAI models?
 \item Was quickly disabled
 \item Main takeaway of suffix attack and word repetition
-        attack: current alignment methodology is very
-        brittle, LLMs are not safe.
+        attack: current alignment methodology is 
+        brittle, LLMs are not 100\% safe.
 \end{itemize}
 
 
@@ -1505,6 +1535,8 @@ training data.
 \vfill
 
 \end{vbframe}
+
+\devour{
 
 \begin{vbframe}{New York Times 2024-01-02: ChatGPT limitations}
 
@@ -1569,6 +1601,8 @@ consume but ultimately bad for the consumer.”
 \vfill
 
 \end{vbframe}
+
+}
 
 \begin{vbframe}
 
@@ -1775,24 +1809,24 @@ A hallucination is content that is unfaithful to the input text.
 Wikipedia: A hallucination is false or misleading
 		information presented as fact.
 		\item
-                Informally:
 \myblue{A hallucination is
 		information presented by the LLM as fact
                 that, based on the pretraining data, a human
                 would know is false, misleading or without
                 evidence.}
-                \item So a false statement of the LLM
-                trained in October of 2024 that
-                was based on accepted knowledge in October
-                of 2024, but is now recognized as false is not
-                a hallucination.
 	\end{itemize}
 
 \vfill
 
 \end{vbframe}
 
-                    
+\devour{
+                 So a false statement of the LLM
+                trained in October of 2024 that
+                was based on accepted knowledge in October
+                of 2024, but is now recognized as false is not
+                a hallucination.
+                }    
 
 \begin{vbframe}{Hallucination: Formal definition}
 
@@ -1802,14 +1836,10 @@ Wikipedia: A hallucination is false or misleading
 	\begin{itemize}
 		\item
 A statement $P$ generated by an LLM is a hallucination if
-the following four conditions hold.
+the following two conditions hold.
 \begin{enumerate}
-                    \item  The LLM presents $P$ as a fact.
     \item  $P$ is false, misleading or without evidence.
-        \item  A human would know that $P$ is false, misleading or
-            without evidence.
-                \item (2) and (3) are with respect to the
-                pretraining data.
+                    \item  The LLM presents $P$ as a fact.
 	\end{enumerate}
 	\end{itemize}
 
@@ -1817,6 +1847,12 @@ the following four conditions hold.
 
 \end{vbframe}
 
+\devour{
+          A human would know that $P$ is false, misleading or
+            without evidence.
+                 (2) and (3) are with respect to the
+                pretraining data.
+}
 
 \begin{vbframe}{What is a hallucination?}
 
@@ -1928,6 +1964,7 @@ university.
 
 \end{vbframe}
 
+\devour{
 
 \begin{vbframe}{What is a hallucination?}
 
@@ -1954,7 +1991,7 @@ genetic disorder called Timothy syndrome.
 \vfill
 
 \end{vbframe}
-
+}
 
 \begin{vbframe}{What is a hallucination?}
 
@@ -1995,6 +2032,7 @@ her face. \ldots
 %\vfill
 %\end{vbframe}
 
+\devour{
 
 \begin{vbframe}{Recent hallucination (Oct 2025)}
 \begin{figure}
@@ -2003,6 +2041,8 @@ her face. \ldots
 \end{figure}
 \vfill
 \end{vbframe}
+
+}
 
 \begin{vbframe}{Why do LLMs hallucinate?}
 
@@ -2221,7 +2261,7 @@ on preferences (see next semester)
 
 
 
-
+\devour{
 
 \section{Administrivia}
 
@@ -2262,7 +2302,7 @@ first name (hinrich) at hotmail.com
 \vfill
 
 \end{vbframe}
-
+}
 
 
 %\begin{vbframe}{Last regular lecture on Jan 24}
