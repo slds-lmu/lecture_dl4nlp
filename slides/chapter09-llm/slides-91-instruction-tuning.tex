@@ -16,7 +16,7 @@ Large Language Models (LLMs)
 }{
 Fine-Tuning and Prompting
 }{
-figure/bertfinetune1
+figure/81-flan
 }{
 \item comprehend the different subtleties in the space of fine-tuning and prompting
 }
@@ -36,7 +36,7 @@ figure/bertfinetune1
 \begin{itemize}
     \item language modeling objective
         \begin{itemize}
-            \item next token prediction
+            \item masking and next token prediction
             \item no explicit understanding of tasks
         \end{itemize}
     \item this is true for encoder and decoder models
@@ -260,7 +260,7 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
-\devour{
+
 
 \begin{frame}{Continued pretraining}
 
@@ -275,9 +275,9 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
-}
+  \devour{
 
-\begin{frame}{Continued pretraining}
+    \begin{frame}{Continued pretraining}
 
 \vfill
 	
@@ -290,6 +290,8 @@ that has been    trained on generic data (web, reddit etc),
 
 \end{frame}
 
+
+}
 
 
 \begin{frame}{Terminology}
@@ -481,7 +483,7 @@ unsupervised training.
 %\end{frame}
 
 
-\begin{frame}{Multi-task learning: FLAN and T0}
+\begin{frame}{Multi-task learning: FLAN/T0/T5}
 
 \vfill
 	
@@ -751,7 +753,7 @@ facilitate
     \item NIV2 (1554 tasks)
     \item T0-SF (193 tasks)
     \item Muffin (80 tasks)
-    \item CoT (reasoning tasks, cf. next chapter)
+    \item CoT (reasoning tasks, cf.\ next chapter)
     \end{itemize}
 \item Scaling model sizes
     \begin{itemize}
