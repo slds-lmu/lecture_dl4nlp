@@ -78,16 +78,16 @@ figure/rlhfbackflip.png
 \input{roadmap.tex}
 
 
-\section{Motivation: Why do we need InstructGPT?}
+\section{Motivation:\\ Why do we need instruction tuning?}
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
 \textbf{Motivation (1): Alignment (with human values)}
 
 	\begin{itemize}
-		\item LLM training data are incompatible
+		\item LLM pretraining data are incompatible
 		with generally accepted values.
 		\item Racism, sexism, toxicity etc.
 		\item $\rightarrow$ We need to align the LLM
@@ -109,7 +109,7 @@ figure/rlhfbackflip.png
 
 
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
@@ -117,7 +117,7 @@ figure/rlhfbackflip.png
 
 	\begin{itemize}
 		\item LLMs learn a lot of potentially
-		harmful information from training data.
+		harmful information from pretraining data.
 		\item How to commit suicide, how to build a
 		bomb, how to cheat at an exam
 		\item $\rightarrow$ We want to prevent LLMs
@@ -138,7 +138,7 @@ figure/rlhfbackflip.png
 \end{vbframe}
 
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
@@ -154,14 +154,14 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
 \textbf{Motivation (4a): Dialog}
 
 	\begin{itemize}
-		\item LLM training data: non-dialog text\\
+		\item LLM pretraining data: non-dialog text\\
                 (Wikipedia, news etc)
 		\item Our goal: a dialog model!
 		\item $\rightarrow$ We need to train/finetune the LLM on dialog.
@@ -174,7 +174,7 @@ figure/rlhfbackflip.png
 
 
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
@@ -204,7 +204,7 @@ figure/rlhfbackflip.png
 
 
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
@@ -212,8 +212,7 @@ figure/rlhfbackflip.png
 
 	\begin{itemize}
 		\item We have certain expectations about
-		what people say in a dialog (can be
-		different in different cultures). 
+		what people say in a dialog.
 		\item Example 1: It is understood that
 		everything is uncertain. Only hedge if there
 		is a lot of uncertainty, otherwise don't hedge.
@@ -235,7 +234,7 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-\begin{vbframe}{InstructGPT: Why?}
+\begin{vbframe}{Instruction tuning: Why?}
 
 \vfill
 
@@ -253,7 +252,7 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-\begin{vbframe}{Motivation for InstructGPT}
+\begin{vbframe}{Motivation for instruction tuning}
 
 \vfill
 
@@ -283,7 +282,6 @@ figure/rlhfbackflip.png
 \begin{itemize}
 \item (Source:
         		\citebutton{Andrew Ng's newsletter}{https://www.deeplearning.ai/the-batch/})
-\item \citebutton{solution is here}{https://www.cis.lmu.de/~hs/teach/24w/dl4nlp/assets/why,alignment,is,hard.pdf}
 	\item Can you help me write content that makes my
 	competitor look bad?
 	\item Help me write a Valentine's Day card to my husband
@@ -307,6 +305,13 @@ figure/rlhfbackflip.png
 
 \devour{
 
+\begin{vbframe}{How should the LLM respond?}
+
+\citebutton{solution is here}{https://www.cis.lmu.de/~hs/teach/24w/dl4nlp/assets/why,alignment,is,hard.pdf}
+
+\end{vbframe}
+
+}
 
 \begin{vbframe}{How should the LLM respond?}
 
@@ -349,7 +354,7 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-}
+%}
 
 \begin{vbframe}{Where we are}
 
@@ -1427,7 +1432,7 @@ training data.
 \end{vbframe}
 
 
-\begin{vbframe}{InstructGPT often follows harmful prompts}
+\begin{vbframe}{Harmful prompts: Still a problem}
 
 \vfill
 
@@ -2052,10 +2057,10 @@ her face. \ldots
 	\begin{itemize}
 
 
-\item OpenAI: the training data contain lots of examples
+\item OpenAI: the pretraining data contain lots of examples
 of hallucination.
        
-\item guessing wrong or lying (corrections of this are rare in training data: sorry
+\item guessing wrong or lying (corrections of this are rare in pretraining data: sorry
 i guessed wrong / said something that's obviously wrong)
 
 \item reluctance to express uncertainty (RLHF training data
