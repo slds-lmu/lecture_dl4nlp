@@ -38,10 +38,11 @@ figure/rlhfbackflip.png
 		\item neural networks as universal function approximators
 		\item subword tokenization
 		\item the transformer
-\item scaling
+\item scaling: data, compute, model size
 \item instruction-tuning for instruction-following
 \item RLHF for cost-effective instruction-tuning
 \item value alignment
+\item reasoning
 	\end{itemize}
 
 \vfill
@@ -79,6 +80,36 @@ figure/rlhfbackflip.png
 
 
 \section{Motivation:\\ Why do we need instruction tuning?}
+
+\begin{vbframe}{Instruction tuning}
+
+\vfill
+
+\textbf{Definition:} Instruction tuning is the process of training a
+	pretrained language model on a large set of
+	(instruction, response) pairs. 
+
+\vfill
+
+\textbf{Relation to T0/T5/FLAN:} This earlier work (earlier
+	than Ouyang et al., 2022) was similar in spirit, but
+	was more in the tradition of NLP tasks. Each
+	(instruction, response) pair corresponded to an NLP
+	task. In some cases, the ``instruction'' was not a
+	typical instruction, e.g., it could just be the name
+	of a task. In  (Ouyang et al., 2022), there is more
+	fluidity and they include tasks like
+	``brainstorming'' that are unlike traditional NLP
+	tasks. Finally, InstructGPT only made sense for a
+	very powerful model that already had all
+	capabilities, they just needed to be
+	exposed. T0/T5/FLAN were based on much weaker models.
+
+
+\vfill
+
+\end{vbframe}
+
 
 \begin{vbframe}{Instruction tuning: Why?}
 
@@ -303,7 +334,7 @@ figure/rlhfbackflip.png
 
 
 
-\devour{
+%\devour{
 
 \begin{vbframe}{How should the LLM respond?}
 
@@ -311,7 +342,7 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-}
+%}
 
 \begin{vbframe}{How should the LLM respond?}
 
