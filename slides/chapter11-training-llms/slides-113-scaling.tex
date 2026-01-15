@@ -1,24 +1,27 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
-\newcommand{\learninggoals}{
-\item Understand Chinchilla
-\item Understand the various scaling laws
-}
+\title{Deep Learning for NLP}
+
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Training Large Language Models}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\long\def\devour#1{}
 
 \begin{document}
-\lecturechapter{Scaling Laws and Chinchilla}
-%\lecture{Deep Learning for NLP}
-\begin{vbframe}{restore lecture command}\end{vbframe}
+
+%\devour{
+
+\titlemeta{
+Training LLMs
+}{
+Scaling Laws
+}{
+figure/losscompute.png
+}{
+\item Understand scaling laws
+}
 
 
 %Notes:
@@ -221,7 +224,11 @@
     $N=10^3,D=10^{100}$ and\\
     $N=10^{100},D=10^4$
     \item \ques Which configuration is best?
-    \item \ques Which values of $N$ and $D$ would you choose
+
+\item \textbf{We want to fix $N$ and $D$, so that we
+	get the best possible performance given an available compute budget.}
+
+ \ques Which values of $N$ and $D$ would you choose
     to create an even more powerful model?
 % 2 + 1 + 1
 % 2 + 0.1 + 0.1
@@ -474,10 +481,10 @@ cost \ldots'',
 \begin{itemize}
 	\item If you run out of data, then increase \# epochs
         \item The Stack v2
-	already contais all public code! arxiv.org/abs/2305.16264
+	already contains all public code! arxiv.org/abs/2305.16264
         \item data quality/model size tradeoff: Training
 	a smaller model on  a smaller high-quality dataset may be
-	better than trainig a huge model on a huge
+	better than training a huge model on a huge
 	medium-quality dataset.
         \item For higher quality datasets, allocate more
 	compute to model size. arxiv.org/abs/2401.02954
@@ -499,11 +506,11 @@ cost \ldots'',
 	\item Even if a humongous model gives me the best
 	possible performance, cost per token may be
 	prohibitively expensive.
-        \item Example: Llama models are small-ish because
-	that's the size that makes economic sense right now.
+        \item Example: Llama models were small-ish because
+	that was the size that made economic sense.
         \item huge openai models may not make economic sense
-        \item The
-        latest models cost as much as \$100 million to train,
+        \item Current
+        models cost order of magnitude \$100 million to train,
 	and
         this number could reach \$100 billion within a few
 	years,
@@ -613,8 +620,11 @@ end-to-end monolithic model.
         model may be preferable since it is so much cheaper at
         inference time.
 
-\item Trend towards \myblue{systems of smaller models}, trend away
-        from a single huge monolithic model.
+\item In the future: \myblue{systems of smaller models}
+        rather than
+        a single huge monolithic model?
+
+\item MoE is a version of that
 
 \end{itemize}
 

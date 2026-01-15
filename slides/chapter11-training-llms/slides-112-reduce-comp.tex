@@ -1,25 +1,34 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+
+\begin{document}
+
+%\devour{
+
+\titlemeta{
+Training LLMs
+}{
+How to reduce memory and compute
+}{
+figure/gpu_mem.png
+}{
 \item Learn about different techniques to reduce compute and memory
 \item Learn about distributed training with data/tensor parallelism
 \item Learn about FlashAttention
 }
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{Training Large Language Models}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{How to reduce memory and compute}
-%\lecture{Deep Learning for NLP}
-\begin{vbframe}{restore lecture command}\end{vbframe}
 
 
 %Notes:
@@ -222,10 +231,10 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \begin{vbframe}{GPU Memory Hierarchy}
 
 \vfill
-\begin{minipage}[c]{.49\textwidth}
+\begin{minipage}[c]{\textwidth}
 	\begin{figure}
 	\centering
-	\includegraphics[width = 6.3cm]{./figure/tiling} \\ 
+	\includegraphics[width = 11cm]{./figure/tiling} \\ 
 \end{figure}
 \end{minipage}
 
@@ -321,7 +330,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\end{itemize}
 	\item Towards IO-Aware Deep Learning
 	\begin{itemize}
-		\item Extending beyonde attention
+		\item Extending beyond attention
 	\end{itemize}
 	\item Multi-GPU IO-Aware Methods
 	\begin{itemize}

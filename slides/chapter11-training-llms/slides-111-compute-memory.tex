@@ -1,24 +1,34 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-%\newcommand{\titlefigure}{figure/gpt_sq.png}
-\newcommand{\learninggoals}{
-\item Learn about different contributions to compute requirements
-\item Learn how model size components influence memory requirements
-}
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
 \definecolor{texblue}{rgb}{0, 0, 1}
 \def\myblue#1{\textcolor{texblue}{#1}}
 
-\title{Training Large Language Models}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
 
 \begin{document}
-\lecturechapter{Memory and Compute Requirements}
-%\lecture{Deep Learning for NLP}
-\begin{vbframe}{restore lecture command}\end{vbframe}
+
+%\devour{
+
+\titlemeta{
+Training LLMs
+}{
+Memory and Compute Requirements
+}{
+figure/float.png
+}{
+\item Learn about different contributions to compute requirements
+\item Learn how model size components influence memory requirements
+}
+
+
 
 
 %Notes:
@@ -29,6 +39,8 @@
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Compute Requirements}
+\end{vbframe}
 \begin{vbframe}{Compute Requirements}
 
 \vfill
@@ -58,14 +70,14 @@ $$C \approx \tau T = 6 P D$$
 	\item $T$ is the time spent training the model, in seconds
 	\item $P$ is the number of parameters in the model
 	\item $D$ is the dataset size (in tokens)
-    \item $C$: No. of floating-point operations (FLOPs) to train the model:\\
+    \item $C$: No. of floating-point operations  to train the model:\\
           $C = C_{forward} + C_{backward}$
 	\item $C_{forward} \approx 2 P D$; $\quad C_{backward} \approx 4 P D$
 	\begin{itemize}
 	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
         \item $4PD$: backward pass approximately twice the compute of the forward pass
 	\end{itemize}
-    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' output, so that the gradient of the previous layers' weights can be calculated
+    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' outputs
 \end{itemize}
 
 \end{vbframe}
@@ -76,10 +88,10 @@ $$C \approx \tau T = 6 P D$$
 
 \vfill
 
-$C$  can be measured in different units:\newline
+$C$ (actually, $C$ per time) can be measured in different units:\newline
 
 \begin{itemize}
-     \item FLOP-seconds which is [Floating Point Ops / Second] 
+     \item FLOPs = FLOP-seconds which is [Floating Point Ops / Second] 
  	\begin{itemize}
  	    \item We also use multiples:\\ GFLOP-seconds, TFLOP-seconds etc.
  		\item Other multiples like PFLOP-days are used in papers
@@ -104,17 +116,15 @@ $C$  can be measured in different units:\newline
 
 \begin{itemize}
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
-	\item \textbf{We want to fix $P$ and $D$, so that we
-	get the best possible performance given an available compute budget.}
 	\item One proposed optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
 	    \item This was true for Chinchilla
 	models \citebutton{Hoffmann et al.,
-	2022}{https://arxiv.org/abs/2203.15556},\\but does
-	not hold for all LLMs
+	2022}{https://arxiv.org/abs/2203.15556},\\ not clear
+	to what extent it still holds.
 	\end{itemize}
-	\item Training a LLM on less than 200 billion tokens is not recommended
-	\item Rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
+	\item Training an LLM on less than 200 billion tokens is not recommended
+	\item One rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
     \item Different ways to determine P: based on available data, compute budget or inference time 
 \end{itemize}
 
@@ -124,6 +134,8 @@ $C$  can be measured in different units:\newline
 
 % ------------------------------------------------------------------------------
 
+\begin{vbframe}{Memory Requirements}
+\end{vbframe}
 \begin{vbframe}{Memory Requirements}
 
 \vfill
@@ -159,8 +171,15 @@ Model size components: \newline
 \begin{itemize}
  	\item Pure fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
  	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
-    \item bf16 or brain floating point 16, developed by Google Brain project, occupying 16 bits or 2 bytes
-	\item int8: integer from -128 to 127, occupying 8 bits or 1 byte
+    \item bf16 or brain floating point 16, developed by
+ 	Google Brain project, occupying 16 bits or 2 bytes
+\begin{itemize}
+        \item bf16 has a larger dynamic range than fp16
+ 	(8 exponent bits instead of 5)
+        \item bf16 is less precise, but also less likely to
+ 	suffer from underflow or overflow 
+\end{itemize}
+	\item INT8: integer from -128 to 127, occupying 8 bits or 1 byte
 \end{itemize}
 
 \vfill
@@ -185,9 +204,10 @@ $(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bi
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int8 Quantization (1)}
+\begin{vbframe}{INT8 Quantization}
 
-\textit{Since fp32 takes up too much memory, you can make use of int8 quantization to reduce the memory requirements}
+\textit{It's hard to fit meaningful floats into 8 bits, but
+you can use   integer quantization: INT8.}
 
 \vfill
 
@@ -202,7 +222,8 @@ $(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bi
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
-        \end{itemize}
+\item (draw example)
+\end{itemize}
 \end{itemize}
 
 \vfill
@@ -211,9 +232,11 @@ $(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bi
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Int8 Quantization (2)}
+\devour{
 
-\textit{We map a number from a fp32 to an int8 representation:}
+\begin{vbframe}{INT8 Quantization (2)}
+
+\textit{How to map a number from float to INT8:}
 
 \vfill
 
@@ -225,10 +248,16 @@ $(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bi
 
 \vfill
 
-\textit{These quantizations reduce the amount of memory used by the model, also they further speed up computation by enabling integer computation instead of floating-point math!} 
+%\textit{These quantizations reduce the amount of memory used
+%	by the model.}
+
+%\ques  Additional advantage?
+
+%They further speed up computation by enabling integer computation instead of floating-point math.} 
     
 \end{vbframe}
 
+}
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Model Parameters}
@@ -240,7 +269,7 @@ Parameter size depends on chosen representation: \newline
 \begin{itemize}
  	\item Pure fp32: $Mem_{model} = 4 ~bytes/param \cdot N_{params}$
  	\item fp16 or bf16: $Mem_{model} = 2 ~bytes/param \cdot N_{params}$
-	\item int8: $Mem_{model} = 1 ~byte/param \cdot N_{params}$
+	\item INT8: $Mem_{model} = 1 ~byte/param \cdot N_{params}$
 \end{itemize}
 
 \vskip8mm
@@ -304,7 +333,7 @@ Their memory overhead contribution is: \newline
 \begin{itemize}
  	\item fp32: $Mem_{grad} = 4 ~bytes/param \cdot N_{params}$
  	\item fp16 or bf16: $Mem_{grad} = 2 ~bytes/param \cdot N_{params}$
-	\item int8: $Mem_{grad} = 1 ~byte/param \cdot N_{params}$
+	\item INT8: $Mem_{grad} = 1 ~byte/param \cdot N_{params}$
 \end{itemize}
 
 \vfill
@@ -320,8 +349,7 @@ Their memory overhead contribution is: \newline
 \begin{itemize}
  	\item GPUs are bottlenecked by memory, not FLOPs
  	\item Save GPU memory by recomputing activations of certain layers
-	\item Various schemes for selecting which layers to clear
-	\item They take some extra memory, but save even more
+	\item Various schemes for how exactly this is implemented.
 \end{itemize}
 
 \vskip5mm
