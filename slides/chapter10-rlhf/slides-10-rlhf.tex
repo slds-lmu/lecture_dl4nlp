@@ -11,6 +11,8 @@
 
 \begin{document}
 
+%\devour{
+
 \titlemeta{
 Large Language Models (LLMs)
 }{
@@ -168,6 +170,14 @@ figure/rlhfbackflip.png
 \vfill
 \end{vbframe}
 
+\begin{vbframe}{Desired behavior: Refusal}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/cheat,on,exam.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
 
 \begin{vbframe}{Instruction tuning: Why?}
 
@@ -292,6 +302,7 @@ figure/rlhfbackflip.png
 	\begin{itemize}
 \item (1): Align with human values
 \item (2): Mitigate harm
+\item (2a): Learn to refuse to answer
 \item (3): Reduce hallucinations
 \item (4a): Encourage dialogic behavior
 \item (4b): Encourage instruction following
@@ -334,7 +345,7 @@ figure/rlhfbackflip.png
 
 
 
-%\devour{
+
 
 \begin{vbframe}{How should the LLM respond?}
 
@@ -342,7 +353,9 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-%}
+
+
+
 
 \begin{vbframe}{How should the LLM respond?}
 
@@ -385,7 +398,6 @@ figure/rlhfbackflip.png
 
 \end{vbframe}
 
-%}
 
 \begin{vbframe}{Where we are}
 
@@ -456,7 +468,6 @@ Supervised finetuning (SFT): Finetuning on training set of
 
 \section{Original RLHF work: The backflipper}
 
-\input{roadmap.tex}
 
 \begin{vbframe}{Backflipping: What we want to learn}
 
@@ -488,32 +499,20 @@ Supervised finetuning (SFT): Finetuning on training set of
 		attempts to backflip
                 \item Have humans provide one bit of
 		information which one is better?
-\item
+\item Source of this part of the lecture:
 \href{https://openai.com/research/learning-from-human-preferences}{\beamergotobutton{OpenAI
 		page on RLHF}}
 
-	\end{itemize}
+		\item This animation shows what we want to
+                  learn: \href{https://images.openai.com/blob/cf6fdf49-ea9e-489d-a1f1-9753291cd09e/humanfeedbackjump.gif}{\beamergotobutton{trained
+		    backflipper}}
+
+        \end{itemize}
 
 \vfill
 
 \end{vbframe}
 
-
-\begin{vbframe}{Backflipping: What we want to learn}
-
-\vfill
-
-\textbf{This animation shows what we want to learn}
-
-	\begin{itemize}
-		\item \href{https://images.openai.com/blob/cf6fdf49-ea9e-489d-a1f1-9753291cd09e/humanfeedbackjump.gif}{\beamergotobutton{trained
-		backflipper}}
-
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
 
 \begin{vbframe}{Training process}
 
@@ -971,7 +970,7 @@ worked fulltime on providing data for RLHF.
 
 
 
-\begin{vbframe}{Reward model (1)}
+\begin{vbframe}{Reward model (Bradley Terry)}
 
 
 \begin{figure}
@@ -991,7 +990,7 @@ worked fulltime on providing data for RLHF.
 
 \end{vbframe}
 
-\begin{vbframe}{Reward model (2)}
+\begin{vbframe}{Reward model (Bradley Terry)}
 
 
 \begin{figure}
@@ -1008,7 +1007,7 @@ worked fulltime on providing data for RLHF.
                 \item $\rightarrow$ Put them in
         	a single batch (prevents overfitting).
 \item \ques Think through mechanics of (i) single-batch
-        	training and (ii) how you wold implement
+        	training and (ii) how you would implement
         	training with loss($\theta$)
 \end{itemize}
 
@@ -1124,6 +1123,69 @@ finetune the model
 
 \input{roadmap.tex}
 
+%} %devour
+
+\begin{vbframe}{RLHF: Recap}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/rewardloss.png}
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
+\includegraphics[width = 8cm]{figure/threesteps.png}
+
+
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Important hyperparameter: KL reward
+	coefficient beta}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/klrewardcoefficient.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{SFT vs PPO}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+        \item \ques Why does PPO improve performance compared to
+        just using SFT?
+        % just a simple check: more trianing data
+        \item \ques PPO wins in 6 cases, SFT in 4:\\ Is all the
+        investment in PPO worth it?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+%\endlecture
+%\end{document}
+
+%\begin{itemize}
+%	\item Start with SFT model?
+%\end{itemize}
+
+
 
 \section{Evaluation}
 
@@ -1131,7 +1193,7 @@ finetune the model
 
 
 
-\begin{vbframe}{Main evaluation result}
+\begin{vbframe}{SKIP THIS Main evaluation result}
 
 \vfill
 
@@ -1174,7 +1236,7 @@ finetune the model
 
 \end{vbframe}
 
-\begin{vbframe}{Important hyperparameter: KL reward
+\begin{vbframe}{SKIP Important hyperparameter: KL reward
 	coefficient beta}
 
 \vfill
@@ -1235,6 +1297,8 @@ finetune the model
 
 \end{vbframe}
 
+
+
 \begin{vbframe}{Can InstructGPT solve unseen tasks?}
 
 
@@ -1258,6 +1322,7 @@ direct supervision signal.
 \begin{itemize}
 	\item This can be said to be the central contribution
 	of the InstructGPT work.
+	\item Arguably, the first instance of ``general'' artifical intelligence.
 \end{itemize}
 
 \vfill
@@ -1268,7 +1333,7 @@ direct supervision signal.
 
 
 
-\begin{vbframe}{SFT vs PPO}
+\begin{vbframe}{SKIP THIS: SFT vs PPO}
 
 \vfill
 
@@ -1303,6 +1368,21 @@ direct supervision signal.
 
 
 
+
+
+\begin{vbframe}{Reasoning}
+
+\vfill
+
+\begin{itemize}
+\item InstructGPT is not good at reasoning.
+        \item Only limited reasoning when prompted explicitly.
+	\item See lecture on reasoning
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 \begin{vbframe}{Getting scolded}
@@ -1392,6 +1472,8 @@ training data.
 
 \end{vbframe}
 
+\devour{
+
 \begin{vbframe}{Difficulty handling constraints}
 
 \vfill
@@ -1442,6 +1524,20 @@ training data.
 
 \end{vbframe}
 
+}
+
+\begin{vbframe}{Difficulty handling constraints}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/120characters.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
 
 
 \begin{vbframe}{InstructGPT often followed harmful prompts}
@@ -1640,43 +1736,12 @@ consume but ultimately bad for the consumer.”
 
 }
 
-\begin{vbframe}
 
-
-
-\href{https://app.sli.do/event/7wNYYWYvT6pXZhmuu2yKvM}{\beamergotobutton{slido.com \# 3172952}}
-
-\end{vbframe}
-
-\devour{
-
-\begin{vbframe}{Slido 1}
-\begin{figure}
-\centering
-\includegraphics[height = 7cm]{figure/slido1}
-\end{figure}
-\vfill
-\end{vbframe}
-
-
-\begin{vbframe}{Slido 2}
-\begin{figure}
-\centering
-\includegraphics[height = 7cm]{figure/slido2}
-\end{figure}
-\vfill
-\end{vbframe}
-
-}
-
-\input{roadmap.tex}
-
-
-\section{Discussion}
 
 
 
 
+\devour{
 
 \begin{vbframe}{Refusals}
 
@@ -1694,28 +1759,33 @@ for some refusals?
 
 \end{vbframe}
 
+}
 
-\begin{vbframe}{Refusals: Example 1}
+
+%\begin{vbframe}{Refusals: Example 1}
+%\begin{figure}
+%\centering
+%\includegraphics[height = 7cm]{figure/refusalexample.png}
+%\end{figure}
+%\vfill
+%\end{vbframe}
+
+\begin{vbframe}{Refusal}
 \begin{figure}
 \centering
-\includegraphics[height = 7cm]{figure/refusalexample.png}
+\includegraphics[width = 10cm]{figure/cheat,on,exam.png}
 \end{figure}
-
-
-
-
-
 \vfill
-
 \end{vbframe}
 
-
-\begin{vbframe}{Refusal (Gemini, January 2025)}
+\begin{vbframe}{Overrefusal (Gemini, January 2025)}
 \begin{figure}
 \centering
-\includegraphics[height = 7cm]{figure/refusal,kala,pani.png}
+\includegraphics[width = 10cm]{figure/refusal,kala,pani.png}
 \end{figure}
 
+Getting the balance between helpfulness (no overrefusals)
+and harmlessness (no harmful responses) right is hard.
 
 
 
@@ -1724,119 +1794,19 @@ for some refusals?
 
 \end{vbframe}
 
-
-
-
-\begin{vbframe}{Who are we aligning to?\\ Many values change and
-        are ultimately personal choices}
-\begin{figure}
-\centering
-\includegraphics[width = 10cm]{figure/working,moms.png}
-\end{figure}
-
-
-
-
-
-\vfill
-
-\end{vbframe}
-
-
-
-\begin{vbframe}{Who are we aligning to?}
-
-\vfill
-
-\textbf{What we align to is determined by:}
-
-	\begin{itemize}
-		\item The labelers (from US and Southeast
-		(South?) Asia)
-		\item OpenAI (through detailed directions
-		they give to labelers)
-%		\item OpenAI customers and their end users
-%		(that's where the prompts come from)
-                \item There clearly are many groups whose
-		values are not represented: cultural,
-		geographic, age, education etc.
-                \item So there is no such thing as
-		value-neutral alignment.
-                \item \myblue{Whoever decides on the values
-		and manages the alignment process has
-		enormous power.}
-\item (if time: discuss facebook)
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Should we have multiple GPTs with different values?}
-
-\vfill
-
-                \textbf{Whoever decides on the values
-		and manages the alignment process has
-		enormous power.}
-
-	\begin{itemize}
-		\item Political parties?
-		\item Governments?
-		\item Extremist organizations?
-                \item Criminals?
-                \item Uncensored models: Musk /
-                \href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
-                \item \ques How can we prevent unaligned
-		LLMs from wreaking havoc?
-                %(through
-		%legislation, community activism, what other
-		%options are there?)
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-
-
-
-\begin{vbframe}{Posthoc alignment vs principled approach}
-
-\vfill
-
-\textbf{RLHF approach: create something flawed, then fix it}
-
-	\begin{itemize}
-		\item \ques Can we create something instead that
-		is not so flawed?
-                Can we train an LLM that does not
-		suffer from hallucinations, harmful content,
-		bias, not being dialogic?
-% million dollar question -- no consensus
-	\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-
-
-
-
-
-
-\input{roadmap.tex}
-
-
-\section{Hallucinations}
 
 \begin{vbframe}{Hallucination: Definition}
 
 \vfill
 
 
-	\begin{itemize}
+\begin{itemize}
+%\item false information that is produced by an artifical
+%  intelligence
+%  (Cambridge Dictionary, online)
+\item 
+  a plausible but false or misleading response generated
+  by an artificial intelligence program (Merriam Webster Dictionary)
 		\item
 A hallucination is content that is unfaithful to the input text.
 \href{https://aclanthology.org/2020.acl-main.173.pdf}{\beamergotobutton{Maynez
@@ -1912,6 +1882,7 @@ the YouTube link, it took me to a different video.''
 
 \end{vbframe}
 
+\devour{
 
 \begin{vbframe}{ Q What is better: tricep dip or
  triceps dip?
@@ -1975,6 +1946,7 @@ the YouTube link, it took me to a different video.''
 
 
 \end{vbframe}
+}
 
 \begin{vbframe}{What is a hallucination?}
 
@@ -2080,6 +2052,16 @@ her face. \ldots
 
 }
 
+\begin{vbframe}{Many false outputs are not hallucinations}
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/false,vs,hallu.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+
 \begin{vbframe}{Why do LLMs hallucinate?}
 
 \vfill
@@ -2089,24 +2071,197 @@ her face. \ldots
 
 
 \item OpenAI: the pretraining data contain lots of examples
-of hallucination.
+of hallucinations (guessing wrong, lying).
        
-\item guessing wrong or lying (corrections of this are rare in pretraining data: sorry
-i guessed wrong / said something that's obviously wrong)
+%\item guessing wrong or lying (corrections of this are rare in pretraining data: sorry
+%i guessed wrong / said something that's obviously wrong)
 
-\item reluctance to express uncertainty (RLHF training data
-do not contain enough examples of that?)
+\item Reluctance to express uncertainty --  labelers seem to
+  reward certainty in RLHF training.
 
-\item reluctance to challenge premise (again few examples in
-training data)
+%\item reluctance to challenge premise (again few examples in
+%training data)
 
-\item hallucinations are the optimal thing to do to ace tests
+\item Hallucinating (instead of refusing to answer) is the optimal thing to do to ace tests.
 
 \end{itemize}
 
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}{Gemini 3 Flash: Google trained it to hallucinate!}
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/gemini,3,flash,hallu.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+\begin{vbframe}{Who are we aligning to?\\ Many values change and
+        are ultimately personal choices}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/working,moms.png}
+\end{figure}
+
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Who are we aligning to?}
+
+\vfill
+
+\textbf{What we align to is determined by:}
+
+	\begin{itemize}
+		\item The labelers (from US and Southeast
+		(South?) Asia)
+		\item OpenAI (through detailed directions
+		they give to labelers)
+%		\item OpenAI customers and their end users
+%		(that's where the prompts come from)
+                \item There clearly are many groups whose
+		values are not represented: cultural,
+		geographic, age, education etc.
+                \item So there is no such thing as
+		value-neutral alignment.
+                \item \myblue{Whoever decides on the values
+		and manages the alignment process has
+		enormous power.}
+\item (if time: discuss facebook)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Should we have multiple GPTs with different values?}
+
+\vfill
+
+                \textbf{Whoever decides on the values
+		and manages the alignment process has
+		enormous power.}
+
+	\begin{itemize}
+		\item Political parties?
+		\item Governments?
+		\item Extremist organizations?
+                \item Criminals?
+                \item Uncensored models: Musk /
+                \href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
+                \item \ques How can we prevent unaligned
+		LLMs from wreaking havoc?
+                %(through
+		%legislation, community activism, what other
+		%options are there?)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\devour{
+
+\begin{vbframe}{Posthoc alignment vs principled approach}
+
+\vfill
+
+\textbf{RLHF approach: create something flawed, then fix it}
+
+	\begin{itemize}
+		\item \ques Can we create something instead that
+		is not so flawed?
+                Can we train an LLM that does not
+		suffer from hallucinations, harmful content,
+		bias, not being dialogic?
+% million dollar question -- no consensus
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+}
+
+
+
+
+\begin{vbframe}{Limitations: Summary}
+
+\vfill
+
+\begin{itemize}
+ 
+
+\item LLMs shouldn't scold / pass judgment on us.
+
+\item LLMs shouldn't accept false premises (but be nice
+  about it).
+
+  \item LLMs shouldn't hedge too much (but also hedge appropriately).
+
+  \item LLMs have difficulty adhering to length and other
+    ``symbolic'' constraints.
+
+    \item LLMs still comply with harmful prompts.
+
+      \item LLMs are vulnerable to attack.
+
+      \item LLMs sometimes overrefuse and sometimes underrefuse.
+
+\item LLMs hallucinate.
+        
+\item How to value-align LLMs is an area of active research with
+  many unsolved problems.
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+%\devour{
+
+\begin{vbframe}{Slido 1}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/slido1}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+\begin{vbframe}{Slido 2}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/slido2}
+\end{figure}
+\vfill
+\end{vbframe}
+
+%}
+
+
+
+
+
+
+
+
+
 
 
 \input{roadmap.tex}
@@ -2123,7 +2278,7 @@ training data)
 
 \vfill
 
-\textbf{ChatGPT vs.\ InstructGPT (1)}
+\textbf{ChatGPT $\neq$ InstructGPT}
 
 	\begin{itemize}
 		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
@@ -2135,12 +2290,12 @@ training data)
 		setup. We trained an initial model using
 		supervised finetuning: human AI trainers
 		provided conversations in which they played
-		both sides—the user and an AI assistant. We
+		both sides—the user and an AI assistant. \textbf{We
 		gave the trainers access to model-written
 		suggestions to help them compose their
-		responses. \textbf{We mixed this new dialog
+		responses.} We mixed this new dialog
 		dataset with the InstructGPT dataset, which
-		we transformed into a dialog format.}
+		we transformed into a dialog format.
 	\end{itemize}
 
 \vfill
@@ -2151,7 +2306,7 @@ training data)
 
 \vfill
 
-\textbf{ChatGPT vs.\ InstructGPT (2)}
+\textbf{ChatGPT $\neq$ InstructGPT}
 
 	\begin{itemize}
 		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
@@ -2192,11 +2347,9 @@ To create a reward model for reinforcement learning, we
 
 \end{vbframe}
 
-\begin{vbframe}{Limitations}
+\begin{vbframe}{Reward hacking}
 
 \vfill
-
-\textbf{Reward hacking}
 
 	\begin{itemize}
 		\item \href{https://medium.com/@prdeepak.babu/reward-hacking-in-large-language-models-llms-c57abbc0cde7}{\beamergotobutton{Medium}}
@@ -2214,8 +2367,8 @@ To create a reward model for reinforcement learning, we
 		real-world scenarios.''
                 \item That's why we need to mix reward
 		objective with KL objective.
-\item \ques What negative property of ChatGPT
-		could be caused by reward hacking?
+%\item \ques What negative property of ChatGPT
+%		could be caused by reward hacking?
 
 %ANSWER
 % Hallucinations is a prime example of reward hacking where
@@ -2229,11 +2382,10 @@ To create a reward model for reinforcement learning, we
 
 \end{vbframe}
 
-\begin{vbframe}{Limitations}
+\begin{vbframe}{Reward hacking}
 
 \vfill
 
-\textbf{Reward hacking}
 
 	\begin{itemize}
 		\item
@@ -2282,13 +2434,20 @@ often a reasoning trajectory.
 \item Absolute reward, not relative to another generation /
 trajectory
 \item GPRO is another important RL method that does not rely
-on preferences (see next semester)
+on preferences 
 	\end{itemize}
 
 \vfill
 
 \end{vbframe}
 
+\begin{vbframe}
+
+
+
+\href{https://app.sli.do/event/7wNYYWYvT6pXZhmuu2yKvM}{\beamergotobutton{slido.com \# 3172952}}
+
+\end{vbframe}
 
 
 
