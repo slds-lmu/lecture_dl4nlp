@@ -16,7 +16,7 @@
 \titlemeta{
 Training LLMs
 }{
-Scaling Laws
+Scaling laws
 }{
 figure/losscompute.png
 }{
@@ -37,8 +37,9 @@ figure/losscompute.png
 \vfill
 
 \begin{itemize}
-    \item Up to now in this chapter: number of parameters = $P$
-    \item From now on: number of parameters = $N$
+\item In this slide set, we use $N$ for the number of parameters.
+\item (Unfortunately,  we use $P$ for the number of
+  parameters in other slide sets.)
 \end{itemize}
 
 \vfill
@@ -87,12 +88,10 @@ figure/losscompute.png
 
 \begin{itemize}
 
-	\item Why power laws help us a lot in practice
-	\begin{itemize}
-	\item Loss (performance of LLM) follows predictable power laws
+\item These power laws were huge news in 2020!
+  \item Easy way to improve AI
+	\item We can predict by extrapolating the early part of the training curve
 	\item Power law parameters are roughly independent of model size
-	\item It is possible to predict by extrapolating the early part of the training curve
-	\end{itemize}
 
 	\item Transfer improves with test performance
 	\begin{itemize}
@@ -231,15 +230,18 @@ figure/losscompute.png
 
     \item \ques Why is it best?
 
-\item \textbf{We want to fix $N$ and $D$, so that we
-	get the best possible performance given an available compute budget.}
-
+      \item 
  \ques Which values of $N$ and $D$ would you choose
     to create an even more powerful model?
 % 2 + 1 + 1
 % 2 + 0.1 + 0.1
 % 2 + 100 + 0
 % 2 + 0 + 100
+
+\item Of course, the last question is relative to 
+the  available compute budget, so try and find a reasonable answer.
+
+
 \end{itemize}
 
 \vfill
@@ -250,15 +252,15 @@ figure/losscompute.png
 
 \begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s}}
 
-Given a fixed FLOPs budget $C$, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
+Given a fixed FLOP budget $C$, how should we trade-off model size and text size to optimize performance? \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 
 \vfill
 
 \begin{itemize}
 
-	\item Find $N$ and $D$ so that $FLOPs(N,D) = C$ and $L(N,D)$ is minimal
+	\item Find $N$ and $D$ so that $FLOP(N,D) = C$ and $L(N,D)$ is minimal
 
-	\item Empirically estimated $N$ and $D$ based on 400 models. 
+	\item Empirical estimates of $N$ and $D$ based on 400 models. 
 	\begin{itemize}
 	\item Ranging from 70\,M to 16\,B parameters
 	\item Trained on 5\,B to 400\,B tokens
@@ -406,22 +408,43 @@ improved performance.
 % ------------------------------------------------------------------------------
 
 
-\begin{vbframe}{Doubts about scaling: Reuters}
+\begin{vbframe}{Beyond brute-force scaling of datasets}
+
+\vfill
+
+\begin{itemize}
+	\item If you run out of data, then increase \# epochs
+        \item The Stack v2
+	already contains all public code! arxiv.org/abs/2305.16264
+        \item data quality/model size tradeoff: Training
+	a smaller model on  a smaller high-quality dataset may be
+	better than training a huge model on a huge
+	medium-quality dataset.
+        \item For higher quality datasets, allocate more
+	compute to model size. arxiv.org/abs/2401.02954
+        \item See Stanford CS25: StarCoder Use Case
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{More recent thoughts on scaling}
 
 \vfill
 
 \begin{itemize}
 \item \citebutton{Reuters}{https://www.reuters.com/technology/artificial-intelligence/openai-rivals-seek-new-path-smarter-ai-current-methods-hit-limitations-2024-11-11/}, 2024-11-15
-\item Ilya Sutskever, co-founder of AI labs Safe Superintelligence
-	(SSI) and OpenAI, told Reuters recently that results
-	from \myblue{scaling up pre-training} -- the phase of training
-	an AI model that uses a vast amount of unlabeled
-	data to understand language patterns and structures
-	-- \myblue{have plateaued}.
-	\item
-But now, some of the most prominent AI scientists are
-speaking out on the \myblue{limitations of this “bigger is better”
-philosophy.}
+\item Ilya Sutskever:
+  ``results
+	from \myblue{scaling up pre-training} \ldots\
+	\myblue{have plateaued}.''
+%	\item
+%But now, some of the most prominent AI scientists are
+%speaking out on the \myblue{limitations of this “bigger is better”
+%philosophy.}
 \item “The 2010s were the age of scaling, now we're back in
 	the age of wonder and discovery once again. Everyone
 	is looking for the next thing,” Sutskever
@@ -433,6 +456,7 @@ philosophy.}
 
 \end{vbframe}
 
+\devour{
 
 \begin{vbframe}{Doubts about scaling (2)}
 
@@ -459,6 +483,7 @@ cost \ldots'',
 \vfill
 
 \end{vbframe}
+}
 
 \begin{vbframe}{Epoch AI projections}
 
@@ -480,41 +505,18 @@ cost \ldots'',
 \end{vbframe}
 
 
-\begin{vbframe}{It's not simply brute-force scaling:\\ Data}
+
+\begin{vbframe}{Train/test tradeoff (1)}
 
 \vfill
 
 \begin{itemize}
-	\item If you run out of data, then increase \# epochs
-        \item The Stack v2
-	already contains all public code! arxiv.org/abs/2305.16264
-        \item data quality/model size tradeoff: Training
-	a smaller model on  a smaller high-quality dataset may be
-	better than training a huge model on a huge
-	medium-quality dataset.
-        \item For higher quality datasets, allocate more
-	compute to model size. arxiv.org/abs/2401.02954
-        \item See Stanford CS25: StarCoder Use Case
-
-\end{itemize}
-
-\vfill
-
-\end{vbframe}
-
-
-\begin{vbframe}{It's not simply brute-force scaling:\\
-	Scaling laws ignore cost per (input/output) token}
-
-\vfill
-
-\begin{itemize}
-	\item Even if a humongous model gives me the best
-	possible performance, cost per token may be
-	prohibitively expensive.
-        \item Example: Llama models were small-ish because
-	that was the size that made economic sense.
-        \item huge openai models may not make economic sense
+%	\item Even if a humongous model gives me the best
+%	possible performance, cost per token may be
+%	prohibitively expensive.
+%        \item Example: Llama models were small-ish because
+%	that was the size that made economic sense.
+%\item huge openai models may not make economic sense
         \item Current
         models cost order of magnitude \$100 million to train,
 	and
@@ -535,12 +537,12 @@ cost \ldots'',
 \end{vbframe}
 
 
-\begin{vbframe}{Phi-4}
+\begin{vbframe}{Train/test tradeoff (2)}
 
 \vfill
 
 \begin{itemize}
-\item released by Microsoft Dec 2024
+\item Phi4: released by Microsoft Dec 2024
 	\item 14 billion parameters (small!)
 	\item pretraining data: 9.8 trillion tokens (pretty big)
         \item pretraining data curated / synthesized
@@ -551,7 +553,7 @@ cost \ldots'',
 \end{vbframe}
 
 
-\begin{vbframe}{Scaling: Train/test tradeoff}
+\begin{vbframe}{Train/test tradeoff (3)}
 
 \vfill
 
@@ -568,6 +570,8 @@ cost \ldots'',
 
 \end{vbframe}
 
+
+\devour{
 
 \begin{vbframe}{Shift away from scaling towards test time /
 	systems approaches}
@@ -594,6 +598,7 @@ end-to-end monolithic model.
 
 \end{vbframe}
 
+}
 
 \begin{vbframe}{Main takeaway (1)}
 
@@ -620,17 +625,18 @@ end-to-end monolithic model.
         I can pretrain given
         constraints such as compute budget?
 
-\item This has shifted to \myblue{``joint optimization''} of training
-        and testing: even if a trillion parameter model is the optimal
+\item This has shifted to a more holistic view of what we
+  want to achieve, e.g.,
+even if a trillion parameter model is the optimal
         model given pretraining constraints, a much smaller
         model may be preferable since it is so much cheaper at
         inference time.
 
-\item In the future: \myblue{systems of smaller models}
+\item In the future: \myblue{compound systems of many smaller models/agents}
         rather than
         a single huge monolithic model?
 
-\item MoE is a version of that
+\item MoE is a version of that.
 
 \end{itemize}
 
