@@ -145,7 +145,7 @@ figure/losscompute.png
 	\begin{itemize}
 	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achieved by training very large models and stopping significantly short of convergence  
         \item That is: early stopping
-\item Claim: Larger language models will perform better and be more sample efficient than current models.
+\item So the claim is: Larger language models will perform better and be more sample efficient than smaller models.
 
 	\end{itemize}
 
@@ -182,10 +182,12 @@ figure/losscompute.png
 
 \begin{figure}
     \centering
-    \includegraphics[height = 3cm]{figure/optimalbatchsize.png}
+    \includegraphics[width = 6cm]{figure/optimalbatchsize.png}
 \end{figure}
 
 \begin{itemize}
+  \item The ideal batch size increases  over the
+    course of training.
     \item Estimate gradient as accurately as possible $\rightarrow$ large batch
     \item Exploit stochasticity (epoch batches would not be
     a good thing even if we could compute them efficiently)
@@ -206,6 +208,8 @@ figure/losscompute.png
 \begin{itemize}
     \item $L(N,D) = 1.61 + \frac{406.4}{N^{0.34}} + \frac{410.7}{D^{0.28}}$
     \item $L(N,D)$ is cross entropy on new text
+\item Source:
+  \citebutton{Hoffmann et al., 2022}{https://arxiv.org/abs/2203.15556}
 \end{itemize}
 
 \vfill
@@ -224,6 +228,8 @@ figure/losscompute.png
     $N=10^3,D=10^{100}$ and\\
     $N=10^{100},D=10^4$
     \item \ques Which configuration is best?
+
+    \item \ques Why is it best?
 
 \item \textbf{We want to fix $N$ and $D$, so that we
 	get the best possible performance given an available compute budget.}
@@ -632,6 +638,7 @@ end-to-end monolithic model.
 
 \end{vbframe}
 
+\devour{
 
 \begin{vbframe}{``The scaling is going to continue''\\
 Dario Amodei, November 2024}
@@ -658,10 +665,12 @@ Dario Amodei, November 2024}
     
 \end{vbframe}
 
+}
+
 \begin{vbframe}{What is a trillion?}
 
-\href{https://www.youtube.com/watch?v=QgUj09K7vx4}{What is a trillion?}
-    
+\citebutton{https://www.youtube.com/watch?v=QgUj09K7vx4}{What is a trillion?}
+   (1:30) 
 \end{vbframe}
 
 \endlecture
