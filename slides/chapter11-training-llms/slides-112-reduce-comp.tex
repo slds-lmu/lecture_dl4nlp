@@ -20,7 +20,7 @@
 \titlemeta{
 Training LLMs
 }{
-How to reduce memory and compute
+How to reduce compute and memory
 }{
 figure/gpu_mem.png
 }{
@@ -45,7 +45,7 @@ figure/gpu_mem.png
 
 \begin{itemize}
  	\item Training LLMs faster on many GPUs
- 	\item Avoiding OOM issues
+ 	\item Avoiding OOM (out of memory) issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
 % 	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
@@ -91,7 +91,7 @@ figure/gpu_mem.png
             \item Each processing unit has a replica of the neural network model
             \item These replicas are trained independently on their respective data subsets
         \end{itemize}
-    \item \textbf{Gradient Aggregation:}
+    \item \textbf{Gradient Aggregation (All Reduce):}
         \begin{itemize}
             \item After each forward and backward pass, gradients are computed locally on each node 
             \item The gradients are then averaged (or summed) across all nodes to ensure that each model   replica receives the same gradient update     
@@ -107,13 +107,13 @@ figure/gpu_mem.png
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Tensor Parallelism (1) (Animated GIF!)}
+\begin{vbframe}{Tensor Parallelism (1)}
 
 \vfill
 
 \begin{figure}
 	\centering
-	\includegraphics[width = 11cm]{./figure/tensor_parallel.png} \\ 
+	\includegraphics[width = 6cm]{./figure/tensor,parallelism,new.png} \\ 
 	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#tensor-parallelism}{Nvidia}}
 \end{figure}
 
@@ -228,25 +228,8 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \end{vbframe}
 
 
-\begin{vbframe}{GPU Memory Hierarchy}
-
-\vfill
-\begin{minipage}[c]{\textwidth}
-	\begin{figure}
-	\centering
-	\includegraphics[width = 11cm]{./figure/tiling} \\ 
-\end{figure}
-\end{minipage}
-
-\hfill
-
-\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
-
-\vfill
-
-\end{vbframe}
-
 % ------------------------------------------------------------------------------
+
 
 \begin{vbframe}{Computing Considerations}
 
@@ -262,19 +245,92 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 		\item Elementwise operations with high memory access
 	\end{itemize}
 	\item IO aware means reducing memory load/store operations
-	\item FlashAttention implements the following:
-	\begin{itemize}
-		\item Operation fusion to reduce memory access
-		\item Tiling or chunking the softmax matrix into blocks
-		\item Recomputation for better memory utilization
-	\end{itemize}
 \end{itemize}
 
 \vfill
 
 \end{vbframe}
 
+
+
+\begin{vbframe}{FlashAttention}
+
+\vfill
+
+\begin{itemize}
+		\item Tiling or chunking of matrices into blocks
+		\item Operation fusion
+                  \begin{itemize}
+                  \item For example: first matrix
+                    multiplication (query-key), softmax, second matrix
+                    multiplication (weight-value)
+\end{itemize}
+                \item This minimizes redundant
+                  swapping in and out of data
+                  \item General idea: you avoid that the large intermediate
+                    tensors (e.g., pre-softmax)  are
+                    written to HBM and then read back into
+                    (SRAM) memory
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{SRAM vs HBM / Fused Kernel}
+
+\vfill
+\begin{minipage}[c]{.49\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width = 6.3cm]{./figure/gpu_mem.png} \\ 
+\end{figure}
+\end{minipage}
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\makebox[6cm][r]{ 
+			\includegraphics[width = 5cm]{figure/flash-attn.png}
+		}\\ 
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+
+\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+
+\begin{vbframe}{Tiling}
+
+\vfill
+\begin{minipage}[c]{\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/tiling} \\ 
+\end{figure}
+\end{minipage}
+
+\hfill
+
+%\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+
+\vfill
+
+\end{vbframe}
+
 % ------------------------------------------------------------------------------
+
+
 
 \begin{vbframe}{Operation Fusion}
 
@@ -289,6 +345,8 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vfill
 
 \end{vbframe}
+
+
 
 % ------------------------------------------------------------------------------
 
@@ -330,7 +388,8 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\end{itemize}
 	\item Towards IO-Aware Deep Learning
 	\begin{itemize}
-		\item Extending beyond attention
+	\item Extending beyond attention
+          \item DeepSeek
 	\end{itemize}
 	\item Multi-GPU IO-Aware Methods
 	\begin{itemize}
