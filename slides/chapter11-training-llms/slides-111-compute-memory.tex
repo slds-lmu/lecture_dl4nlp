@@ -251,7 +251,7 @@ you can use   integer quantization: INT8.}
 \vfill
 
 \begin{itemize}
-\item Note that we assume: $min(\mathbf{X}) \leq 0$
+\item Note that we assume: $min(\mathbf{X}) \leq 0 \leq max(\mathbf{X})$
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
