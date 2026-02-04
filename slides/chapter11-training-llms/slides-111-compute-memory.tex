@@ -240,9 +240,38 @@ you can use   integer quantization: INT8.}
 \end{itemize}
 \end{itemize}
 
+
+
 \vfill
     
 \end{vbframe}
+
+\begin{vbframe}{Zero-point quantization}
+
+\vfill
+
+\begin{itemize}
+\item Note that we assume: $min(\mathbf{X}) \leq 0$
+            \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
+            \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
+            \item $X_{quant}(0) = zeropoint$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
+            \item = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$
+            \item = $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$
+            \item = $round(255 \cdot \frac{\mathbf{X} -
+              min(\mathbf{X})}{max(\mathbf{X})  - min(\mathbf{X})}) - 128$
+            \item $X_{quant}(max(\mathbf{X})) = 255-128 = 127$
+            \item $X_{quant}(min(\mathbf{X})) = 0-128 = -128$
+\end{itemize}
+
+
+
+
+\vfill
+    
+\end{vbframe}
+
 
 % ------------------------------------------------------------------------------
 
