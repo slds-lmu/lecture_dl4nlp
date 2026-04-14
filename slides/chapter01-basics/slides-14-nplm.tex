@@ -1,23 +1,26 @@
-\input{../../style/preamble}
-\input{../../latex-math/basic-math.tex}
-\input{../../latex-math/basic-ml.tex}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
 \newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
 \usepackage{qtree} %parse tree
 
-\newcommand{\titlefigure}{figure/bengio03.png}
-\newcommand{\learninggoals}{
-\item grasp importance of the ``look-up table`` a.k.a. embedding layer
-\item understand computational implications of language modeling}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
 
-\title{Basics}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Neural Probabilistic Language Model}
-\lecture{Deep Learning for NLP} % stays constant
 
+\titlemeta{
+Basics
+}{
+Neural Probabilistic Language Model
+}{
+figure/bengio03.png
+}{
+\item Grasp importance of the ``look-up table`` a.k.a. embedding layer
+\item Understand computational implications of language modeling
+}
 
 % ------------------------------------------------------------------------------
 

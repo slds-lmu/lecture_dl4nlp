@@ -1,22 +1,26 @@
-\input{../../style/preamble}
-\input{../../latex-math/basic-math.tex}
-\input{../../latex-math/basic-ml.tex}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
 \newcommand*\POS[1]{\textsubscript{\texttt{#1}}} % tag with part of speech
 \usepackage{qtree} %parse tree
 
-\newcommand{\titlefigure}{figure/tasks.png}
-\newcommand{\learninggoals}{
-\item Understand the different types of tasks (low- vs. high-level)
-\item Purely Linguistic tasks vs. more general classification tasks}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
 
-\title{Basics}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{NLP tasks}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Basics
+}{
+NLP Tasks
+}{
+figure/tasks.png
+}{
+\item Understand the different types of tasks (low- vs. high-level)
+\item Purely Linguistic tasks vs. more general classification tasks
+}
 
 % ------------------------------------------------------------------------------
 
