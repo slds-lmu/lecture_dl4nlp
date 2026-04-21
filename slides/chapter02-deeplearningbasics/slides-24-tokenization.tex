@@ -1,20 +1,27 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/tokenization.jpeg}
-\newcommand{\learninggoals}{
-\item Understand the the process of text tokenization
-\item Learn the various types of text tokenization}
+\tikzstyle{squ}=[draw, rectangle, minimum size = 5mm]
+\tikzstyle{del}=[squ, fill = white]
+\tikzstyle{vec}=[draw, rectangle, fill = white, minimum width=5mm, minimum height=1cm, inner sep = 2pt]
 
-\title{Deep Learning Basics}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Revisiting words: Tokenization}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Deep Learning Basics
+}{
+Revisiting words: Tokenization
+}{
+figure/tokenization.jpeg
+}{
+\item Understand the the process of text tokenization
+\item Learn the various types of text tokenization
+}
 
 % ------------------------------------------------------------------------------
 
@@ -333,7 +340,15 @@ def get_stats(vocab):
     for i in range(len(symbols)-1):
       pairs[symbols[i],symbols[i+1]] += freq
   return pairs
-	
+\end{lstlisting}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example -- Setup I}
+
+\begin{lstlisting}[language=Python]
 def merge_vocab(pair, v_in):
   v_out = {}
   bigram = re.escape(' '.join(pair))
@@ -350,36 +365,34 @@ def merge_vocab(pair, v_in):
 
 \begin{vbframe}{Example -- Merging}
 
-\vspace{-.5cm}
-
 \begin{lstlisting}[language=Python]
-vocab = {'l o w </w>' : 5, 'l o w e r </w>' : 2, 
-				 'n e w e s t </w>':6, 'w i d e s t </w>':3}
+vocab = {'l o w </w>' : 5, 
+         'l o w e r </w>' : 2, 
+         'n e w e s t </w>':6, 
+         'w i d e s t </w>':3}
 
 pairs = get_stats(vocab)
-\end{lstlisting}
 
-\vspace{-.75cm}
-
-\begin{lstlisting}[language=Python]
 >>> print(pairs)
 defaultdict(<class 'int'>, {
-						('l', 'o'): 7, ('o', 'w'): 7, ('w', '</w>'): 5, 
-						('w', 'e'): 8, ('e', 'r'): 2, ('r', '</w>'): 2, 
-						('n', 'e'): 6, ('e', 'w'): 6, ('e', 's'): 9, 
-						('s', 't'): 9, ('t', '</w>'): 9, ('w', 'i'): 3, 
-						('i', 'd'): 3, ('d', 'e'): 3
+  ('l', 'o'): 7, ('o', 'w'): 7, ('w', '</w>'): 5, 
+  ('w', 'e'): 8, ('e', 'r'): 2, ('r', '</w>'): 2, 
+  ('n', 'e'): 6, ('e', 'w'): 6, ('e', 's'): 9, 
+  ('s', 't'): 9, ('t', '</w>'): 9, ('w', 'i'): 3, 
+  ('i', 'd'): 3, ('d', 'e'): 3
 })
 \end{lstlisting}
 
-\vspace{-.5cm}
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example -- Merging I}
 
 \begin{lstlisting}[language=Python]
 best = max(pairs, key=pairs.get)
 vocab = merge_vocab(best, vocab)
 \end{lstlisting}
-
-\vspace{-.75cm}
 
 \begin{lstlisting}[language=Python]
 >>> print(best)
@@ -393,13 +406,13 @@ vocab = merge_vocab(best, vocab)
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Example -- Merging}
-
-\vspace{-.5cm}
+\begin{vbframe}{Example -- Merging I I}
 
 \begin{lstlisting}[language=Python]
-vocab = {'l o w </w>' : 5, 'l o w e r </w>' : 2, 
-				 'n e w e s t </w>':6, 'w i d e s t </w>':3}
+vocab = {'l o w </w>' : 5, 
+         'l o w e r </w>' : 2, 
+         'n e w e s t </w>':6, 
+         'w i d e s t </w>':3}
 
 num_merges = 10
 
@@ -410,7 +423,11 @@ for i in range(num_merges):
   print(best)
 \end{lstlisting}
 
-\vspace{-.5cm}
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Example -- Merging Steps}
 
 \begin{lstlisting}[language=Python]
 ('e', 's')

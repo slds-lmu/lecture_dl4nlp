@@ -1,24 +1,28 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
 \tikzstyle{squ}=[draw, rectangle, minimum size = 5mm]
 \tikzstyle{del}=[squ, fill = white]
+\tikzstyle{vec}=[draw, rectangle, fill = white, minimum width=5mm, minimum height=1cm, inner sep = 2pt]
 
-\newcommand{\titlefigure}{figure/rnn.png}
-\newcommand{\learninggoals}{
-\item Understand recurent structure of RNNs
-\item Learn the different types of RNNs
-\item Understand applicability of RNNs}
-
-\title{Deep Learning Basics}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Recurrent Neural Networks}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Deep Learning Basics
+}{
+Recurrent Neural Networks
+}{
+figure/rnn.png
+}{
+\item Understand recurent structure of RNNs
+\item Learn the different types of RNNs
+\item Understand applicability of RNNs
+}
 
 % ------------------------------------------------------------------------------
 
