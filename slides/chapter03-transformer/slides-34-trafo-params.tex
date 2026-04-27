@@ -1,24 +1,26 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
-
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 
-
-\newcommand{\titlefigure}{}
-\newcommand{\learninggoals}{
-\item Understand which components of the Transformer contribute to the parameter count
-\item Learn how to calculate the total number of the model parameters}
-
-\title{Transformer}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Transformer Parameter Count}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Transformer
+}{
+Parameter Count
+}{
+figure/transformer_sq.png
+}{
+\item Understand which components of the Transformer contribute to the parameter count
+\item Learn how to calculate the total number of the model parameters
+}
+
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Why do we care about the Parameter Count?}
@@ -38,7 +40,7 @@
     \vfill
     \begin{figure}
 		\centering
-		\includegraphics[]{chapters/chapter03/figure/enc_dec.png}
+		\includegraphics[]{figure/enc_dec.png}
 	\end{figure}
     \vfill
 \end{minipage}
@@ -73,7 +75,7 @@
     \vfill
     \begin{figure}
         \centering
-        \includegraphics{chapters/chapter03/figure/mha.png}
+        \includegraphics{figure/mha.png}
         \label{fig:enter-label}
     \end{figure}
     \vfill
@@ -141,7 +143,7 @@ $$
     \vfill
     \begin{figure}
         \centering
-        \includegraphics{chapters/chapter03/figure/ffn.png}
+        \includegraphics{figure/ffn.png}
         \label{fig:enter-label}
     \end{figure}
     \vfill
@@ -156,13 +158,12 @@ $$
     \end{itemize}
 \end{minipage}
 
-$$
-\begin{aligned}
+
+\begin{align*}
 N_{FFN} &= (d_{model} \times 4\cdot d_{model} +4\cdot d_{model}) + (4\cdot d_{model} \times d_{model} + d_{model}) \\
 &= 8\cdot d_{model}^2 + 5\cdot d_{model} \\
 &\approx 8\cdot d_{model}^2    
-\end{aligned}
-$$  
+\end{align*}
 
 \end{frame}
 
@@ -172,7 +173,7 @@ $$
 
 \begin{figure}
     \centering
-    \includegraphics[width=7cm]{chapters/chapter03/figure/layernorm.png}    \label{fig:Layer Norm-label}
+    \includegraphics[width=7cm]{figure/layernorm.png}    \label{fig:Layer Norm-label}
 \end{figure}
 
 \textit{Instead of calculating mean and standard deviation across the batch we do that across the layer!} \citebutton{Layer Normalization}{https://paperswithcode.com/method/layer-normalization}
@@ -202,32 +203,26 @@ $$N_{Layernorm} = 2\cdot d_{model}$$
 \begin{frame}{Exact Parameter Count}
 \textit{All we have to do now is to sum up the Parameter counts of each component for both the Encoder and Decoder!}
 
-\begin{aligned}
-$$
+\begin{align*}
 N_{Encoder} &= 1\cdot N_{attention} + 1\cdot N_{FFN} + 2\cdot N_{Layernorm} \\
 &= 4\cdot(d_{model}^2 + d_{model}) + 8\cdot d_{model}^2 + 5\cdot d_{model} + 2\cdot(2\cdot d_{model}) \\
 &= 12\cdot d_{model}^2 + 13 \cdot d_{model}
-$$
-\end{aligned}
+\end{align*}
 
-\hspace{}
+\vspace{-.5cm}
 
-\begin{aligned}
-$$
+\begin{align*}
 N_{Decoder} &= 2\cdot N_{attention} + 1\cdot N_{FFN} + 3\cdot N_{Layernorm}\\
 &= 2\cdot 4\cdot (d_{model}^2 + d_{model}) + 8\cdot d_{model}^2 + 5\cdot d_{model} + 3\cdot (2\cdot d_{model}) \\
 &= 16\cdot d_{model}^2 + 19\cdot d_{model}
-$$
-\end{aligned}
+\end{align*}
 
-\hspace{}
+\vspace{-.5cm}
 
-\begin{aligned}
-$$
+\begin{align*}
 N_{Total} &= 12\cdot d_{model}^2 + 13\cdot d_{model} + 16\cdot d_{model}^2 + 19\cdot d_{model} \\
 &= 28\cdot d_{model}^2 + 29\cdot d_{model}
-$$
-\end{aligned}
+\end{align*}
 
 
 \end{frame}
@@ -249,35 +244,25 @@ $$N_{Total} = 12\cdot d_{model}^2 + 16\cdot d_{model}^2 = 28\cdot d_{model}^2$$
 %-------------------------------------------------------------------------------
 
 \begin{frame}{Calculate parameter count}
-\textit{Now we can use those formulas to calculate the parameter count of the vanilla transformer}
-
-\hspace{}
+\textit{Now we can calculate the parameter count of the vanilla transformer}
 
 \begin{itemize}
     \item From the paper we know $n_{Layers} = 6$ for both Encoder and Decoder and $d_{model} = 512$
     \item Let's first use the exact formula:
 
-$$
-\begin{aligned}
+\begin{align*}
 N_{Params} &= 6\cdot(12\cdot 512^2 + 13\cdot 512) + 6\cdot(16\cdot 512^2 + 19\cdot 512) \\
 &= 44,138,496
-\end{aligned}
-$$
-
-\hspace{}
+\end{align*}
 
     \item And now with the approximation:
 
-$$
-\begin{aligned}
+\begin{align*}
 N_{Params} &= 6\cdot(12\cdot 512^2) + 6\cdot(16\cdot 512^2) \\
 &= 44,040,192
-\end{aligned}
-$$
+\end{align*}
 
 \end{itemize}
-
-\vfill{}
 
 \textit{The approximation is really good, which is why we can ignore the bias and layernorm parameters!}
     
@@ -289,19 +274,14 @@ $$
 
 \textit{We also have to consider the parameters of the embeddings!}
 
-\hspace{}
-
 \begin{itemize}
     \item Let $M$ be the maximum sequence length and $V$ the size of the vocabulary
     \item We have $M \times d_{model}$ positional embedding parameters, which are fixed and not learned
     \item And $V \times d_{model}$ token embeddings parameters, which are learned
     \item The original transformer has $V = 37000$ tokens:
-$$
-N_{Embedding} = 37000 \cdot 512 = 18,944,000 
-$$
-
-\item Adding those to the previous count yields:
-$$N_{Final} = 18,944,000 + 44,040,192 = 62,984,192$$ 
+			$$N_{Embedding} = 37000 \cdot 512 = 18,944,000$$
+		\item Adding those to the previous count yields:
+			$$N_{Final} = 18,944,000 + 44,040,192 = 62,984,192$$ 
 
 \end{itemize}
     

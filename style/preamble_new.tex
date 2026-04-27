@@ -187,6 +187,9 @@
     shorten >=2pt,}
 }
 
+\tikzstyle{squ}=[draw, rectangle, minimum size = 5mm]
+\tikzstyle{del}=[squ, fill = white]
+\tikzstyle{vec}=[draw, rectangle, fill = white, minimum width=5mm, minimum height=1cm, inner sep = 2pt]
 
 % textpos package to allow absolute placement of environments like figures
 % See e.g. https://datumorphism.leima.is/til/programming/latex-beamer-textblock-position/
@@ -240,6 +243,17 @@
 
 \newcommand{\ques}{\textbf{\textcolor{red}{Question:  }}}
 \newcommand{\questionssofar}{\begin{frame}\frametitle{Any questions?}\end{frame}}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\newcommand{\blu}[1]{\textcolor{blue}{#1}}
+\newcommand{\org}[1]{\textcolor{orange}{#1}}
+
+\def\rmA{{\mathbf{A}}}
+\def\rmE{{\mathbf{E}}}
+\def\rmR{{\mathbf{R}}}
+\def\rmU{{\mathbf{U}}}
+\def\rmW{{\mathbf{W}}}
 
 \newcommand\warning{%
  \makebox[1.4em][c]{%
