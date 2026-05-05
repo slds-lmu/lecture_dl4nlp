@@ -1,20 +1,22 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/bert.jpeg}
-\newcommand{\learninggoals}{
-\item Understand the use of the transformer encoder in this model
-\item Understand the architectural components}
-
-\title{BERT}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{The Architecture}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+BERT
+}{
+The Architecture
+}{
+figure/bert
+}{
+\item Understand the use of the transformer encoder in this model
+\item Understand the architectural components
+}
 
 % ------------------------------------------------------------------------------
 
@@ -69,7 +71,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{bert: key facts}
+\begin{frame}{bert: key facts}
 
 \vfill
 
@@ -87,11 +89,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{ELMo vs. GPT vs. BERT}
+\begin{frame}{ELMo vs. GPT vs. BERT}
 
 \vfill
 
@@ -112,11 +114,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{bert: key facts}
+\begin{frame}{bert: key facts}
 
 \vfill
 
@@ -137,11 +139,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Core of BERT -- Transformer Encoder}
+\begin{frame}{Core of BERT -- Transformer Encoder}
 
 \begin{figure}
 	\centering
@@ -150,7 +152,7 @@
 	\citebutton{Vaswani et al. (2017)}{https://arxiv.org/pdf/1706.03762.pdf}
 \end{figure}
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -252,8 +254,6 @@
 \begin{frame}{Two different BERT versions}
 \textit{There are two different BERT versions, namely BERT base and large. Depending on the architecture we get different parameter counts} \citebutton{Source: Devlin et al., 2019}{https://arxiv.org/abs/1810.04805}
 
-\hspace{}
-
 \begin{itemize}
 	\item \textbf{BERT base:}
 	\begin{itemize}
@@ -262,8 +262,6 @@
 		\item $d_{model} = 768$, thats the embedding dimension
 	\end{itemize}
 
-\hspace{}
-	
 	\item \textbf{BERT large:}
 	\begin{itemize}
 		\item $n_{layers} = 24$
@@ -280,10 +278,8 @@
 
 \textit{From the chapter about the transformer parameter count we already know the number of parameters for one Encoder layer: $12\cdot d_{model}^2$}
 $$
-N_{Encoder} &= n_{layers} \cdot 12\cdot d_{model}^2
+N_{Encoder} = n_{layers} \cdot 12\cdot d_{model}^2
 $$
-
-\hspace{}
 
 \begin{itemize}
 	\item \textbf{BERT base}:
@@ -292,8 +288,6 @@ $$
 	$$N_{Encoder} = 24\cdot 12\cdot 1024^2 = 301,989,888$$
 \end{itemize}
 
-\hspace{}
-
 \textit{By increasing $d_{model}$ and $n_{layers}$ we more than tripled the number of Encoder parameters!}
 \end{frame}
 
@@ -301,8 +295,6 @@ $$
 
 \begin{frame}{Embedding Parameter Count}
 \textit{Similar to the Transformer chapter we also have to consider the paramters from the embeddings:}
-
-\hspace{}
 
 \begin{itemize}
 	\item Let $V$ be the vocabulary size, $M$ the maximum sequence length and $S$ the number of segments
@@ -324,13 +316,17 @@ $$
 %-------------------------------------------------------------------------------
 
 \begin{frame}{Final Parameter Count}
+
+\bigskip
+
 \textit{Now we just have to sum up both parts to get the final parameter count:}
 
-\hspace{}
+\bigskip
 
 \begin{itemize}
 	\item \textbf{BERT base}: 
 	$$N_{Total} = 84,934,656 + 23,434,752 = 108,369,408 \approx 110M$$
+	\item[]
 	\item \textbf{BERT large}:
 	$$N_{Total} = 301,989,888 + 31,246,336 = 333,236,224 \approx 340M$$
 \end{itemize}

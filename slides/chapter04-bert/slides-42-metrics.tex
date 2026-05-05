@@ -1,27 +1,29 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 \usepackage{animate}
 
-\newcommand{\titlefigure}{figure/metrics.png}
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+BERT
+}{
+Measuring Performance
+}{
+figure/metrics
+}{
 \item Task-specific metrics
 \item Metrics for text output
 \item How to evaluate retrieval
-\item Subtle aspects of evaluation}
-
-\title{BERT}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Measuring Performance}
-\lecture{Deep Learning for NLP} % stays constant
+\item Subtle aspects of evaluation
+}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: classification}
+\begin{frame}{task-specific evaluation: classification}
 
 \vfill
 
@@ -44,11 +46,11 @@
 \end{itemize}
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (1)}
+\begin{frame}{task-specific evaluation: ranking (1)}
 
 \vfill
 
@@ -72,11 +74,11 @@
 \end{itemize}
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (2)}
+\begin{frame}{task-specific evaluation: ranking (2)}
 
 \vfill
 
@@ -90,11 +92,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (3)}
+\begin{frame}{task-specific evaluation: ranking (3)}
 
 \vfill
 
@@ -108,11 +110,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (4)}
+\begin{frame}{task-specific evaluation: ranking (4)}
 
 \vfill
 
@@ -126,11 +128,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (5)}
+\begin{frame}{task-specific evaluation: ranking (5)}
 
 \vfill
 
@@ -144,11 +146,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (6)}
+\begin{frame}{task-specific evaluation: ranking (6)}
 
 \vfill
 
@@ -165,11 +167,11 @@ $$MAP = \dfrac{1}{|Q|} \sum_{q \in Q} Ap_q@k,\; with\; Q = \text{set of queries}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{task-specific evaluation: ranking (7)}
+\begin{frame}{task-specific evaluation: ranking (7)}
 
 \vfill
 
@@ -181,7 +183,7 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -324,7 +326,7 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{evaluating generated text (1)}
+\begin{frame}{evaluating generated text (1)}
 
 \vfill
 
@@ -344,11 +346,11 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{evaluating generated text (2)}
+\begin{frame}{evaluating generated text (2)}
 
 \vfill
 
@@ -371,11 +373,11 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{evaluating generated text (3)}
+\begin{frame}{evaluating generated text (3)}
 
 \vfill
 
@@ -390,11 +392,11 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{evaluating generated text (3)}
+\begin{frame}{evaluating generated text (3)}
 
 \vfill
 
@@ -414,11 +416,11 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{evaluating generated text (4)}
+\begin{frame}{evaluating generated text (4)}
 
 \vfill
 
@@ -438,11 +440,11 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{human evaluatoin}
+\begin{frame}{human evaluation}
 
 \vfill
 
@@ -457,19 +459,19 @@ $$MRR = \dfrac{1}{|Q|} \sum_{q \in Q} RR_q,\; with\; Q = \text{set of queries}$$
 
 \vspace{.3cm}
 
-\textbf{Pros}
+\textbf{Cons}
 
 \begin{itemize}
 	\item Manual, tedious work
   \item Costs and working conditions
-	\item Subjectiveness
+	\item Subjectivity
 	\item Ambiguity
 	\item ...
 \end{itemize}
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 

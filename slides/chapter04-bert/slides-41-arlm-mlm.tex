@@ -1,24 +1,26 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/arlm-mlm.png}
-\newcommand{\learninggoals}{
-\item Understand the concept of self-supervision
-\item Gain ability to distinguish different types of language models}
-
-\title{BERT}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{ARLMs vs. MLM}
-\lecture{Deep Learning for NLP} % stays constant
+
+\titlemeta{
+BERT
+}{
+ARLMs vs. MLM
+}{
+figure/arlm-mlm
+}{
+\item Understand the concept of self-supervision
+\item Gain ability to distinguish different types of language models
+}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{again: what is a language model?}
+\begin{frame}{again: what is a language model?}
 
 \vfill
 
@@ -34,7 +36,7 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -147,7 +149,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{arlm: probabilistic interpretation}
+\begin{frame}{arlm: probabilistic interpretation}
 
 \vfill
 
@@ -160,12 +162,11 @@
 
 \vfill
 
-\end{vbframe}
-
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of ARLMs (1)}
+\begin{frame}{Examples of ARLMs (1)}
 
 \vfill
 
@@ -178,11 +179,11 @@
 	
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Examples of ARLMs (1)}
+\begin{frame}{Examples of ARLMs (1)}
 
 \vfill
 
@@ -194,11 +195,11 @@
 	\end{figure}
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Masked language models (MLM)}
+\begin{frame}{Masked language models (MLM)}
 
 \vfill
 
@@ -217,11 +218,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{mlm: toy example}
+\begin{frame}{mlm: toy example}
 
 \vfill
 
@@ -232,11 +233,11 @@
 	
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{mlm: probabilistic interpretation}
+\begin{frame}{mlm: probabilistic interpretation}
 
 \vfill
 
@@ -250,72 +251,7 @@
 
 \vfill
 
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{self-supervision}
-
-\vfill
-
-	\begin{figure}
-		\centering
-		\includegraphics[width=10cm]{figure/selfsup.jpeg}
-	\end{figure}
-	
-\vfill
-
-\end{vbframe}
-
-% ------------------------------------------------------------------------------
-
-\begin{frame}{Definition}
-
-	\vfill 
-	
-	\textit{Unsupervised Learning:}
-
-	\begin{itemize}
-		\item No labels attached to the data
-		\item Learn patterns / clusters from the features only
-	\end{itemize}
-	
-	\textit{Supervised Learning:}
-
-	\begin{itemize}
-		\item (Gold) Labels attached to the data
-		\item Learn from the association between features and labels
-	\end{itemize}
-	
-	\textbf{Self-Supervised Learning:}
-
-	\begin{itemize}
-		\item No \textit{external} labels attached to the data\\
-					$\to$ Samples with suitable labels can be generated from the known structure of the data itself 
-		\item \textit{Technically} supervised learning, but \textit{no labeling effort} $+$ simultan-\\eous ability to generate massive amounts of labeled data points
-	\end{itemize}
-	
-	\vfill 
-	
 \end{frame}
-
-% ------------------------------------------------------------------------------
-
-\begin{vbframe}{Self-supervised objectives}
-
-\vfill
-
-\textbf{Self-supervised objectives:}
-	
-	\begin{itemize}
-		\item Skip-gram objective (cf. word2vec)
-		\item Language modeling objective
-		\item \textit{Masked language modeling (MLM)} objective
-		\item ... and many more possibilities for text data
-	\end{itemize}
-\vfill
-
-\end{vbframe}
 
 % ------------------------------------------------------------------------------
 

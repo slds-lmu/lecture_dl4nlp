@@ -1,21 +1,23 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 \usepackage{colortbl}
 
-\newcommand{\titlefigure}{figure/transfer_learning_taxonomy-1.png}
-\newcommand{\learninggoals}{
-\item Differentiate the different flavors of transfer learning
-\item Understand the challenges we might be able to overcome by using transfer learning}
-
-\title{Transfer Learning}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Basic definitions and challenges}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Transfer Learning
+}{
+Basic definitions and challenges
+}{
+figure/transfer_learning_taxonomy-1
+}{
+\item Differentiate the different flavors of transfer learning
+\item Understand the challenges we might be able to overcome by using transfer learning
+}
 
 % ------------------------------------------------------------------------------
 
@@ -23,7 +25,7 @@
 
 \vfill
 
-	\textbf{How it works with word2vec}
+	\textbf{How it works with word2vec:}
 	
 	\begin{itemize}
 		\item Train word2vec on some "fake task" (CBOW or Skip-gram)
@@ -34,11 +36,37 @@
 	
 	\vspace{.3cm}
 	
-	\textbf{How it works with ELMo}
+	\textbf{How it works with ELMo:}
 	
 	\begin{itemize}
 		\item Do not \textit{extract} the stored knowledge, but use the whole embedding model \textit{as is}
 		\item Only train/fine-tune task specific weights on top of ELMo
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{fine-tuning transfer learning}
+
+\vfill
+
+	\textbf{How it works with BERT:}
+	
+	\begin{itemize}
+		\item Train BERT via masked language modeling
+		\item Fine-tune selected parts of the model using labeled data
+	\end{itemize}
+	
+	\vspace{.3cm}
+	
+	\textbf{Feature-based alternative:}
+	
+	\begin{itemize}
+		\item \textit{Extract} the embeddings and use them for, e.g., a classification task
+		\item \textit{Freeze} the model, fine-tune only classification head
 	\end{itemize}
 	
 \vfill
@@ -117,6 +145,21 @@
 		\end{itemize}
 \end{itemize}
 
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{key component: self-supervision}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=10cm]{figure/selfsup.jpeg}
+	\end{figure}
+	
 \vfill
 
 \end{frame}
@@ -253,11 +296,17 @@ $\Rightarrow$ \quad (fox, quick); (fox, brown); (fox, jumps); (fox, over)
 		\item Language modeling objective (cf. e.g. \citebutton{Bengio et al., 2003}{http://www.jmlr.org/papers/volume3/bengio03a/bengio03a.pdf})
 		\item \textit{Masked language modeling (MLM)} objective (cf. BERT)\\
 					$\rightarrow$ Replace words by a \texttt{[MASK]} token and train the model to predict
-		\item \textit{Permutation language modeling (PLM)} objective (cf. chapter 6)\\
+	\end{itemize}
+	
+\textbf{Other examples:}
+	
+	\begin{itemize}
+		\item \textit{Permutation language modeling (PLM)} objective \citebutton{Yang et al., 2019}{https://papers.nips.cc/paper/8812-xlnet-generalized-autoregressive-pretraining-for-language-understanding.pdf}\\
 					$\rightarrow$ Autoregressive objective of XLNet
-		\item \textit{Replaced token detection} objective (cf. chapter 6)\\
+		\item \textit{Replaced token detection} (RTD) objective \citebutton{Clark et al, 2020}{https://arxiv.org/pdf/2003.10555.pdf}\\
 					$\rightarrow$ Requires two models: One performing MLM \& the second model to discriminate between actual and the predicted tokens
 	\end{itemize}
+	
 \vfill
 
 \end{frame}

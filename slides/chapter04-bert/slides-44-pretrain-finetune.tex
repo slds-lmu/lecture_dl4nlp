@@ -1,23 +1,25 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/bert.jpeg}
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+BERT
+}{
+Pre-training \& Fine-Tuning
+}{
+figure/bert
+}{
 \item Know the pre-training tasks
 \item How to construct samples
 \item Understand the pre-training
 \item Gain understanding of the fine-tuning procedure
-\item Differences between token- and sequence classification}
-
-\title{BERT}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Pre-training \& Fine-Tuning}
-\lecture{Deep Learning for NLP}
+\item Differences between token- and sequence classification
+}
 
 % ------------------------------------------------------------------------------
 
