@@ -1,23 +1,24 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 \usepackage{movie15}
 \usepackage{animate}
 
-\newcommand{\titlefigure}{figure/sesamestreet.jpeg}
-\newcommand{\learninggoals}{
-\item shortcomings of BERT \& Co.
-\item everything as text-to-text
-\item Dynamic Masking}
-
-\title{Using the Transformer}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{Text-to-Text Transfer Transformer}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Post-BERT Era
+}{
+Text-to-Text Transfer Transformer
+}{
+figure/sesamestreet.jpeg
+}{
+\item Shortcomings of BERT \& Co.
+\item Everything as text-to-text
+}
 
 % ------------------------------------------------------------------------------
 
@@ -344,8 +345,6 @@
 \begin{frame}{Different T5 versions}
 \textit{Similar to BERT T5 has different versions, which all have a different parameter count} \citebutton{Raffel et al., 2020}{https://arxiv.org/abs/1910.10683}
 
-\hspace{}
-
 \begin{table}[h!]
 \centering
 \small % Reduce font size
@@ -366,11 +365,8 @@ large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
         \item $N_{Encoder} = 12\cdot d_{model}^2$
         \item $N_{Decoder} = 16\cdot d_{model}^2$
     \end{itemize}
+		\item \textit{For T5 3B and 11B $N_{Encoder}$ and $N_{Decoder}$ are different!}
 \end{itemize}
-
-\hspace{}
-
-\textit{For T5 3B and 11B $N_{Encoder}$ and $N_{Decoder}$ are different!}
     
 \end{frame}
 
@@ -399,8 +395,6 @@ large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
 
 \begin{frame}{Revisiting: MHA and FFN (1)}
 
-\hspace{}
-
 \begin{itemize}
     \item In the transformer chapter we derived the FFN parameter count to be $\bm{8\cdot d_{model}}$
     \item We also derived the MHA parameter count to be $\bm{4\cdot d_{model^2}}$ 
@@ -421,26 +415,18 @@ large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
 
 \begin{itemize}
     \item In MHA $n_{heads} \cdot d_{qkv}$ is no longer $d_{model}$:
-
-$$
-\begin{aligned}
-N_{attention} &= n_{heads} \cdot d_{qkv} \times d_{model} + (d_{model} \times d_{qkv}) \times n_{heads} \cdot 3 \\
-&= 4\cdot n_{heads}\cdot d_{qkv} \times d_{model}\text{;}\quad \text{instead of:}\quad 4\cdot d_{model}^2
-\end{aligned}
-$$
-
-\hspace{}
+		
+					\begin{align*}
+					N_{attention} &= n_{heads} \cdot d_{qkv} \times d_{model} + (d_{model} \times d_{qkv}) \times n_{heads} \cdot 3 \\
+					&= 4\cdot n_{heads}\cdot d_{qkv} \times d_{model}\text{;}\quad \text{instead of:}\quad 4\cdot d_{model}^2
+					\end{align*}
     
     \item For the FFN $d_{FFN}$ is no longer $4\cdot d_{model}$:
 
-$$    
-\begin{aligned}
-N_{FFN} &= d_{model} \times d_{FFN} + d_{FFN} \times d_{model} \\
-&= 2\cdot d_{model} \times d_{FFN}\text{;}\quad \text{instead of:}\quad 8\cdot d_{model}^2
-\end{aligned}
-$$
-
-\hspace{}
+					\begin{align*}
+					N_{FFN} &= d_{model} \times d_{FFN} + d_{FFN} \times d_{model} \\
+					&= 2\cdot d_{model} \times d_{FFN}\text{;}\quad \text{instead of:}\quad 8\cdot d_{model}^2
+					\end{align*}
 
     \item For the Encoder and Decoder that means:
     \begin{itemize}
@@ -461,24 +447,20 @@ $$
 \begin{itemize}
     \item \textbf{T5 3B}: 
 
-    $$
-    \begin{aligned}
-        N_{3B} &= 24\cdot ([4\cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384] \\
-        &+ [2\cdot 4 \cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384]) + 32000\cdot 1024 \\
-        &= 2,851,340,288 \approx 3B
-    \end{aligned}
-    $$
-
-    \hspace{}
+					\begin{align*}
+							N_{3B} &= 24\cdot ([4\cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384] \\
+							&+ [2\cdot 4 \cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384]) + 32000\cdot 1024 \\
+							&= 2,851,340,288 \approx 3B
+					\end{align*}
 
     \item \textbf{T5 11B}:
-    $$
-    \begin{aligned}
-        N_{11B} &= 24\cdot ([4\cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536] \\
-        &+ [2\cdot 4 \cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536]) + 32000\cdot 1024 \\
-        &= 11,307,057,152 \approx 11B
-    \end{aligned}
-    $$
+
+					\begin{align*}
+							N_{11B} &= 24\cdot ([4\cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536] \\
+							&+ [2\cdot 4 \cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536]) + 32000\cdot 1024 \\
+							&= 11,307,057,152 \approx 11B
+					\end{align*}
+
 \end{itemize}
     
 \end{frame}
