@@ -1,24 +1,22 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/73-gpt3.jpg}
-
-\newcommand{\learninggoals}{
-\item Recap GPT and the ideas behind standard language modeling
-\item Understand the difference between fine-tuning and X-shot learning}
-
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Generative Pre-Trained Transformers}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{GPT-3 (2020) \& X-shot learning}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Generative Pre-Trained Transformers
+}{
+GPT-3 (2020) \& X-shot Learning
+}{
+figure/73-gpt3.jpg
+}{
+\item Recap GPT and the ideas behind standard language modeling
+\item Understand the difference between fine-tuning and X-shot learning
+}
 
 % ------------------------------------------------------------------------------
 
@@ -198,7 +196,7 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{One-shot learning}
+\begin{frame}{One-shot learning}
 
 \vfill
 
@@ -216,11 +214,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Few-shot learning}
+\begin{frame}{Few-shot learning}
 
 \vfill
 
@@ -238,11 +236,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{effective in-context learning*}
+\begin{frame}{effective in-context learning*}
 	
 \vfill
 	
@@ -261,11 +259,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 \scriptsize{*on an artificial, simple word scrambling/manipulation task}
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Architecture}
+\begin{frame}{Architecture}
 
 \vfill
 
@@ -283,11 +281,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Training corpus}
+\begin{frame}{Training corpus}
 
 \vfill
 
@@ -305,11 +303,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 	\end{figure}
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{X-shot comparison}
+\begin{frame}{X-shot comparison}
 	
 	\vfill
 	
@@ -326,11 +324,11 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 	
 	\vfill
 	
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Loss as a function of compute}
+\begin{frame}{Loss as a function of compute}
 
 \vfill
 
@@ -344,7 +342,7 @@ Few-Shot Text Generation with Natural Language Instructions (arxiv)
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 

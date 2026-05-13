@@ -1,24 +1,26 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\titlefigure}{figure/71-gpt_sq.png}
-\newcommand{\learninggoals}{
-\item use of the transformer decoder
-\item input modifications (and how this is useful)}
-
-\title{Generative Pre-Trained Transformers}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{GPT-1 (2018)}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Generative Pre-Trained Transformers
+}{
+GPT-1 (2018)
+}{
+figure/71-gpt_sq.png
+}{
+\item Use of the transformer decoder
+\item Input modifications (and how this is useful)
+}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT-1}
+\begin{frame}{GPT-1}
 
 \vfill
 
@@ -30,11 +32,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Architectural details}
+\begin{frame}{Architectural details}
 
 \vfill
 
@@ -56,11 +58,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Pre-Training GPT}
+\begin{frame}{Pre-Training GPT}
 
 \vfill
 
@@ -82,11 +84,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Fine-Tuning GPT}
+\begin{frame}{Fine-Tuning GPT}
 
 \vfill
 			
@@ -106,11 +108,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Fine-Tuning GPT}
+\begin{frame}{Fine-Tuning GPT}
 
 \vfill
 
@@ -132,11 +134,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{SOTA results}
+\begin{frame}{SOTA results}
 
 \vfill
 
@@ -150,11 +152,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{GPT Parameter Count}
+\begin{frame}{GPT Parameter Count}
 
 \vfill 
 
@@ -176,7 +178,7 @@ $$
 \vfill
 \textbf{Note that $N_{Decoder} = 12\cdot d_{model}^2$ and not $16 \cdot d_{model}^2$ because the Decoder here doesn't do cross attention!}
 	
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
