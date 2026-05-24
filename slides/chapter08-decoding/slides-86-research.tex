@@ -1,0 +1,168 @@
+\input{../../style/preamble}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\usepackage{animate}
+
+\newcommand{\learninggoals}{
+\item Get to know speculative decoding
+\item Learn about Minimum Bayes Risk (MBR) Decoding
+}
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\title{Decoding Strategies}
+% \author{}
+\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
+\date{}
+
+\begin{document}
+\lecturechapter{Current Research in Decoding}
+\lecture{Deep Learning for NLP}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Speculative Decoding}
+\citebutton{PyTorch}{https://pytorch.org/blog/hitchhikers-guide-speculative-decoding/}
+
+\vfill
+
+\begin{itemize}
+    \item Models generate the output sequence token by token
+    \item A lot of forward passes are required to generate a long sequence of tokens
+    \item Is there a way to generate the same ouput but also save time?
+    \item \textbf{Idea:} attach multiple speculative heads to the model to predict the $N+1^{st}$, $N+2^{nd}$, $N+3^{rd}$, etc. token
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Speculative Decoding: Architecture}
+
+\vfill
+
+\begin{minipage}[c]{.4\textwidth}
+    \vfill
+    \begin{figure}
+		\centering
+		\includegraphics[]{chapters/chapter12/figure/spec_arc.png}
+        \\ \citebutton{Speculator architecture}{https://pytorch.org/blog/hitchhikers-guide-speculative-decoding/#speculator-architecture}
+	\end{figure}
+    \vfill
+\end{minipage}
+\hfill
+\begin{minipage}[c]{.49\textwidth}
+    \hfill
+    \begin{itemize}
+        \item They base the architecture on the Medusa paper \citebutton{Cai et al., 2024}{https://arxiv.org/abs/2401.10774}
+        \item Make heads hierarchical, where each head stage predicts a token and then feeds it into the next head stage
+        \item $Z$ is the hidden state from the base model and $T1$, ..., $T4$ are the generated tokens
+    \end{itemize}
+\end{minipage}
+
+    
+\end{vbframe}
+    
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Speculative Decoding: Results}
+
+\begin{figure}
+    \centering
+    \animategraphics[width=\textwidth, loop, autoplay]{8}%frame rate
+    {chapters/chapter12/figure/gif/spec-}%path to figures
+    {0}%start index
+    {48}%end index
+    \caption{Speed comparision between vanilla decoding (left) and speculative decoding (right) \citebutton{Gif}{https://pytorch.org/assets/images/hitchhikers-guide-speculative-decoding/fig1.gif}}
+\end{figure}
+
+
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Speculative Decoding: Results}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/spec_vs_no_spec.png}
+    \caption{Time to first token (TTFT - left) and Inter-token latency (ITL - right) for Llama 13B with number of concurrent users indicated on the graph \citebutton{PyTorch blog}{https://pytorch.org/blog/hitchhikers-guide-speculative-decoding/#results}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Speculative Decoding: Training}
+
+\begin{figure}
+    \centering
+    \includegraphics[]{chapters/chapter12/figure/spec_training.jpg}
+    \caption{Per-head training loss curves for Llama2-13B speculator training, phase 1 and 2 \citebutton{PyTorch blog}{https://pytorch.org/blog/hitchhikers-guide-speculative-decoding/#results}}
+\end{figure}
+
+\begin{itemize}
+    \item They use a two phase approach to training a speculator to be more efficient
+    \item \textbf{Phase 1:} Train on small batches with long sequences (4k tokens) with standard causal LM approach
+    \item \textbf{Phase 2:} Use large batches with short sequence lengths (256 tokens) generated from the base model 
+    \item Tune the heads to match the output of the base model
+\end{itemize}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Minimum Bayes Risk (MBR) decoding}
+
+\citebutton{GitHub, suzyahyah}{https://suzyahyah.github.io/bayesian\%20inference/machine\%20translation/2022/02/15/mbr-decoding.html}
+
+\vfill
+
+\begin{itemize}
+    \item MBR is based on bayesian decision theory, where one would pick an action based on minimizing the \textit{Bayes Risk}:
+    $$\alpha^* = \text{argmin}_{\alpha \in \mathcal{A}} \mathbb{E}_{\theta \sim p(\theta)}[\mathcal{L(\theta, \alpha)]}$$
+    \item MBR Decoding involves choosing the bayes optimal action, where the action is a sequence
+    \item Given a source input $x$ (i.e. source language in machine translation), the space of possible hypothesis $h \in \mathcal{H}(x)$, a probability distribution over decoded sequences $p(y|x)$, and a loss function $\mathcal{L}(y,h)$, the MBR decode is given by:
+    $$h^* = \text{argmin}_{h \in \mathcal{H}(x)}\mathbb{E}_{p(y|x)}[\mathcal{L}(y,h))]$$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Minimum Bayes Risk (MBR) decoding}
+
+\citebutton{GitHub, suzyahyah}{https://suzyahyah.github.io/bayesian\%20inference/machine\%20translation/2022/02/15/mbr-decoding.html}
+
+\vfill
+
+\begin{itemize}
+    \item In theory we would like to have a distribution over reference sequences, which would be our $p(y|x)$
+    \item But at inference time that is not available and we use $p_{\text{model}}(y|x)$ instead, as well as to construct $\mathcal{H}(x)$
+    \item In practice MBR decoding has the following design choices (since its theoretical hypothesis space is infinite):
+    \begin{itemize}
+        \item Construction of the hypothesis space $\mathcal{H}(x)$
+        \item Construction of the monte-carlo set of samples $y \in \mathcal{Y}$ to approximate $\mathbb{E}_{p(y|x)}$
+        \item The choice of loss function $\mathcal{L}$, like BLEU, precision, etc. 
+        \item Choosing how to renormalise samples $y$ from $p(y|x)$ with a small number of samples, the sequences are unlikely to be repeated and the monte-carlo estimate would give them all uniform probability
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
