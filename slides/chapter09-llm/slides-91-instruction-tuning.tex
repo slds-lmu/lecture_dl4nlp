@@ -108,13 +108,13 @@ on a task-specific
         e.g., $k=100$)
         \item the output can be an arbitrary category (e.g.,
         ``0'', ``1'' for sentiment analysis)
+        \item (this is the typical way encoder models like
+        BERT are used)
             \item alternatively, the output can be a
         meaningful ``verbalizer'' (e.g., ``negative'',
         ``positive'' for sentiment analysis)
         		\citebutton{Schick et al.,
         2020}{https://arxiv.org/abs/2009.07118}
-        \item this is the typical way encoder models like
-        BERT are used
         \item still very much relevant if you need to deploy
         a small efficient model for a focused task
         \end{itemize}
@@ -299,14 +299,21 @@ that has been    trained on generic data (web, reddit etc),
 \vfill
 
 \begin{itemize}
+  \item This lecture
+\begin{itemize}
 \item single-task finetuning
 \item multi-task finetuning
-\item instruction tuning\\ (can be seen as a form of finetuning)
 \item prompting\\
 (this is definitely not finetuning)
 \item continued pretraining
-\item reinforcement learning
 \item \ques terminology clear?
+\end{itemize}
+\item Next lecture
+  \begin{itemize}
+\item instruction tuning\\ (can be seen as a form of finetuning)
+\item reinforcement learning\\
+  (can also be done through a form of finetuning)
+\end{itemize}
 \end{itemize}
 
 \vfill
@@ -366,7 +373,7 @@ that has been    trained on generic data (web, reddit etc),
 %\item Sequential transfer learning instead of true multi-task learning
 \begin{itemize}
     \item Generalization of the model 
-             only w.r.t. to one task / data distribution
+             is only w.r.t. to one task / data distribution
 \end{itemize}
     \item Requires quite a bit of annotated
         data (e.g., $k=100$)
@@ -428,9 +435,9 @@ anything you type into the LLM context window
 \vfill
 
 \begin{itemize}
-\item Very similar to (1) classification
-    \item Assumption: Model has learned about the task during (unsupervised) pre-training 
-    \item Write prompt so that  a direct response must be
+%\item Very similar to (1) classification
+    \item Agin, assumption: Model has learned about the task during (unsupervised) pre-training 
+    \item Again: Write prompt so that  a direct response must be
     given by the language model.
 \item Works best if the task has occurred during
 unsupervised training.
@@ -498,7 +505,8 @@ unsupervised training.
 \end{frame}
 
 
-\begin{frame}{Multitask finetuning: best of both worlds
+\begin{frame}{Initial Approach:\\
+    Multitask finetuning: best of both worlds
 (finetuning and  prompting)}
 
 \vfill
@@ -579,16 +587,17 @@ unsupervised training.
 }
 % ------------------------------------------------------------------------------
 
-\begin{frame}{T0 authors call this ``Multitask Prompted
-		Training''}
+\begin{frame}{Multitask Prompted
+		Training}
 
 \vfill
 
 \begin{itemize}
-    \item \textit{Multitask Prompted Training:} This
-    training method involves learning from multiple
-    tasks using unified prompt formats as a means to improve
+    \item Multitask Prompted Training
+    involves learning from multiple
+    tasks using \textbf{unified prompt formats} as a means to improve
     generalization to new, unseen tasks.
+    \item (as opposed to T5: non-unified)
     \item This means that the model can perform well on tasks it hasn't been explicitly trained on.
     \item The key for this lies in the set of shared prompts it has learned from during fine-tuning.
 \end{itemize}
@@ -625,7 +634,7 @@ facilitate
 % ------------------------------------------------------------------------------
 
 
-\begin{frame}{Coreference resolution}
+\begin{frame}{Typical NLP task:\\ Coreference resolution}
 
 \vfill
 
@@ -635,8 +644,9 @@ facilitate
     which noun phrase a referring expression like ``she'' or
     ``this person'' is referring to.
     \item Example: ``Peter helped Paul because he was
-    familiar with the problem.''
-    \item ``he'' refers to Peter, not to Paul.
+      familiar with the problem.''
+      \item What does ``he'' refer to?
+%    \item ``he'' refers to Peter, not to Paul.
     \end{itemize}
 
 \vfill
@@ -693,6 +703,8 @@ facilitate
 
 % ------------------------------------------------------------------------------
 
+\devour{
+
 \begin{frame}{finetuned language net (flan)}
 
 \vfill
@@ -706,9 +718,10 @@ facilitate
 \vfill
 
 \end{frame}
-
+}
 % ------------------------------------------------------------------------------
 
+\devour{
 \begin{frame}{flan finetuning}
 
 \vfill
@@ -722,7 +735,7 @@ facilitate
 \vfill
 
 \end{frame}
-
+}
 % ------------------------------------------------------------------------------
 
 \begin{frame}{flan performance}
@@ -749,7 +762,8 @@ facilitate
 
 \begin{itemize}
 \item Scaling the number of tasks and data
-    \begin{itemize}
+  \begin{itemize}
+    \item FLAN (1500 tasks, Chung et al., 2022)
     \item NIV2 (1554 tasks)
     \item T0-SF (193 tasks)
     \item Muffin (80 tasks)
@@ -769,6 +783,7 @@ facilitate
 
 % ------------------------------------------------------------------------------ 
 
+\devour{
 \begin{frame}{Flan upscaling}
 
 \vfill
@@ -784,7 +799,7 @@ facilitate
 \vfill
 
 \end{frame}
-
+}
 % ------------------------------------------------------------------------------
 \begin{frame}{Multi-task training vs Instruction tuning}
 
