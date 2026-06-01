@@ -56,8 +56,9 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \item Each ``training example'' has the form <input, \textit{chain of thought}, output>
     \item chain of thought:\\ series of reasoning steps that
     lead to the final answer
-    \item applications: complex, commonsense, symbolic
-    reasoning tasks etc
+  \item application:
+    reasoning tasks:
+    complex, commonsense, symbolic etc
     \end{itemize}
 
 \end{itemize}
@@ -135,12 +136,11 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 \vfill
 
 \begin{itemize}
-    \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps
-    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
-    \item It is closer to how humans solve tasks using language
-    \item Language models, if
-given a well designed chain-of-thought prompt, can
+    \item Decompose multi-step problems and thus allocate more compute to problems requiring more reasoning steps.
+    \item This helps LMs 
     solve problems they otherwise would not be able to solve.
+    \item By describing the reasoning, interpretability is increased. It provides the possibility to observe where reasoning went wrong
+    \item \cotp  is closer to how humans solve tasks using language
 \end{itemize}
 
 \vfill
@@ -288,11 +288,11 @@ repository unifying math problems from different sources;
 
 \vfill
 
-CSQA: Contains around 200K dialogs with a total of 1.6M
+\decour{CSQA: Contains around 200K dialogs with a total of 1.6M
 turns. Further, unlike existing large scale QA datasets
 which contain simple questions that can be answered from a
 single tuple, the questions in the dialogs require a larger
-subgraph of the KG. 
+subgraph of the KG. }
 
 
 \begin{figure}
