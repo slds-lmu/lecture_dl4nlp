@@ -1,27 +1,26 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-
-\newcommand{\learninggoals}{
-\item Get to know the concept of decoding in NLP
-\item Learn about different decoding strategies  
-}
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Decoding Strategies}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
+\title{Deep Learning for NLP}
 
 \begin{document}
-\lecturechapter{What is Decoding?}
-\lecture{Deep Learning for NLP}
+
+\titlemeta{
+Decoding Strategies
+}{
+What is Decoding?
+}{
+figure/greedy_search.png
+}{
+\item Get to know the concept of decoding in NLP
+\item Learn about different decoding strategies 
+}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Reminder: ARLM}
+\begin{frame}{Reminder: ARLM}
 
 \vfill
 
@@ -34,7 +33,7 @@
 
 \vfill
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -80,7 +79,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Decoding Example (2)}
+\begin{frame}{Decoding Example (2)}
 
 \begin{figure}
     \centering
@@ -93,12 +92,12 @@
     \item Generation stops based on stopping criteria (\textit{see: next slide})
 \end{itemize}
     
-\end{vbframe}
+\end{frame}
 
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Stopping Criteria for Text Generations}
+\begin{frame}{Stopping Criteria for Text Generations}
 
 \vfill
 
@@ -111,15 +110,13 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Generate Function}
+\begin{frame}{Generate Function}
 
-\textit{There is two types of hyperparameters for the \texttt{generate()} function of the \texttt{Transformers} library: One that control the length of the ouput and one that control the generation strategy used:} \citebutton{huggingface, GenerationConfig}{https://huggingface.co/docs/transformers/v4.40.0/en/main_classes/text_generation#transformers.GenerationConfig}
-
-\hspace{}
+\textit{There is two types of hyperparameters for the \texttt{generate()} function of the \texttt{Transformers} library: One that controls the length of the ouput and one that controls the generation strategy used:} \citebutton{huggingface, GenerationConfig}{https://huggingface.co/docs/transformers/v4.40.0/en/main_classes/text_generation#transformers.GenerationConfig}
 
 \begin{itemize}
     \item You input a tokenized sentence as the context into the \texttt{generate()} function
@@ -127,6 +124,19 @@
     \begin{itemize}
         \item \texttt{max\_length}: The maximum length the generated tokens can have. Corresponds to the length of the input prompt + \texttt{max\_new\_tokens}. Its effect is overridden by \texttt{max\_new\_tokens}, if also set
         \item \texttt{max\_new\_tokens}: The maximum numbers of tokens to generate, ignoring the number of tokens in the prompt
+    \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Generate Function}
+
+\begin{itemize}
+    \begin{itemize}
         \item \texttt{min\_length}: The minimum length of the sequence to be generated. Corresponds to the length of the input prompt + \texttt{min\_new\_tokens}. Its effect is overridden by \texttt{min\_new\_tokens}, if also set
         \item \texttt{min\_new\_tokens}: The minimum numbers of tokens to generate, ignoring the number of tokens in the prompt
         \item \texttt{max\_time}: The maximum amount of time you allow the computation to run for in seconds. generation will still finish the current pass after allocated time has been passed
@@ -134,16 +144,13 @@
     \item With the second type of hyperparameters you control which of the following (\textit{see: next slide}) decoding strategies you use (\textit{will be introduced in the following chapters})
 \end{itemize}
 
-
 \vfill
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Decoding Strategies}
-
-
+\begin{frame}{Decoding Strategies}
 
 \textbf{Deterministic}
 \begin{itemize}
@@ -163,7 +170,8 @@
 \vspace{1ex}
 
 \textit{Remark:} Other decoding strategies exist, and various combinations are possible, such as top-$k$ sampling with temperature, or top-$p$ sampling followed by top-$k$ sampling (with temperature), etc.
-\end{vbframe}
+
+\end{frame}
 
 % ------------------------------------------------------------------------------
 

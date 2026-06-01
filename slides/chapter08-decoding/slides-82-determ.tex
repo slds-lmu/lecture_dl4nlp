@@ -1,28 +1,28 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+Decoding Strategies
+}{
+Greedy \& Beam Search
+}{
+figure/greedy_search.png
+}{
 \item Get to know deterministic decoding strategies
 \item Learn how text is generated with greedy search and beam search
 \item Understand how beam search tries to fix the drawbacks of greedy search
 }
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Decoding Strategies}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Greedy \& Beam Search}
-\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Greedy Search (1)}
-\href{https://codelabsacademy.com/blog/the-beam-search-algorithm-in-the-context-of-natural-language-processing-and-sequence-generation-tasks}{\beamergotobutton{Codelabs Academy}}
+\begin{frame}{Greedy Search (1)}
+
 \vfill
 
 \begin{itemize}
@@ -34,11 +34,11 @@
 
 \vfill
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Greedy Search (2)}
+\begin{frame}{Greedy Search (2)}
 
 \vfill
 
@@ -52,12 +52,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Greedy Search: Example}
-\href{https://d2l.ai/chapter_recurrent-modern/beam-search.html}{\beamergotobutton{d2l book}}
+\begin{frame}{Greedy Search: Example}
 
 \begin{itemize}
     \item Suppose our vocabulary only has four tokens: $A$, $B$, $C$ and <eos>
@@ -65,7 +64,8 @@
 
 \begin{figure}
     \centering
-    \includegraphics[width=6cm]{chapters/chapter12/figure/greedy.png}
+    \includegraphics[width=6cm]{figure/greedy.png}\\
+		\citebutton{Source: Dive Into Deep Learning Book}{https://d2l.ai/chapter_recurrent-modern/beam-search.html}
 \end{figure}
 
 \begin{itemize}
@@ -74,11 +74,11 @@
     \item Its probability is $0.5\cdot 0.4 \cdot 0.4 \cdot 0.6 = 0.048$
 \end{itemize}
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Drawbacks of Greedy Search (1)}
+\begin{frame}{Drawbacks of Greedy Search (1)}
 
 \begin{itemize}
     \item Now we select token $C$ at timestep 2 instead of $B$
@@ -86,7 +86,8 @@
 
 \begin{figure}
     \centering
-    \includegraphics[width=6cm]{chapters/chapter12/figure/greedy2.png}
+    \includegraphics[width=6cm]{figure/greedy2.png}\\
+		\citebutton{Source: Dive Into Deep Learning Book}{https://d2l.ai/chapter_recurrent-modern/beam-search.html}
 \end{figure}
 
 \begin{itemize}
@@ -96,11 +97,11 @@
     \item Even though $C$ at $t=2$ has a lower probability, the final sequence has a higher probability
 \end{itemize}
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Drawbacks of Greedy Search (2)}
+\begin{frame}{Drawbacks of Greedy Search (2)}
 
 \vfill
 
@@ -114,12 +115,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Beam Search}
-\href{https://codelabsacademy.com/blog/the-beam-search-algorithm-in-the-context-of-natural-language-processing-and-sequence-generation-tasks}{\beamergotobutton{Codelabs Academy}}
+\begin{frame}{Beam Search}
 
 \vfill
 
@@ -132,12 +132,11 @@
 
 \vfill
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Beam Search: Example (1)}
-\href{https://d2l.ai/chapter_recurrent-modern/beam-search.html}{\beamergotobutton{d2l book}}
+\begin{frame}{Beam Search: Example (1)}
 
 \vfill
 
@@ -147,15 +146,16 @@
 
 \begin{figure}
     \centering
-    \includegraphics[width=10cm]{figure/beam.png}
+    \includegraphics[width=10cm]{figure/beam.png}\\
+		\citebutton{Source: Dive Into Deep Learning Book}{https://d2l.ai/chapter_recurrent-modern/beam-search.html}
 \end{figure}
 
 \vfill
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
-\begin{vbframe}{Beam Search: Example (2)}
+\begin{frame}{Beam Search: Example (2)}
 
 \vfill
 
@@ -182,7 +182,7 @@
 
 \vfill
     
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
@@ -202,7 +202,7 @@
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Greedy Search versus Beam Search}
+\begin{frame}{Greedy Search versus Beam Search}
 
 \vspace{2ex}
 \textbf{Prompt: "Once upon a time"}
@@ -217,15 +217,15 @@ The generated stories are repetitive, also referred to as \textit{degenerate}. T
 
 
 
-\end{vbframe}
+\end{frame}
 
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Beam Search vs. Human}
 
-\citebutton{Holtzmann et al., 2019}{https://arxiv.org/abs/1904.09751}
 \begin{center}
-    \includegraphics[width=0.7\linewidth]{figure/beam_vs_human.png}
+    \includegraphics[width=0.7\linewidth]{figure/beam_vs_human.png}\\
+		\citebutton{Source: Holtzmann et al., 2019}{https://arxiv.org/abs/1904.09751}
 \end{center}
 
 \begin{itemize}
@@ -238,7 +238,6 @@ The generated stories are repetitive, also referred to as \textit{degenerate}. T
 $\Rightarrow$ Incorporate some randomness (next chapter)
 
 \end{frame}
-
 
 % ------------------------------------------------------------------------------
 

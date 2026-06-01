@@ -1,23 +1,23 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+Decoding Strategies
+}{
+Evaluation Metrics
+}{
+figure/greedy_search.png
+}{
 \item Learn about evaluation metrics for open-ended text generation
 \item Get to know the different metrics with- and without a gold reference
 \item Get to know potential issues with some evaluation metrics
 }
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Decoding Strategies}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Evaluation Metrics}
-\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
@@ -26,8 +26,6 @@
 \vfill
 
 \textit{How to choose the appropriate evaluation metric?}
-
-\hspace{}
 
 \begin{itemize}
     \item Does the task have a gold reference?
@@ -55,20 +53,14 @@
 
 \textit{Given a task with a gold reference, e.g machine translation or text summarization, you compare the generated output with the given source reference to compute the BLEU score:}
 
-\hspace{}
-
 \begin{figure}
     \centering
-    \includegraphics[]{chapters/chapter12/figure/1-gram.png}
+    \includegraphics[]{figure/1-gram.png}
     \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
     \label{fig:enter-label}
 \end{figure}
 
-\hspace{}
-
 Five out of eight 1-grams are correctly predicted:
-
-\hspace{}
 
 $\rightarrow p_1 = 5/8$
 
@@ -82,20 +74,14 @@ $\rightarrow p_1 = 5/8$
 
 \begin{figure}
     \centering
-    \includegraphics[]{chapters/chapter12/figure/2-gram.png}
+    \includegraphics[]{figure/2-gram.png}
     \citebutton{Towards Data Science, Ketan Doshi}{https://towardsdatascience.com/foundations-of-nlp-explained-bleu-score-and-wer-metrics-1a5ba06d812b}
     \label{fig:enter-label}
 \end{figure}
 
-\hspace{}
-
 Four out of seven 2-grams are correctly predicted:
 
-\hspace{}
-
 $\rightarrow p_2 = 4/7$
-
-\hspace{}
 
 \textit{You keep doing this procedure until $N$ n-grams and compute a weighted geometric average over the precision scores with weights $w_n$:}
 
@@ -109,16 +95,12 @@ $$exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
 
 \textit{In order to penalize very short predictions (it's more likely for shorter sentences to achieve a good precision score) the BLEU score additionally has a brevity penalty term:}
 
-\hspace{}
-
 $$
   BP=\begin{cases}
     1, & \text{if $c>r$}\\
     e^{(1-r/c)}, & \text{if $c\leq r$}
   \end{cases}
 $$
-
-\hspace{}
 
 \begin{itemize}
     \item With $r$ being the \textbf{reference corpus length} and $c$ the \textbf{candidate corpus length}
@@ -155,29 +137,19 @@ $$BLEU = BP \cdot exp\left(\sum_{n=1}^{N}w_n\cdot log(p_n)\right)$$
 \vfill
 \textit{Consider the following source sentence $S$ and candidate summary $C$:}
 
-\hspace{}
-
 \begin{itemize}
     \item \textbf{S:} The cat is on the mat.
     \item \textbf{C:} \textcolor{green}{The cat} and \textcolor{green}{the} dog.
 \end{itemize}
 
-\hspace{}
-
 \textit{Using the ROUGE-N precision score with $N = 1$ you get:}
-
-\hspace{}
 
 \begin{itemize}
     \item Three correctly predicted unigrams
     \item Total of number of unigrams in $C$ is 5
 \end{itemize}
 
-\hspace{}
-
 $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
-
-\hspace{}
 
 \textit{There are more ROUGE scores as mentioned earlier. You can find more details here:} \citebutton{Medium, Fabio Chiusano}{https://medium.com/nlplanet/two-minutes-nlp-learn-the-rouge-metric-by-examples-f179cc285499}
 \vfill
@@ -196,8 +168,6 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
     \item Therefore you have to get a bit more creative with the choice of evaluation metrics
 \end{itemize}
 
-
-
 \vfill
     
 \end{vbframe}
@@ -207,8 +177,6 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 \begin{vbframe}{Diversity}
 
 \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} \textit{define diversity in their paper, where they introduce contrastive search, as the generation repetition at different $n$-gram levels}:
-
-\hspace{}
 
 \begin{itemize}
     \item \textbf{Generation Repitition:}
@@ -220,8 +188,6 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 \end{itemize}
 
 \end{vbframe}
-
-
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Diversity (2)}
@@ -248,8 +214,6 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 \begin{vbframe}{Coherence}
 
 \textit{This measure was also proposed by \citebutton{Su et al., 2022}{https://arxiv.org/abs/2202.06417} as the cosine similarity between the sentence embeddings of the prompt $x_{prompt}$ and a generated text conitinuation $x_{cont}$}:
-
-\hspace{}
 
 \begin{itemize}
     \item They use pre-trained SimCSE sentence embeddings $EMB(x)$ proposed by \citebutton{Gao et al., 2022}{https://arxiv.org/abs/2104.08821}:
@@ -281,11 +245,9 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 
 \begin{vbframe}{Sources of error in text generation}
 
-\hspace{}
-
 \begin{figure}
     \centering
-    \includegraphics[]{chapters/chapter12/figure/mauve_errors.png}
+    \includegraphics[]{figure/mauve_errors.png}
 \end{figure}
 
 \begin{itemize}
@@ -293,8 +255,6 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
     \item Type I error: $Q$ places high mass on text which is unlikely under $P$
     \item Type II error: $Q$ cannot generate text which is plausible under $P$
 \end{itemize}
-
-\hspace{}
 
 \begin{itemize}
     \item They formalize the two errors through the Kullback-Leibler divergence:
@@ -317,7 +277,7 @@ $\rightarrow \text{ROUGE-1 precision}=3/5 = 0.6$
 
 \begin{figure}
     \centering
-    \includegraphics[]{chapters/chapter12/figure/mauve_divergence.png}
+    \includegraphics[]{figure/mauve_divergence.png}
 \end{figure}
 
 \begin{itemize}

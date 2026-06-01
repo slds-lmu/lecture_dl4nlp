@@ -1,23 +1,23 @@
-\input{../../style/preamble}
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
 \input{../../latex-math/basic-math.tex}
 \input{../../latex-math/basic-ml.tex}
 
-\newcommand{\learninggoals}{
+\title{Deep Learning for NLP}
+
+\begin{document}
+
+\titlemeta{
+Decoding Strategies
+}{
+Decoding Hyperparameters \& Practical considerations
+}{
+figure/greedy_search.png
+}{
 \item Learn how to use the \texttt{generate()} function of the \texttt{Transformers} library
 \item Learn how to choose from the different decoding strategies with the choice of hyperparameters
 \item See how hyperparameters affect the output of the \texttt{generate()} function
 }
-\definecolor{texblue}{rgb}{0, 0, 1}
-\def\myblue#1{\textcolor{texblue}{#1}}
-
-\title{Decoding Strategies}
-% \author{}
-\institute{\href{https://slds-lmu.github.io/lecture_dl4nlp/}{slds-lmu.github.io/lecture\_dl4nlp}}
-\date{}
-
-\begin{document}
-\lecturechapter{Decoding Hyperparameters \& Practical considerations}
-\lecture{Deep Learning for NLP}
 
 % ------------------------------------------------------------------------------
 
@@ -48,8 +48,6 @@ In order to generate text with a generative language model you have to use their
 
 The default decoding strategy is \textbf{greedy search}, if all the default hyperparameters are used
 
-\hspace{}
-
 \textbf{Prompt: "Once upon a time"}
 
 \begin{itemize}
@@ -68,8 +66,6 @@ The default decoding strategy is \textbf{greedy search}, if all the default hype
 \vfill
 
 In order to use \textbf{beam search} you simply have to add the \texttt{num\_beams} argument to the \texttt{generate()} method and set it to a value > 1
-
-\hspace{}
 
 \textbf{Prompt: "Once upon a time"}
 
@@ -95,8 +91,6 @@ In order to use \textbf{beam search} you simply have to add the \texttt{num\_bea
 
 In order to activate \textbf{sampling} you have to set \texttt{do\_sample=True}. To additionally use \textbf{temperature} you have to set the \texttt{temperature}. Also \texttt{top\_k} has to be set to 0, as 50 is the default value
 
-\hspace{}
-
 \textbf{Prompt: "Once upon a time"}
 
 \begin{itemize}
@@ -115,8 +109,6 @@ In order to activate \textbf{sampling} you have to set \texttt{do\_sample=True}.
 \vfill
 
 If we set \texttt{temperature} to a super high value, the output distribution will approximate a uniform distribution. For \texttt{temperature} $\rightarrow$ 0 the output distribution will have all the probability mass in the most probable token and \texttt{generate()} will be equivalent to \textbf{greedy search}
-
-\hspace{}
 
 \textbf{Prompt: "Once upon a time"}
 
@@ -137,8 +129,6 @@ This output is as expected since with such a high \texttt{temperature} every tok
 \vfill
 
 In order to activate \textbf{top-k sampling} you have to set \texttt{do\_sample=True} and set \texttt{top\_k} to a integer > 0. If you use \texttt{top\_k=1} it will again be equivalent to \textbf{greedy search} as only the most probable token is chosen
-
-\hspace{}
 
 \textbf{Prompt: "Once upon a time"}
 
@@ -165,8 +155,6 @@ In order to activate \textbf{top-k sampling} you have to set \texttt{do\_sample=
 
 Set \texttt{top\_p} to some float and \texttt{do\_sample=True} to use \textbf{top-p sampling}. Using a very small value is equal to using \textbf{greedy search}. Using \texttt{top\_p=1.0} will consider all tokens
 
-\hspace{}
-
 \textbf{Prompt: "Once upon a time"}
 
 \begin{itemize}
@@ -185,8 +173,6 @@ Set \texttt{top\_p} to some float and \texttt{do\_sample=True} to use \textbf{to
 \vfill
 
 For \textbf{contrastive search} you have to set \texttt{penalty\_alpha} to a float and set \texttt{top\_k} as previously mentioned. Remember we are \textbf{not} sampling here. For \texttt{penalty\_alpha=0} we only maximize the model confidence term and it becomes \textbf{greedy search} again. Using \texttt{penalty\_alpha=1} we only care about the degeneration penalty term
-
-\hspace{}
 
 \textbf{Prompt: "Once upon a time"}
 
