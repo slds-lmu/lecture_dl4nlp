@@ -375,7 +375,7 @@ that has been    trained on generic data (web, reddit etc),
     \item Generalization of the model 
              is only w.r.t. to one task / data distribution
 \end{itemize}
-    \item Requires quite a bit of annotated
+    \item Requires  annotated
         data (e.g., $k=100$)
 %    \item Single-task models have poor few-shot capabilities
             \item \ques Could there be other tasks that
@@ -398,8 +398,10 @@ that has been    trained on generic data (web, reddit etc),
     \item Assumption: Model has learned about the task during (unsupervised) pre-training 
     \item Write prompt so that  a direct response must be
     given by the language model.
+\begin{itemize}
         \item Just a label, just yes/no answer, just a name
     in QA
+\end{itemize}
     \item This is not natural dialogic behavior: humans
     typically don't
     just answer with a label, yes/no, a name (although
@@ -436,7 +438,7 @@ anything you type into the LLM context window
 
 \begin{itemize}
 %\item Very similar to (1) classification
-    \item Agin, assumption: Model has learned about the task during (unsupervised) pre-training 
+    \item Again, assumption: Model has learned about the task during (unsupervised) pre-training 
     \item Again: Write prompt so that  a direct response must be
     given by the language model.
 \item Works best if the task has occurred during
@@ -624,7 +626,8 @@ unsupervised training.
         \end{itemize}
     \item The ``prompts'' are key here to
 facilitate
-        transfer to new tasks:  the model can generalize to new tasks by relying on the learned prompts and the ability to generate text outputs.
+        transfer to new tasks:  the model can solve new
+        tasks by generalizing from  the train prompts and the ability to generate text outputs.
 \end{itemize}
 
 \vfill
