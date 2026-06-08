@@ -143,6 +143,22 @@ on a task-specific
 
 
 
+\begin{frame}{Verbalization: Summary}
+
+\vfill
+
+\begin{itemize}
+    \item Finetuning a language model on predicting
+      meaningful labels (``good'', ``bad'') requires less
+      data than finetuning on classical NLP labels like ``0'' and ``1''.
+\item Reason: The language model understands the labels
+  already, so it doesn't have to learn them.
+        \end{itemize}
+
+
+\vfill
+
+\end{frame}
 
 
 
@@ -741,7 +757,7 @@ facilitate
 }
 % ------------------------------------------------------------------------------
 
-\begin{frame}{flan performance}
+\begin{frame}{Example of evaluation: flan}
 
 \vfill
 	
@@ -757,11 +773,10 @@ facilitate
 
 % ------------------------------------------------------------------------------ 
 
-\begin{frame}{Flan Fine-Tuning}
+\devour{
+\begin{frame}{Extend multi-task learning}
 
 \vfill
-
-\textbf{Extend multi-task learning} \vskip3mm
 
 \begin{itemize}
 \item Scaling the number of tasks and data
@@ -783,7 +798,7 @@ facilitate
 \vfill
 
 \end{frame}
-
+}
 % ------------------------------------------------------------------------------ 
 
 \devour{
@@ -814,8 +829,9 @@ facilitate
 \item However, today ``instruction tuning'' refers to a wide
 variety of methods that train on instruction-output pairs,
     not just tasks
-    \item
-Open-ended generation and ``alignment'' 
+  \item
+    In particular,
+open-ended generation and ``alignment'' 
 is now included under
     the rubric ``instruction tuning'': brainstorming,
     writing a joke, give me ten analogies for concept X,
@@ -868,9 +884,9 @@ is now included under
 \vfill
 
 \begin{itemize}
-		\item \href{https://app.sli.do/event/egqn27QqTsvFUZPeQvZtVU}{\beamergotobutton{slido}}
+		\item \#1312409 \href{https://app.sli.do/event/egqn27QqTsvFUZPeQvZtVU}{\beamergotobutton{slido}}
 
-\item \#1312409
+%\item \#1312409
 \end{itemize}
 
 \vfill
@@ -905,7 +921,7 @@ is now included under
 \item Prompting always means that you \myblue{do not finetune the model},
 i.e., you don't change the parameters of the model.
 
-\item The term prompting is generally used when you \myblue{carefully design the
+\item The term prompting was initially used for when you \myblue{carefully design the
 input to the language model}, so that you will get the
 desired output.
 

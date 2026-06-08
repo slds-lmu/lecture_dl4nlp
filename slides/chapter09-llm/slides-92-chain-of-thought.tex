@@ -24,8 +24,8 @@ Large Language Models (LLMs)
 }{
 figure/chain_of_thought
 }{
-\item illustrate \cotpfull and point out the benefits it brings to LLMs
-\item illustrate tree-of-thought and point out the benefits it brings to LLMs 
+\item illustrate \cotpfull and point out the benefits it brings to LMs
+\item illustrate tree-of-thought and point out the benefits it brings to LMs 
 }
 
 
@@ -38,7 +38,7 @@ figure/chain_of_thought
 
 \vfill
 
-How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
+How to boost the reasoning capabilities of LMs? \citebutton{Wei et al., 2021}{https://arxiv.org/abs/2109.01652}
 
 \begin{itemize}
 \item Use formal approaches, e.g., logic, symbolic reasoning
@@ -52,8 +52,8 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
     \end{itemize}
 \item \cotp
     \begin{itemize}
-    \item A new form of few-shot prompting
-    \item Each ``training example'' has the form <input, \textit{chain of thought}, output>
+    \item A form of few-shot prompting
+    \item Each ``training example'' has the form:\\ <input, \textit{chain of thought}, output>
     \item chain of thought:\\ series of reasoning steps that
     lead to the final answer
   \item application:
@@ -82,7 +82,8 @@ How to boost the reasoning capabilities of LLMs? \citebutton{Wei et al., 2021}{h
 \end{frame}
 
 
-\begin{frame}{LLMs not good at reasoning tasks}
+\begin{frame}{LMs not good at reasoning tasks\\ (This is
+    why we need \cotp.)}
 
 \vfill
 	
@@ -283,12 +284,11 @@ repository unifying math problems from different sources;
 \end{frame}
 
 % ------------------------------------------------------------------------------
-
 \begin{frame}{\cotp improves commonsense}
 
 \vfill
 
-\decour{CSQA: Contains around 200K dialogs with a total of 1.6M
+\devour{CSQA: Contains around 200K dialogs with a total of 1.6M
 turns. Further, unlike existing large scale QA datasets
 which contain simple questions that can be answered from a
 single tuple, the questions in the dialogs require a larger
@@ -304,6 +304,10 @@ subgraph of the KG. }
 \vfill
 
 \end{frame}
+
+%\endlecture
+%\end{document}
+%xxxx
 
 % ------------------------------------------------------------------------------ 
 
@@ -354,7 +358,7 @@ Rectangle box = \textit{thought} = a coherent language sequence serving as an in
 
 \vfill
 
-A step of deliberate search in a randomly picked Creative Writing task. Given the input, the LM samples five different plans, and then votes five times to decide which plan is best.
+A step of deliberate search in a Creative Writing task. Given the input, the LM samples five different plans, and then votes five times to decide which plan is best.
     
 \begin{figure}
     \centering
@@ -410,7 +414,7 @@ given a well designed  chain-of-thought prompt, can
 \end{frame}
 
 
-\begin{frame}{\cotpfullcap: Error breakdown}
+\begin{frame}{\cotpfullcap:\\ Error breakdown}
 
 \vfill
 
@@ -483,7 +487,7 @@ given a well designed  chain-of-thought prompt, can
     (without shots) is not \cotpfull.
     \item \cotpfullcap is defined as including shots.
     \item Chain-of-thought is currently used as a general
-    term to refer to the idea of LLMs using explicit
+    term to refer to the idea of LMs using explicit
     reasoning steps to arrive at an answer.
     \item So the current usage of chain-of-thought is more
     general than \cotpfull.
@@ -541,10 +545,10 @@ internal chain of thought before responding to the user.
 \vfill
 
 \begin{itemize}
-    \item 1313837 https://app.sli.do/event/dinLdZRBHw2fXo5R31C3Nt
-    \item 1435969 https://app.sli.do/event/kWQDLpHa14256yiwxyCDr5
-    \item 4039244 https://app.sli.do/event/ef5nQS8XmbhWAQDVk9CYQs
-    \item 42248917 https://app.sli.do/event/5YwPZfoEFAibQ4DbFTzfj2
+    \item 1313837 \citebutton{https://app.sli.do/event/dinLdZRBHw2fXo5R31C3Nt}{https://app.sli.do/event/dinLdZRBHw2fXo5R31C3Nt}
+    \item 1435969 \citebutton{https://app.sli.do/event/kWQDLpHa14256yiwxyCDr5}{https://app.sli.do/event/kWQDLpHa14256yiwxyCDr5}
+    \item 4039244 \citebutton{https://app.sli.do/event/ef5nQS8XmbhWAQDVk9CYQs}{https://app.sli.do/event/ef5nQS8XmbhWAQDVk9CYQs}
+    \item 42248917 \citebutton{https://app.sli.do/event/5YwPZfoEFAibQ4DbFTzfj2}{https://app.sli.do/event/5YwPZfoEFAibQ4DbFTzfj2}
 \end{itemize}
 
 \vfill
