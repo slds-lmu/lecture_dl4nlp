@@ -37,7 +37,7 @@ of state-of-the-art reasoning
 
 \begin{itemize}
     \item First major open
-    reasoning LLM (as opposed to proprietary closed):
+    reasoning LM (as opposed to proprietary closed):
     DeepSeek 
 \item \citebutton{DeepSeek-AI, 2025}{https://arxiv.org/abs/2501.12948}
 \item \citebutton{Nature, 2025}{https://www.nature.com/articles/s41586-025-09422-z}
@@ -65,7 +65,7 @@ of state-of-the-art reasoning
 
 
 
-\begin{frame}{Synthetic data generation}
+\begin{frame}{Reasoning traces: Format}
 
 \vfill
 \begin{itemize}
@@ -91,6 +91,59 @@ progression of the model during the RL process.''
 
 \end{frame}
 
+\begin{vbframe}{Example of a reasoning trace}
+
+\vfill
+
+\begin{tabular}{lp{2cm}}
+    \includegraphics[width=8cm]{figure/reasoning,trace}&
+\vspace{-5cm} \ques Is this chain of thought few-shot prompting? 
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{frame}{Automatic, non-human rewards\\ for
+    LM-generated reasoning traces}
+
+\vfill
+
+\begin{block}{}
+Accuracy rewards evaluate whether the response is
+correct. For
+example, in the case of maths problems with deterministic
+results,
+the model is required to provide the final answer in a
+specified format
+(for example, within a box), enabling reliable rule-based
+verification of
+correctness. Similarly, for code competition prompts, a
+compiler can
+be used to evaluate the responses of the model against a
+suite of predefined test cases, thereby generating objective feedback on correctness.
+\end{block}
+
+\vfill
+
+\end{frame}
+
+
+
+\begin{vbframe}{Automatic verifier/verifiable rewards: AIME example}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=11.5cm]{figure/aime,example}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
 
 \begin{frame}{Inference time scaling}
 
@@ -110,31 +163,6 @@ progression of the model during the RL process.''
 
 \end{frame}
 
-\begin{vbframe}{Automatic verifier/verifiable rewards: AIME example}
-
-\vfill
-
-\begin{figure}
-    \centering
-    \includegraphics[width=11.5cm]{figure/aime,example}
-\end{figure}
-
-\vfill
-
-\end{vbframe}
-
-\begin{vbframe}{Example of a reasoning trace}
-
-\vfill
-
-\begin{tabular}{lp{2cm}}
-    \includegraphics[width=8cm]{figure/reasoning,trace}&
-\vspace{-5cm} \ques Is this chain of thought few-shot prompting? 
-\end{tabular}
-
-\vfill
-
-\end{vbframe}
 
 
 \begin{frame}{What elements of reasoning are learned?}
@@ -234,7 +262,7 @@ in model output during
 
 
 
-\begin{vbframe}{Unfaithfulness of LLMs to true reasoning}
+\begin{vbframe}{Unfaithfulness of LMs to true reasoning}
 
 \vfill
 
@@ -247,7 +275,7 @@ in model output during
 
 \end{vbframe}
 
-\begin{vbframe}{Unfaithfulness of LLMs to true reasoning}
+\begin{vbframe}{Unfaithfulness of LMs to true reasoning}
 
 \vfill
 
