@@ -88,7 +88,7 @@ figure/rlhfbackflip.png
 
 \textbf{Definition:} Instruction tuning is the process of training a
 	pretrained language model on a large set of
-	(instruction, response) pairs. 
+	(instruction, response) pairs (or ranking of pairs). 
 
 \vfill
 
@@ -491,8 +491,8 @@ Supervised finetuning (SFT): Finetuning on training set of
 		information:\\ which one is better?
 \item Source of this part of the lecture:
 \href{https://openai.com/research/learning-from-human-preferences}{\beamergotobutton{OpenAI
-		page on RLHF}}
-
+		page on RLHF (dead)}}
+\href{https://proceedings.neurips.cc/paper_files/paper/2017/file/d5e2c0adad503c91f91df240d0cd4e49-Paper.pdf}{\beamergotobutton{neurips paper}}
 		\item This animation shows what we want to
                   learn: \href{https://images.openai.com/blob/cf6fdf49-ea9e-489d-a1f1-9753291cd09e/humanfeedbackjump.gif}{\beamergotobutton{trained
 		    backflipper}}
@@ -504,7 +504,7 @@ Supervised finetuning (SFT): Finetuning on training set of
 \end{vbframe}
 
 
-\begin{vbframe}{Training process}
+\begin{vbframe}{Training process for backflipper}
 
 \vfill
 
@@ -666,7 +666,8 @@ spreading negative or false information\\\hline
 
 \vfill
 
-\textbf{Three steps from GPT3 to InstructGPT}
+\textbf{Three steps from pretrained model to
+  instruction-tuned mdoel}
 
 	\begin{itemize}
 		\item Finetuning on human-written dialogs
@@ -682,7 +683,7 @@ spreading negative or false information\\\hline
 \end{vbframe}
 
 
-\begin{vbframe}{Three steps}
+\begin{vbframe}{Pretrained $\rightarrow$ Instruction-tuned: 3 steps}
 
 
 \begin{figure}
@@ -774,7 +775,7 @@ spreading negative or false information\\\hline
 %        InstructGPT model)
 %\5end{itemize}
 
-
+\ques Are these classical NLP tasks?
 
 \vfill
 

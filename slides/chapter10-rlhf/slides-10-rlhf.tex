@@ -34,7 +34,7 @@ figure/threesteps.png
 \input{roadmap.tex}
 
 
-\section{RM and PPO models}
+\section{HF (Human Feedback) of RLHF}
 
 
 
@@ -158,7 +158,8 @@ who is trying to help you with this task?
 
 	\begin{itemize}
 \item This is how LLMs are ``aligned'' to ``human values''.
-\item This has / will have in the future a \myblue{huge} influence
+\item As AI becomes more embedded in our lives,
+  this has  an increasing influence
 on our society.
 \item Francois Chollet: Between 10 000 and 30 000 humans
 worked fulltime on providing data for RLHF.
@@ -171,6 +172,8 @@ worked fulltime on providing data for RLHF.
 
 
 
+
+\section{RM and PPO models}
 
 \begin{vbframe}{Reward model (Bradley Terry)}
 
@@ -203,14 +206,8 @@ worked fulltime on providing data for RLHF.
 
 
 \begin{itemize}
-        \item Comparisons  for a
-        	given prompt are
-        	highly correlated.
-                \item $\rightarrow$ Put them in
-        	a single batch (prevents overfitting).
-\item \ques Think through mechanics of (i) single-batch
-        	training and (ii) how you would implement
-        	training with loss($\theta$)
+\item \ques How you would implement
+        	training with loss($\theta$)?
 \end{itemize}
 
 \vfill
@@ -241,6 +238,14 @@ $x_1<x_3$
 \end{tabular}\\\hline\hline
 $x_2$? & clear: ``don't move'' & confusing signals 
 \end{tabular}
+
+\begin{itemize}
+        \item Comparisons  for a
+        	given prompt are
+        	highly correlated.
+                \item $\rightarrow$ Put them in
+        	a single batch (prevents overfitting).
+\end{itemize}
 
 \vfill
 
@@ -312,6 +317,7 @@ $x_2$? & clear: ``don't move'' & confusing signals
 
 \end{vbframe}
 
+\devour{
 \begin{vbframe}{}
 
 		\ques
@@ -321,7 +327,7 @@ finetune the model
                 addition to SFT?
 
 \end{vbframe}
-
+}
 
 \input{roadmap.tex}
 
@@ -411,7 +417,7 @@ finetune the model
 
 \begin{itemize}
 	\item PPO-ptx: tries to preserve behavior on
-	pretraining data $\rightarrow$ less regression on
+	pretraining data (the $\gamma$ term) $\rightarrow$ less regression on
 	public NLP datasets.
 	\item SFT and PPO look like they are about equally
 	powerful?
@@ -798,15 +804,15 @@ training data.
 \end{figure}
 
 \begin{itemize}
-\item Can ``aligned'' LLMs be made to produce bad content?
-\item Prior jailbreaks: brittle, require human ingenuity
+\item Can ``aligned'' LLMs be made to produce unsafe content?
+%\item Prior jailbreaks: brittle, require human ingenuity
 \item Attack suffix: automatic, robust across LLMs
 \item Method: Greedy Coordinate Descent
 	\item Seems to disable all guardrails?
         \item Surprisingly: generalizes across language
         models?
-        \item So is RLHF methodology just a  hack, easy to undo?
-        Instead we should be looking for principled solutions?
+        \item Potentially shows brittleness of RLHF /
+          posttraining in general
 \end{itemize}
 
 
@@ -1023,12 +1029,12 @@ A hallucination is content that is unfaithful to the input text.
 		\item
 Wikipedia: A hallucination is false or misleading
 		information presented as fact.
-		\item
-\myblue{A hallucination is
-		information presented by the LLM as fact
-                that, based on the pretraining data, a human
-                would know is false, misleading or without
-                evidence.}
+%		\item
+%\myblue{A hallucination is
+%		information presented by the LLM as fact
+%                that, based on the pretraining data, a human
+%                would know is false, misleading or without
+%                evidence.}
 	\end{itemize}
 
 \vfill
@@ -1522,7 +1528,7 @@ of hallucinations (guessing wrong, lying).
 \section{Epilog}
 
 
-
+\devour{
 
 
 
@@ -1598,6 +1604,8 @@ To create a reward model for reinforcement learning, we
 \vfill
 
 \end{vbframe}
+
+}
 
 \begin{vbframe}{Reward hacking}
 
