@@ -156,8 +156,9 @@ who is trying to help you with this task?
 
 
 
-	\begin{itemize}
-\item This is how LLMs are ``aligned'' to ``human values''.
+  \begin{itemize}
+    \item This is the ``HF'' (human feedback) part of RLHF\\
+for aligning LLMs  to human values.
 \item As AI becomes more embedded in our lives,
   this has  an increasing influence
 on our society.
@@ -174,6 +175,18 @@ worked fulltime on providing data for RLHF.
 
 
 \section{RM and PPO models}
+
+\begin{vbframe}{Pretrained $\rightarrow$ Instruction-tuned: 3 steps}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/threesteps.png}
+\end{figure}
+
+
+\end{vbframe}
+
 
 \begin{vbframe}{Reward model (Bradley Terry)}
 
@@ -419,10 +432,9 @@ finetune the model
 	\item PPO-ptx: tries to preserve behavior on
 	pretraining data (the $\gamma$ term) $\rightarrow$ less regression on
 	public NLP datasets.
-	\item SFT and PPO look like they are about equally
-	powerful?
+	\item SFT and PPO are not that different in performance?
 \begin{itemize}
-        \item Win rate is ``only'' about .6.
+        \item PPO win rate is ``only'' about .6.
         \item So PPO wins in 6 cases, SFT in 4.
 \end{itemize}
 \end{itemize}
@@ -589,7 +601,7 @@ direct supervision signal.
 
 \begin{itemize}
 \item InstructGPT is not good at reasoning.
-        \item Only limited reasoning when prompted explicitly.
+        \item Only limited reasoning when prompted explicitly
 	\item See lecture on reasoning
 \end{itemize}
 
@@ -806,12 +818,12 @@ training data.
 \begin{itemize}
 \item Can ``aligned'' LLMs be made to produce unsafe content?
 %\item Prior jailbreaks: brittle, require human ingenuity
-\item Attack suffix: automatic, robust across LLMs
-\item Method: Greedy Coordinate Descent
-	\item Seems to disable all guardrails?
-        \item Surprisingly: generalizes across language
+\item Attack suffix: is appended to prompt to circumvent guardrails
+%\item Method: Greedy Coordinate Descent
+%	\item Seems to disable all guardrails?
+ 5       \item Surprisingly: generalizes across language
         models?
-        \item Potentially shows brittleness of RLHF /
+        \item Attack suffixes  show brittleness of RLHF /
           posttraining in general
 \end{itemize}
 
@@ -868,8 +880,8 @@ training data.
 \end{figure}
 
 \begin{itemize}
-\item Only worked for OpenAI models?
-\item Was quickly disabled
+\item Only worked for OpenAI models, quickly disabled
+\item \ques{What could be going on here?}
 \item Main takeaway of suffix attack and word repetition
         attack: current alignment methodology is 
         brittle, LLMs are not 100\% safe.
@@ -1022,7 +1034,7 @@ and harmlessness (no harmful responses) right is hard.
 \item 
   a plausible but false or misleading response generated
   by an artificial intelligence program (Merriam Webster Dictionary)
-		\item
+		\item Originally (in the context of RAG):
 A hallucination is content that is unfaithful to the input text.
 \href{https://aclanthology.org/2020.acl-main.173.pdf}{\beamergotobutton{Maynez
 		et al, 2023}}
@@ -1090,7 +1102,7 @@ recommended a video titled How Does
 Neuroplasticity Apply to Homeschooling? but when clicking on
 the YouTube link, it took me to a different video.''
 
-\item This is a typical hallucination.
+\item This is one type of hallucination.
 \end{itemize}
 
 \vfill
@@ -1380,7 +1392,7 @@ of hallucinations (guessing wrong, lying).
 	\begin{itemize}
 		\item The labelers (from US and Southeast
 		(South?) Asia)
-		\item OpenAI (through detailed directions
+		\item AI companies (through detailed directions
 		they give to labelers)
 %		\item OpenAI customers and their end users
 %		(that's where the prompts come from)
@@ -1392,7 +1404,7 @@ of hallucinations (guessing wrong, lying).
                 \item \myblue{Whoever decides on the values
 		and manages the alignment process has
 		enormous power.}
-\item (if time: discuss facebook)
+\item Example outside AI where this caused great harm: Facebook
 	\end{itemize}
 
 \vfill
@@ -1412,8 +1424,9 @@ of hallucinations (guessing wrong, lying).
 		\item Governments?
 		\item Extremist organizations?
                 \item Criminals?
-                \item Uncensored models: Musk /
-                \href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
+                \item Purportedly ``uncensored'' models: Musk
+                  %/
+                %\href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
                 \item \ques How can we prevent unaligned
 		LLMs from wreaking havoc?
                 %(through
@@ -1655,7 +1668,7 @@ To create a reward model for reinforcement learning, we
 		bad about a response, just a summary
 		assessment.
                 
-\item Hallucinations are most likely a result of reward
+\item Hallucinations are partly a result of reward
 		hacking: if a response is fluent,
 	interesting, responsive, helpful, authoritative, but
 	contains an inaccuracy,

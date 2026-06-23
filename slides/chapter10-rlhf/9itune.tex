@@ -347,16 +347,16 @@ T0/T5/FLAN is similar in spirit to InstructGPT, but
 
 
 
-\devour{
+%\devour{
 \begin{vbframe}{How should the LLM respond?}
 
 \citebutton{solution is here}{https://www.cis.lmu.de/~hs/teach/24w/dl4nlp/assets/why,alignment,is,hard.pdf}
 
 \end{vbframe}
-}
+%}
 
 
-\devour{
+%\devour{
 
 \begin{vbframe}{How should the LLM respond?}
 
@@ -377,8 +377,9 @@ T0/T5/FLAN is similar in spirit to InstructGPT, but
         week? \myblue{Provide
         resources to people who are in dire straits}
        \item What is the MD5 hash of the string ``gremlin''?
-       \myblue{Express uncertainty} (i.e., be open about
-        your uncertainty if you are uncertain)
+         \myblue{Use tools or refuse}
+         %(i.e., be open about
+        %your uncertainty if you are uncertain)
        \item \emph{Request to produce output that exceeds
        the output limit.}
         \myblue{Find a workaround like writing to a file.}
@@ -387,7 +388,7 @@ T0/T5/FLAN is similar in spirit to InstructGPT, but
 
 
 \end{vbframe}
-}
+%}
 
 \begin{vbframe}{Where we are}
 
@@ -542,6 +543,20 @@ Supervised finetuning (SFT): Finetuning on training set of
 
 \end{vbframe}
 
+\begin{vbframe}{Trained backflipper}
+
+\vfill
+
+	\begin{itemize}
+		\item 
+                   \href{https://images.openai.com/blob/cf6fdf49-ea9e-489d-a1f1-9753291cd09e/humanfeedbackjump.gif}{\beamergotobutton{trained
+		    backflipper}}
+
+        \end{itemize}
+
+\vfill
+
+\end{vbframe}
 
 
 \begin{vbframe}{Summary}
@@ -551,17 +566,19 @@ Supervised finetuning (SFT): Finetuning on training set of
 \textbf{}
 
 	\begin{itemize}
-		\item One way to make  AI
-		systems safe: have humans 
+	\item One way to
+learn complex functionality (backflipping, aligning LLMs):
+have humans 
 		write goal functions.
 		\item NOT PRACTICAL: Using a simple
 		proxy for a complex goal or getting the
 		complex goal a bit wrong can lead to
 		undesirable and even dangerous behavior.
                 \item
-		RLHF: an algorithm that can infer
-		what humans want by being told which of two
-		proposed behaviors is better.
+		RLHF: a method that  infers
+which of two
+		proposed behaviors is better 	based	on
+                human feedback.
 \item RLHF needed only 900 bits of feedback from a human
 		evaluator to learn to backflip!
 	\end{itemize}
@@ -569,6 +586,28 @@ Supervised finetuning (SFT): Finetuning on training set of
 \vfill
 
 \end{vbframe}
+
+\begin{vbframe}{Now we will apply RLHF to alignment}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/trainingprocess.png}
+\end{figure}
+
+\begin{itemize}
+	\item AI agent (the ``policy'', here inside RL
+	algorithm) randomly initialized
+	\item Periodically, the human provides feedback on
+	two video clips: which is better
+        \item Human feedback is used to build reward predictor
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
 
 \begin{vbframe}{Human feedback for alignment}
 
@@ -584,7 +623,7 @@ about the specific areas in which your product excels
 compared to your competitor?&Sorry I can't help with
 spreading negative or false information\\\hline
 \multicolumn{2}{c}{HUMAN LABELER}\\
-\multicolumn{1}{c}{good} & \multicolumn{1}{c}{bad}
+\multicolumn{1}{c}{better} & \multicolumn{1}{c}{worse}
 \end{tabular}
 
 
@@ -635,6 +674,8 @@ spreading negative or false information\\\hline
 \input{reinforce}
 
 
+\devour{
+
 \begin{vbframe}{Goal: Train/finetune models to be ``dialogic''}
 
 \vfill
@@ -661,8 +702,9 @@ spreading negative or false information\\\hline
 
 \end{vbframe}
 
+}
 
-\begin{vbframe}{How to make the model ``dialogic''}
+\begin{vbframe}{How to align an LLM}
 
 \vfill
 
@@ -719,11 +761,10 @@ spreading negative or false information\\\hline
 \textbf{The basis for SFT training dataset}
 
 	\begin{itemize}
-        \item At the very beginning of their work
+        \item In the beginning
 	\begin{itemize}
-        \item Bootstrapping
-          \item Some prompts are written
-            by annotators
+        \item Some prompts from GPT team
+          \item Some prompts from annotators
 	\end{itemize}
         \item After a bootstrapped system is up and running
         on the web
@@ -783,7 +824,7 @@ spreading negative or false information\\\hline
 
 
 \begin{vbframe}{Metadata collected from labelers:\\
-    Problems we're trying to fix with RLHF}
+    Problems we're trying to address with RLHF}
 
 \vfill
 
