@@ -90,8 +90,8 @@ $$C \approx \tau T = 6 P D$$
 	\begin{itemize}
 	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
         \item $4PD$: backward pass approximately twice the compute of the forward pass
+    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' outputs.
 	\end{itemize}
-    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' outputs
 \end{itemize}
 
 \end{vbframe}
@@ -132,10 +132,10 @@ $C$ (actually, $C$ per time) can be measured in different units:\newline
     \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
 	\item One proposed optimal tradeoff between $P$ and $D$ is: $D = 20 P$
 	\begin{itemize}
-	    \item This was true for Chinchilla
+	    \item This was posited for Chinchilla
 	models \citebutton{Hoffmann et al.,
-	2022}{https://arxiv.org/abs/2203.15556},\\ not clear
-	to what extent it still holds.
+	  2022}{https://arxiv.org/abs/2203.15556},\\
+no longer seen as valid.
 	\end{itemize}
 	\item Training an LLM on less than 200 billion tokens is not recommended
 	\item One rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
@@ -193,7 +193,7 @@ Model size components: \newline
         \item bf16 is less precise, but also less likely to
  	suffer from underflow or overflow 
 \end{itemize}
-	\item INT8: integer from -128 to 127, occupying 8 bits or 1 byte
+	\item INT8: integer (e.g., from -128 to 127), occupying 8 bits or 1 byte
 \end{itemize}
 
 \vfill
@@ -227,11 +227,11 @@ you can use   integer quantization: INT8.}
 
 \begin{itemize}
     \item Real\_number = stored\_integer * scaling\_factor
-    \item \textbf{Absmax quantization}: 
+    \item \textbf{Absmax quantization (symmetric)}: 
         \begin{itemize}
             \item $X_{quant} = \text{round}\left(\frac{127}{max{|\mathbf{X}|}} \cdot \mathbf{X}\right)$ 
         \end{itemize}
-    \item \textbf{Zero-point quantization}: 
+    \item \textbf{Zero-point quantization (assymmetric)}: 
         \begin{itemize}
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
@@ -246,20 +246,45 @@ you can use   integer quantization: INT8.}
     
 \end{vbframe}
 
+\begin{vbframe}{ABSMAX INT8 (symmetric)}
+
+
+	\includegraphics[width = 10cm]{./figure/absmax,maarten.png} 
+
+        
+        \href{https://www.maartengrootendorst.com/blog/quantization/}{Link:
+          Maarten Grootendorst}
+
+    
+\end{vbframe}
+
+\begin{vbframe}{Zero-point INT8 (asymmetric)}
+
+
+	\includegraphics[width = 10cm]{./figure/zero,point,maarten.png} 
+
+        \href{https://www.maartengrootendorst.com/blog/quantization/}{Link:
+          Maarten Grootendorst}
+    
+\end{vbframe}
+
+
+
+
 \begin{vbframe}{Zero-point quantization}
 
 \vfill
 
 \begin{itemize}
-\item Note that we assume: $min(\mathbf{X}) \leq 0 \leq max(\mathbf{X})$
+\item We assume: $min(\mathbf{X}) \leq 0 \leq max(\mathbf{X})$
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
             \item $X_{quant}(0) = zeropoint$
-            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
-            \item = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$
-            \item = $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$
-            \item = $round(255 \cdot \frac{\mathbf{X} -
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$\\
+             = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$\\
+             = $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$\\
+             = $round(255 \cdot \frac{\mathbf{X} -
               min(\mathbf{X})}{max(\mathbf{X})  - min(\mathbf{X})}) - 128$
             \item $X_{quant}(max(\mathbf{X})) = 255-128 = 127$
             \item $X_{quant}(min(\mathbf{X})) = 0-128 = -128$
@@ -302,6 +327,16 @@ you can use   integer quantization: INT8.}
 
 }
 % ------------------------------------------------------------------------------
+
+\begin{vbframe}{Active area of research}
+
+  \includegraphics[width = 11cm]{./figure/nvfp4.png}
+  
+\href{https://arxiv.org/pdf/2509.25149}{Link: Nvidia paper on NVFP4}
+    
+\end{vbframe}
+
+
 
 \begin{vbframe}{Model Parameters}
 

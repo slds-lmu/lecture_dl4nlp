@@ -44,7 +44,7 @@ figure/gpu_mem.png
 \vfill
 
 \begin{itemize}
- 	\item Training LLMs faster on many GPUs
+ 	\item Makes training LLMs faster on many GPUs
  	\item Avoiding OOM (out of memory) issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
@@ -174,23 +174,29 @@ figure/gpu_mem.png
 Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 \begin{itemize}
-	\item Fast
-	\begin{itemize}
-		\item 15\,\% faster than BERT
-		\item 3x faster than GPT-2 
-		\item 2.4x faster than Megatron-LM
-	\end{itemize}
+%	\item Fast
+%	\begin{itemize}
+%		\item 15\,\% faster than BERT
+%		\item 3x faster than GPT-2 
+%		\item 2.4x faster than Megatron-LM
+%	\end{itemize}
 	\item Memory-efficient
 	\begin{itemize}
 		\item Reducing from $O(\MakeLowercase{n}^2)$ to $O(\MakeLowercase{n})$ 
 	\end{itemize}
+	\item Therefore: IO aware
+	\begin{itemize}
+		\item Reducing memory load/store operations
+	\end{itemize}
+	\item Therefore: much faster than regular implementation
+	\begin{itemize}
+		\item The bigger the attention matrices, the
+                  more you gain (until
+                  $O(\MakeLowercase{n})$ no longer fits).
+	\end{itemize}
 	\item Exact
 	\begin{itemize}
 		\item Same as ``vanilla attention'', not an approximation 
-	\end{itemize}
-	\item IO aware
-	\begin{itemize}
-		\item Reducing memory load/store operations
 	\end{itemize}
 \end{itemize}
 
@@ -253,7 +259,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 
 
 
-\begin{vbframe}{FlashAttention}
+\begin{vbframe}{Flash Attention}
 
 \vfill
 
@@ -270,7 +276,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
                   \item General idea: you avoid that the large intermediate
                     tensors (e.g., pre-softmax)  are
                     written to HBM and then read back into
-                    (SRAM) memory
+                    SRAM memory
 \end{itemize}
 
 \vfill
@@ -380,21 +386,21 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vfill
 
 \begin{itemize}
-	\item FlashAttention requires writing attention to CUDA language
+	\item FlashAttention requires implementing ``custom'' attention in CUDA
 	\begin{itemize}
 		\item A new CUDA kernel for each new attention implementation
 		\item CUDA is lower-level than PyTorch
-		\item Implementation may not be transferable accross GPUs
+		\item Implementation not  transferable accross GPUs
 	\end{itemize}
 	\item Towards IO-Aware Deep Learning
 	\begin{itemize}
 	\item Extending beyond attention
           \item DeepSeek
 	\end{itemize}
-	\item Multi-GPU IO-Aware Methods
-	\begin{itemize}
-		\item FlashAttention computation may be parallelizable accross multiple GPUs
-	\end{itemize}
+%	\item Multi-GPU IO-Aware Methods
+%	\begin{itemize}
+%		\item FlashAttention computation may be parallelizable accross multiple GPUs
+%	\end{itemize}
 \end{itemize}
 
 \vfill
