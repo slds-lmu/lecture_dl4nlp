@@ -89,7 +89,7 @@ $$C \approx \tau T = 6 P D$$
 	\item $C_{forward} \approx 2 P D$; $\quad C_{backward} \approx 4 P D$
 	\begin{itemize}
 	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
-        \item $4PD$: backward pass approximately twice the compute of the forward pass
+        \item $4PD$: backward pass is approximately twice the compute of the forward pass
     \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' outputs.
 	\end{itemize}
 \end{itemize}
@@ -135,11 +135,24 @@ $C$ (actually, $C$ per time) can be measured in different units:\newline
 	    \item This was posited for Chinchilla
 	models \citebutton{Hoffmann et al.,
 	  2022}{https://arxiv.org/abs/2203.15556},\\
-no longer seen as valid.
+        no longer seen as valid.
+        \item See next lecture
 	\end{itemize}
-	\item Training an LLM on less than 200 billion tokens is not recommended
-	\item One rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
-    \item Different ways to determine P: based on available data, compute budget or inference time 
+      \item
+You need a training set of several 100s of billions of
+tokens at least (e.g., LLM does not
+          become fluent otherwise).
+%	\item One rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
+        \item
+Two typical ways of determining $P$ (the size of the model)
+in 2026:
+\begin{itemize}
+\item Based on available compute budget: how much data and
+  how many parameters are optimal?
+  \item Based on a desired inference time performance
+    (e.g., generate 100 tokens per second): how much data and how many parameters are optimal?
+
+\end{itemize}
 \end{itemize}
 
 \vfill
@@ -183,14 +196,17 @@ Model size components: \newline
 \vfill
 
 \begin{itemize}
- 	\item Pure fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
- 	\item fp16: half precision float number as defined by \citebutton{IEEE\_754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
+ 	\item fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
+ 	\item fp16: half precision float number as defined
+          by \citebutton{IEEE 754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
     \item bf16 or brain floating point 16, developed by
  	Google Brain project, occupying 16 bits or 2 bytes
 \begin{itemize}
-        \item bf16 has a larger dynamic range than fp16
+        \item fewer bits for the ``significand'' than fp16
+          $\rightarrow$ bf16 is less precise
+        \item larger dynamic range than fp16
  	(8 exponent bits instead of 5)
-        \item bf16 is less precise, but also less likely to
+$\rightarrow$ less likely to
  	suffer from underflow or overflow 
 \end{itemize}
 	\item INT8: integer (e.g., from -128 to 127), occupying 8 bits or 1 byte
@@ -220,8 +236,9 @@ $(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bi
 
 \begin{vbframe}{INT8 Quantization}
 
-\textit{It's hard to fit meaningful floats into 8 bits, but
-you can use   integer quantization: INT8.}
+\textit{It's harder (though not impossible) to fit
+  meaningful floats into 8 bits. Alternative:
+ use   integer quantization: INT8.}
 
 \vfill
 
@@ -236,7 +253,6 @@ you can use   integer quantization: INT8.}
             \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
             \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
-\item (draw example)
 \end{itemize}
 \end{itemize}
 
@@ -261,7 +277,7 @@ you can use   integer quantization: INT8.}
 \begin{vbframe}{Zero-point INT8 (asymmetric)}
 
 
-	\includegraphics[width = 10cm]{./figure/zero,point,maarten.png} 
+	\includegraphics[width = 9cm]{./figure/zero,point,maarten.png} 
 
         \href{https://www.maartengrootendorst.com/blog/quantization/}{Link:
           Maarten Grootendorst}
@@ -282,8 +298,8 @@ you can use   integer quantization: INT8.}
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
             \item $X_{quant}(0) = zeropoint$
             \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$\\
-             = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$\\
-             = $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$\\
+            = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$\\
+             $\approx$ $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$\\
              = $round(255 \cdot \frac{\mathbf{X} -
               min(\mathbf{X})}{max(\mathbf{X})  - min(\mathbf{X})}) - 128$
             \item $X_{quant}(max(\mathbf{X})) = 255-128 = 127$
@@ -345,7 +361,7 @@ you can use   integer quantization: INT8.}
 Parameter size depends on chosen representation: \newline
 
 \begin{itemize}
- 	\item Pure fp32: $Mem_{model} = 4 ~bytes/param \cdot N_{params}$
+ 	\item fp32: $Mem_{model} = 4 ~bytes/param \cdot N_{params}$
  	\item fp16 or bf16: $Mem_{model} = 2 ~bytes/param \cdot N_{params}$
 	\item INT8: $Mem_{model} = 1 ~byte/param \cdot N_{params}$
 \end{itemize}
