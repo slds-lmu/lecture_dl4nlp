@@ -44,7 +44,8 @@ figure/gpu_mem.png
 \vfill
 
 \begin{itemize}
- 	\item Makes training LLMs faster on many GPUs
+\item Training LLMs on several GPUs is faster than on one,
+  but we need to figure out how to distribute.
  	\item Avoiding OOM (out of memory) issues
 	\item \textbf{Data parallelism:} split the data on different model replicas
 	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
@@ -81,25 +82,26 @@ figure/gpu_mem.png
 
 \begin{vbframe}{Data Parallelism (2)}
 \begin{itemize}
-    \item \textbf{Data Splitting:}
+    \item \textbf{Data Splitting}
         \begin{itemize}
-            \item The dataset is divided into smaller chunks, and each chunk is assigned to a different processing unit (e.g., GPU or CPU) on different nodes
-            \item Each node processes a different subset of the data in parallel, reducing the overall training time    
+            \item Dataset  divided into smaller chunks. Each chunk  assigned to a different GPU.
+            \item Each node processes a different subset of
+              the data in parallel.
         \end{itemize}
-    \item \textbf{Model Replication:}
+    \item \textbf{Model Replication}
         \begin{itemize}
-            \item Each processing unit has a replica of the neural network model
+            \item Each GPU has a replica of the neural network model
             \item These replicas are trained independently on their respective data subsets
         \end{itemize}
-    \item \textbf{Gradient Aggregation (All Reduce):}
+    \item \textbf{Gradient Aggregation (All Reduce)}
         \begin{itemize}
-            \item After each forward and backward pass, gradients are computed locally on each node 
-            \item The gradients are then averaged (or summed) across all nodes to ensure that each model   replica receives the same gradient update     
+            \item Gradients are computed locally on each
+              node and then averaged across nodes.
         \end{itemize}
-    \item \textbf{Parameter Synchronization:}
+    \item \textbf{Parameter Synchronization}
         \begin{itemize}
-            \item The model parameters (weights and biases) are updated synchronously across all nodes
-            \item This ensures that all model replicas remain consistent with each other after each update step    
+            \item Model parameters are updated synchronously across  nodes.
+            \item This ensures that all model replicas remain consistent with each other after each update step.    
         \end{itemize}
 \end{itemize}
 
@@ -184,7 +186,7 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 	\begin{itemize}
 		\item Reducing from $O(\MakeLowercase{n}^2)$ to $O(\MakeLowercase{n})$ 
 	\end{itemize}
-	\item Therefore: IO aware
+	\item IO aware
 	\begin{itemize}
 		\item Reducing memory load/store operations
 	\end{itemize}
