@@ -184,13 +184,16 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 %	\end{itemize}
 	\item Memory-efficient
 	\begin{itemize}
-		\item Reducing from $O(\MakeLowercase{n}^2)$ to $O(\MakeLowercase{n})$ 
+	\item Reducing from $O(\MakeLowercase{n}^2)$
+          to $O(\MakeLowercase{n})$ 
+\ques{Why quadratic?}
+
 	\end{itemize}
 	\item IO aware
 	\begin{itemize}
 		\item Reducing memory load/store operations
 	\end{itemize}
-	\item Therefore: much faster than regular implementation
+	\item Therefore: much faster than the regular implementation
 	\begin{itemize}
 		\item The bigger the attention matrices, the
                   more you gain (until
@@ -244,14 +247,14 @@ Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
 \vfill
 
 \begin{itemize}
-	\item GPU compute has been growing faster than memory bandwidth
-	\begin{itemize}
-		\item GPU has to wait for data
-	\end{itemize}
-	\item Transformer operations are memory-bound
-	\begin{itemize}
-		\item Elementwise operations with high memory access
-	\end{itemize}
+	\item GPU computations are extremely fast, but data
+          transfer is slow.
+		\item Typical GPU computations are elementwise
+                  operations with a
+huge number of elements, resulting in
+                  high memory access
+	\item $\rightarrow$ GPU has to wait for data.
+	\item $\rightarrow$ Transformer operations are memory-bound.
 	\item IO aware means reducing memory load/store operations
 \end{itemize}
 
