@@ -148,6 +148,7 @@ figure/losscompute.png
 
 	\end{itemize}
 
+        \devour{
 	\item Optimal batch size
 	\begin{itemize}
     	\item Claim: “Optimal batch size: The ideal batch size for training these
@@ -158,7 +159,7 @@ figure/losscompute.png
     	\item gradient noise scale = a measure of the signal-to-noise ratio
             of gradient across training examples
 	\end{itemize}
-
+}
 \end{itemize}
 
 \vfill
@@ -166,7 +167,7 @@ figure/losscompute.png
 \end{vbframe}
 
 % ------------------------------------------------------------------------------
-
+\devour{
 \begin{vbframe}{Optimal Batch Size}
 
 \begin{figure}
@@ -197,7 +198,7 @@ figure/losscompute.png
 \end{itemize}
 
 \end{vbframe}
-
+}
 % ------------------------------------------------------------------------------
 
 \begin{vbframe}{Scaling Law for next word prediction}
@@ -300,21 +301,35 @@ Given a fixed FLOP budget $C$, how should we trade-off model size and text size 
 
 \begin{vbframe}{Compute-Optimal LLM\MakeLowercase{s} (2)}
 
-Given a fixed FLOPs budget, how should one trade off model size and
-the number of training tokens? We find that all three methods predict
+  \begin{itemize}
+
+    \item 
+  Given a fixed FLOPs budget, how should one trade off model size and
+  the number of training tokens?
+
+  \item We find that all three methods predict
 that \myblue{current large models should be substantially smaller and therefore
-trained much longer than is currently done}. Based on our estimated
-compute-optimal frontier, we predict that for the compute budget used
-to train Gopher, an optimal model should be 4 times smaller, while
-being training on 4 times more tokens. We verify this by training a more
-compute-optimal 70B model, called Chinchilla, on 1.4 trillion tokens.
-Not only does Chinchilla outperform its much larger counterpart,
+  trained much longer than is currently done}.
+
+%Based on our estimated
+%compute-optimal frontier, we predict that for the compute budget used
+%to train Gopher, an optimal model should be 4 times smaller, while
+%being training on 4 times more tokens. We verify this by training a more
+%compute-optimal 70B model, called Chinchilla, on 1.4 trillion tokens.
+
+
+\item Not only does Chinchilla outperform its much larger counterpart,
 Gopher, but its \myblue{reduced model size reduces inference cost considerably
-and greatly facilitates downstream uses on smaller hardware}. The
-energy cost of a large language model is amortized through its usage
-for inference and fine-tuning. The benefits of a more optimally trained
-smaller model, therefore, extend beyond the immediate benefits of its
-improved performance.
+and greatly facilitates downstream uses on smaller
+hardware}.
+
+\end{itemize}
+
+%The
+%energy cost of a large language model is amortized through its usage
+%for inference and fine-tuning. The benefits of a more optimally trained
+%smaller model, therefore, extend beyond the immediate benefits of its
+%improved performance.
 
 \end{vbframe}
 
@@ -431,12 +446,11 @@ improved performance.
 \end{vbframe}
 
 
-\begin{vbframe}{More recent thoughts on scaling}
+\begin{vbframe}{Sutskever on scaling}
 
 \vfill
 
 \begin{itemize}
-\item \citebutton{Reuters}{https://www.reuters.com/technology/artificial-intelligence/openai-rivals-seek-new-path-smarter-ai-current-methods-hit-limitations-2024-11-11/}, 2024-11-15
 \item Ilya Sutskever:
   ``results
 	from \myblue{scaling up pre-training} \ldots\
@@ -449,6 +463,7 @@ improved performance.
 	the age of wonder and discovery once again. Everyone
 	is looking for the next thing,” Sutskever
 	said. \myblue{“Scaling the right thing matters more now than ever.”}
+\item \citebutton{Reuters}{https://www.reuters.com/technology/artificial-intelligence/openai-rivals-seek-new-path-smarter-ai-current-methods-hit-limitations-2024-11-11/}
 \end{itemize}
 
 
@@ -506,7 +521,7 @@ cost \ldots'',
 
 
 
-\begin{vbframe}{Train/test tradeoff (1)}
+\begin{vbframe}{Train/test tradeoff (Andrew Ng)}
 
 \vfill
 
@@ -522,13 +537,14 @@ cost \ldots'',
 	and
         this number could reach \$100 billion within a few
 	years,
-        according to Anthropic’s Dario Amodei. Rising costs
+        according to Anthropic’s Dario Amodei.
+        \item Rising costs
 	could
         lead companies to reallocate their gargantuan
 	training
         budgets and researchers to focus on more
 	cost-effective,
-        application-specific approaches. (Andrew Ng, 2025)
+        application-specific approaches. % (Andrew Ng, 2025)
 
 \end{itemize}
 
@@ -544,7 +560,7 @@ cost \ldots'',
 \begin{itemize}
 \item Phi4: released by Microsoft Dec 2024
 	\item 14 billion parameters (small!)
-	\item pretraining data: 9.8 trillion tokens (pretty big)
+	\item pretraining data: 9.8 trillion tokens (big!)
         \item pretraining data curated / synthesized
 \end{itemize}
 
@@ -644,7 +660,7 @@ end-to-end monolithic model.
 
 \begin{itemize}
 	\item The original scaling laws were exclusively
-        about \myblue{(pre)training}: What is the best model
+        about \myblue{pretraining}: What is the best model
         I can pretrain given
         constraints such as compute budget?
 
@@ -652,7 +668,7 @@ end-to-end monolithic model.
   want to achieve, e.g.,
 even if a trillion parameter model is the optimal
         model given pretraining constraints, a much smaller
-        model may be preferable since it is so much cheaper at
+        model may be preferable since it is cheaper at
         inference time.
 
 \item In the future: \myblue{compound systems of many smaller models/agents}
