@@ -99,11 +99,11 @@ figure/losscompute.png
 	\item Transfer to different distribution incurs a constant penalty but improves in line with performance on training set
 	\end{itemize}
 
-	\item Sample efficiency
-	\begin{itemize}
-	\item Large models are more sample-efficient than small models
-	\item They reach same performance with fewer optimization steps
-	\end{itemize}
+%	\item Sample efficiency
+%	\begin{itemize}
+%	\item Large models are more sample-efficient than small models
+%	\item They reach same performance with fewer optimization steps
+%	\end{itemize}
 
 \end{itemize}
 
@@ -134,13 +134,10 @@ figure/losscompute.png
 
 % ------------------------------------------------------------------------------
 
-\begin{vbframe}{Scaling Laws}
+\begin{vbframe}{Scaling Laws: ``Inefficient convergence''}
 
 \vfill
 
-\begin{itemize}
-
-	\item ``Convergence is inefficient''
 	\begin{itemize}
 	\item When $C$ is fixed but $N$ and $D$ are not, optimal performance is achieved by training very large models and stopping significantly short of convergence  
         \item That is: early stopping
@@ -160,7 +157,6 @@ figure/losscompute.png
             of gradient across training examples
 	\end{itemize}
 }
-\end{itemize}
 
 \vfill
 
@@ -542,7 +538,7 @@ cost \ldots'',
 	could
         lead companies to reallocate their gargantuan
 	training
-        budgets and researchers to focus on more
+        budgets and focus on more
 	cost-effective,
         application-specific approaches. % (Andrew Ng, 2025)
 
