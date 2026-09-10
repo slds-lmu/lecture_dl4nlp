@@ -1,0 +1,247 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+% ToC
+\AtBeginSection[]{
+	\begin{frame}[noframenumbering, plain]
+	\frametitle{Outline}
+	\setcounter{tocdepth}{1}
+	\tableofcontents[currentsection]
+\end{frame}
+}
+
+\title{Deep Learning for NLP II}
+
+\begin{document}
+
+\titlemeta{
+Basics
+}{
+Introduction and Course Outline
+}{
+}{
+\item Understand the scope of the course
+\item Answers to all open question
+\item Get an impression of the workload
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{people}
+
+\vfill
+
+\textbf{Lecturers and Tutors:}
+
+	\begin{itemize}
+		\item Prof. Dr. Valentin Hofmann
+		\item Dr. Matthias Aßenmacher
+		\item M.Sc. Lea Hirlimann (exercise sessions)
+	\end{itemize}
+
+\textbf{Time:}
+
+	\begin{itemize}
+		\item Lecture: Wednesday, 10.00 - 12.00
+		\item Exercise: Friday, 10.00 - 12.00
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{structure of the lecture}
+
+\vfill
+
+\textbf{Central building blocks of the lecture}
+
+	\begin{itemize}
+		\item Transformer Recap (1 week)
+		\item Tokenization (1 week)
+		\item Architecture Variants (3 weeks)
+		\item Pre-Training, Fine-Tuning, Post-Training (1 week each)
+		\item Reasoning Models (1 week)
+		\item Evaluation and Benchmarking (1 week)
+		\item Mechanistic Interpretability (1 week)
+		\item Alignment, Bias, and Safety (1 weeks)
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{structure of the exercise}
+
+\vfill
+
+\textbf{Coding Assignments:}
+
+	\begin{itemize}
+		\item Tokenization
+		\item Retrieval-Augmented Generation
+		\item Speculative Decoding
+		\item LoRa Finetuning
+		\item SFT vs. DPO
+		\item Evaluation and Benchmarking
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{structure of the exercise}
+
+\vfill
+
+\textbf{Reading Assignments:}
+
+	\begin{itemize}
+		\item \citebutton{Illustrated Transformer}{https://jalammar.github.io/illustrated-transformer/}
+		\item \citebutton{Lost in the Middle}{https://aclanthology.org/2024.tacl-1.9/}
+		\item \citebutton{H-Net}{https://openreview.net/pdf?id=ZbfLR9NbNF}
+		\item \citebutton{RegMix}{https://openreview.net/forum?id=5BjQOUXq7i}
+		\item \citebutton{LIMA}{https://openreview.net/forum?id=KBMOKmX2he}
+		\item \citebutton{ROME}{https://proceedings.neurips.cc/paper_files/paper/2022/file/6f1d43d5a82a37e89b0665b33bf3a182-Paper-Conference.pdf}
+		\item tbd
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{prerequisites}
+	
+\vfill
+	
+\textit{Most important:} \textbf{Deep Learning for NLP I}
+
+\vspace{1em}
+
+\textbf{Machine learning basics:}
+
+		\begin{itemize}
+				\item A proper understanding of\\
+				- linear algebra\\
+				- loss functions\\
+				- regularization\\
+				- classification vs. regression\\
+				- backpropagation and gradient descent\\
+				- simple neural networks (MLPs)
+				\item Great resource: \href{https://slds-lmu.github.io/i2ml/}{\textit{I2ML course}}
+		\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Managing expections}
+
+\vfill
+
+\textbf{What to expect}
+
+	\begin{itemize}
+		\item Insights into advanced concepts and models of contemporary NLP
+		\item Challenging exercises that deepen your understanding, i.e.\\
+		- you will have to invest quite some time in trying to solve them\\
+		- just checking our solutions won't get you far
+		\item Critical discussions of the relevant research papers
+		\item An (inter)actively taught course with motivated lecturers, i.e.\\
+		- we expect you to actively participate in the lecture and ask questions\\
+		- you won't get much out of this course by just enrolling and not showing up
+	\end{itemize}
+
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Managing expections}
+
+\vfill
+
+\textbf{What not to expect}
+
+	\begin{itemize}
+		\item An agentic loop engineering course
+		\item Riding the hypetrain
+		\item Only the latest state-of-the-art LLMs (you also need to know the relevant basics to understand what is going on)
+		\item Low workload and easy exercises (you will only learn this thoroughly be investing some time)
+	\end{itemize}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Managing expections}
+
+\vfill
+
+\textbf{Honesty}
+
+	\begin{itemize}
+		\item No intention to overload you with (unnecessary) work
+		\item Building up proper skills requires \textbf{time investment}
+		\item You won't get much out of the coding assignments if you just paste them into your coding agent 
+		\item Up-front communication of what is going to be required
+	\end{itemize}
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Managing expections}
+
+\vfill
+
+\textbf{Workload}
+
+	\begin{itemize}
+		\item This is a 6 ECTS course
+		\item 1 ECTS := 30h (i.e. this course = 180h)
+		\item 13 weeks $\times$ 4h presence $\approx$ 52h
+		\item 130h for preparation, self-study, \textbf{working on assignments}, and \textbf{actually reading papers}
+		\item 130h / 14 weeks = \textbf{9h / week} (\textit{additionally to in-class time})
+	\end{itemize}
+
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{your turn}
+
+\vfill
+
+\centering \Huge{\bf Any Questions?}
+
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

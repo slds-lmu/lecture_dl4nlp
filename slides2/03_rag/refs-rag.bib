@@ -1,0 +1,426 @@
+@article{lewis2020retrieval,
+  title={Retrieval-augmented generation for knowledge-intensive nlp tasks},
+  author={Lewis, Patrick and Perez, Ethan and Piktus, Aleksandra and Petroni, Fabio and Karpukhin, Vladimir and Goyal, Naman and K{\"u}ttler, Heinrich and Lewis, Mike and Yih, Wen-tau and Rockt{\"a}schel, Tim and others},
+  journal={Advances in neural information processing systems},
+  volume={33},
+  pages={9459--9474},
+  year={2020}
+}
+
+@article{huang2025survey,
+  title={A survey on hallucination in large language models: Principles, taxonomy, challenges, and open questions},
+  author={Huang, Lei and Yu, Weijiang and Ma, Weitao and Zhong, Weihong and Feng, Zhangyin and Wang, Haotian and Chen, Qianglong and Peng, Weihua and Feng, Xiaocheng and Qin, Bing and others},
+  journal={ACM transactions on information systems},
+  volume={43},
+  number={2},
+  pages={1--55},
+  year={2025},
+  publisher={ACM New York, NY}
+}
+
+
+@article{robertson2009probabilistic,
+  title     = {The probabilistic relevance framework: BM25 and beyond},
+  author    = {Robertson, Stephen and Zaragoza, Hugo},
+  journal   = {Foundations and Trends in Information Retrieval},
+  volume    = {3},
+  number    = {4},
+  pages     = {333--389},
+  year      = {2009},
+  publisher = {Now Publishers}
+}
+
+@inproceedings{reimers-gurevych-2019-sentence,
+    title = "Sentence-{BERT}: Sentence Embeddings using {S}iamese {BERT}-Networks",
+    author = "Reimers, Nils  and      Gurevych, Iryna",
+    booktitle = "Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)",
+    month = nov,
+    year = "2019",
+    address = "Hong Kong, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D19-1410/",
+    doi = "10.18653/v1/D19-1410",
+    pages = "3982--3992",
+}
+
+@inproceedings{karpukhin-etal-2020-dense,
+    title = "Dense Passage Retrieval for Open-Domain Question Answering",
+    author = "Karpukhin, Vladimir  and      Oguz, Barlas  and      Min, Sewon  and      Lewis, Patrick  and      Wu, Ledell  and      Edunov, Sergey  and      Chen, Danqi  and      Yih, Wen-tau",
+    booktitle = "Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)",
+    month = nov,
+    year = "2020",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2020.emnlp-main.550/",
+    doi = "10.18653/v1/2020.emnlp-main.550",
+    pages = "6769--6781",
+}
+
+@inproceedings{colbert,
+author = {Khattab, Omar and Zaharia, Matei},
+title = {ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT},
+year = {2020},
+isbn = {9781450380164},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3397271.3401075},
+doi = {10.1145/3397271.3401075},
+abstract = {Recent progress in Natural Language Understanding (NLU) is driving fast-paced advances in Information Retrieval (IR), largely owed to fine-tuning deep language models (LMs) for document ranking. While remarkably effective, the ranking models based on these LMs increase computational cost by orders of magnitude over prior approaches, particularly as they must feed each query-document pair through a massive neural network to compute a single relevance score. To tackle this, we present ColBERT, a novel ranking model that adapts deep LMs (in particular, BERT) for efficient retrieval. ColBERT introduces a late interaction architecture that independently encodes the query and the document using BERT and then employs a cheap yet powerful interaction step that models their fine-grained similarity. By delaying and yet retaining this fine-granular interaction, ColBERT can leverage the expressiveness of deep LMs while simultaneously gaining the ability to pre-compute document representations offline, considerably speeding up query processing. Crucially, ColBERT's pruning-friendly interaction mechanism enables leveraging vector-similarity indexes for end-to-end retrieval directly from millions of documents. We extensively evaluate ColBERT using two recent passage search datasets. Results show that ColBERT's effectiveness is competitive with existing BERT-based models (and outperforms every non-BERT baseline), while executing two orders-of-magnitude faster and requiring up to four orders-of-magnitude fewer FLOPs per query.},
+booktitle = {Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval},
+pages = {39–48},
+numpages = {10},
+keywords = {neural ir, efficiency, deep language models, bert},
+location = {Virtual Event, China},
+series = {SIGIR '20}
+}
+
+@inproceedings{nogueira2020passagererankingbert,
+      title={{Passage Re-ranking with BERT}}, 
+      author={Rodrigo Nogueira and Kyunghyun Cho},
+      year={2020},
+      booktitle={arXiv preprint, https://arxiv.org/abs/1901.04085},
+}
+
+@inproceedings{sun-etal-2023-chatgpt,
+    title = "Is {C}hat{GPT} Good at Search? Investigating Large Language Models as Re-Ranking Agents",
+    author = "Sun, Weiwei  and
+      Yan, Lingyong  and
+      Ma, Xinyu  and
+      Wang, Shuaiqiang  and
+      Ren, Pengjie  and
+      Chen, Zhumin  and
+      Yin, Dawei  and
+      Ren, Zhaochun",
+    editor = "Bouamor, Houda  and
+      Pino, Juan  and
+      Bali, Kalika",
+    booktitle = "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing",
+    month = dec,
+    year = "2023",
+    address = "Singapore",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.emnlp-main.923/",
+    doi = "10.18653/v1/2023.emnlp-main.923",
+    pages = "14918--14937",
+}
+
+@inproceedings{abdallah-etal-2025-good,
+    title = "How Good are {LLM}-based Rerankers? An Empirical Analysis of State-of-the-Art Reranking Models",
+    author = "Abdallah, Abdelrahman  and
+      Piryani, Bhawna  and
+      Mozafari, Jamshid  and
+      Ali, Mohammed  and
+      Jatowt, Adam",
+    editor = "Christodoulopoulos, Christos  and
+      Chakraborty, Tanmoy  and
+      Rose, Carolyn  and
+      Peng, Violet",
+    booktitle = "Findings of the Association for Computational Linguistics: EMNLP 2025",
+    month = nov,
+    year = "2025",
+    address = "Suzhou, China",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.findings-emnlp.305/",
+    doi = "10.18653/v1/2025.findings-emnlp.305",
+    pages = "5693--5709",
+    ISBN = "979-8-89176-335-7",
+    abstract = "In this work, we present a systematic and comprehensive empirical evaluation of state-of-the-art reranking methods, encompassing large language model (LLM)-based, lightweight contextual, and zero-shot approaches, with respect to their performance in information retrieval tasks. We evaluate in total 22 methods, including 40 variants (depending on used LLM) across several established benchmarks, including TREC DL19, DL20, and BEIR, as well as a novel dataset designed to test queries unseen by pretrained models. Our primary goal is to determine, through controlled and fair comparisons, whether a performance disparity exists between LLM-based rerankers and their lightweight counterparts, particularly on novel queries, and to elucidate the underlying causes of any observed differences. To disentangle confounding factors, we analyse the effects of training data overlap, model architecture, and computational efficiency on reranking performance. Our findings indicate that while LLM-based rerankers demonstrate superior performance on familiar queries, their generalisation ability to novel queries varies, with lightweight models offering comparable efficiency. We further identify that the novelty of queries significantly impacts reranking effectiveness, highlighting limitations in existing approaches."
+}
+
+@inproceedings{muennighoff-etal-2023-mteb,
+    title = "{MTEB}: Massive Text Embedding Benchmark",
+    author = "Muennighoff, Niklas  and
+      Tazi, Nouamane  and
+      Magne, Loic  and
+      Reimers, Nils",
+    editor = "Vlachos, Andreas  and
+      Augenstein, Isabelle",
+    booktitle = "Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics",
+    month = may,
+    year = "2023",
+    address = "Dubrovnik, Croatia",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.eacl-main.148/",
+    doi = "10.18653/v1/2023.eacl-main.148",
+    pages = "2014--2037",
+    abstract = "Text embeddings are commonly evaluated on a small set of datasets from a single task not covering their possible applications to other tasks. It is unclear whether state-of-the-art embeddings on semantic textual similarity (STS) can be equally well applied to other tasks like clustering or reranking. This makes progress in the field difficult to track, as various models are constantly being proposed without proper evaluation. To solve this problem, we introduce the Massive Text Embedding Benchmark (MTEB). MTEB spans 8 embedding tasks covering a total of 58 datasets and 112 languages. Through the benchmarking of 33 models on MTEB, we establish the most comprehensive benchmark of text embeddings todate. We find that no particular text embedding method dominates across all tasks. This suggests that the field has yet to converge on a universal text embedding method and scale it up sufficiently to provide state-of-theart results on all embedding tasks. MTEB comes with open-source code and a public leaderboard at \url{https://github.com/embeddings-benchmark/mteb}."
+}
+
+@inproceedings{beir,
+ author = {Thakur, Nandan and Reimers, Nils and R\"{u}ckl\'{e}, Andreas and Srivastava, Abhishek and Gurevych, Iryna},
+ booktitle = {Proceedings of the Neural Information Processing Systems Track on Datasets and Benchmarks},
+ editor = {J. Vanschoren and S. Yeung},
+ pages = {},
+ title = {BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models},
+ url = {https://datasets-benchmarks-proceedings.neurips.cc/paper_files/paper/2021/file/65b9eea6e1cc6bb9f0cd2a47751a186f-Paper-round2.pdf},
+ volume = {1},
+ year = {2021}
+}
+
+@article{liu-etal-2024-lost,
+    title = "Lost in the Middle: How Language Models Use Long Contexts",
+    author = "Liu, Nelson F.  and
+      Lin, Kevin  and
+      Hewitt, John  and
+      Paranjape, Ashwin  and
+      Bevilacqua, Michele  and
+      Petroni, Fabio  and
+      Liang, Percy",
+    journal = "Transactions of the Association for Computational Linguistics",
+    volume = "12",
+    year = "2024",
+    address = "Cambridge, MA",
+    publisher = "MIT Press",
+    url = "https://aclanthology.org/2024.tacl-1.9/",
+    doi = "10.1162/tacl_a_00638",
+    pages = "157--173",
+    abstract = "While recent language models have the ability to take long contexts as input, relatively little is known about how well they use longer context. We analyze the performance of language models on two tasks that require identifying relevant information in their input contexts: multi-document question answering and key-value retrieval. We find that performance can degrade significantly when changing the position of relevant information, indicating that current language models do not robustly make use of information in long input contexts. In particular, we observe that performance is often highest when relevant information occurs at the beginning or end of the input context, and significantly degrades when models must access relevant information in the middle of long contexts, even for explicitly long-context models. Our analysis provides a better understanding of how language models use their input context and provides new evaluation protocols for future long-context language models."
+}
+
+@inproceedings{douze2024faiss,
+      title={The Faiss library},
+      author={Matthijs Douze and Alexandr Guzhva and Chengqi Deng and Jeff Johnson and Gergely Szilvasy and Pierre-Emmanuel Mazaré and Maria Lomeli and Lucas Hosseini and Hervé Jégou},
+      year={2024},
+      booktitle={arXiv preprint, https://arxiv.org/abs/2401.08281},
+}
+
+@inproceedings{gao2024retrievalaugmentedgenerationlargelanguage,
+      title={Retrieval-Augmented Generation for Large Language Models: A Survey}, 
+      author={Yunfan Gao and Yun Xiong and Xinyu Gao and Kangxiang Jia and Jinliu Pan and Yuxi Bi and Yi Dai and Jiawei Sun and Meng Wang and Haofen Wang},
+      year={2023},      
+      booktitle={arXiv preprint, https://arxiv.org/abs/2312.10997},
+}
+
+@inproceedings{menick2022teachinglanguagemodelssupport,
+      title={Teaching language models to support answers with verified quotes}, 
+      author={Jacob Menick and Maja Trebacz and Vladimir Mikulik and John Aslanides and Francis Song and Martin Chadwick and Mia Glaese and Susannah Young and Lucy Campbell-Gillingham and Geoffrey Irving and Nat McAleese},
+      year={2022},      
+	 booktitle={arXiv preprint, https://arxiv.org/abs/2203.11147},
+}
+
+@inproceedings{nakano2022webgptbrowserassistedquestionansweringhuman,
+      title={WebGPT: Browser-assisted question-answering with human feedback}, 
+      author={Reiichiro Nakano and Jacob Hilton and Suchir Balaji and Jeff Wu and Long Ouyang and Christina Kim and Christopher Hesse and Shantanu Jain and Vineet Kosaraju and William Saunders and Xu Jiang and Karl Cobbe and Tyna Eloundou and Gretchen Krueger and Kevin Button and Matthew Knight and Benjamin Chess and John Schulman},
+      year={2022},
+	 booktitle={arXiv preprint, https://arxiv.org/abs/2112.09332},
+}
+
+@inproceedings{santhanam-etal-2022-colbertv2,
+    title = "{C}ol{BERT}v2: Effective and Efficient Retrieval via Lightweight Late Interaction",
+    author = "Santhanam, Keshav  and
+      Khattab, Omar  and
+      Saad-Falcon, Jon  and
+      Potts, Christopher  and
+      Zaharia, Matei",
+    editor = "Carpuat, Marine  and
+      de Marneffe, Marie-Catherine  and
+      Meza Ruiz, Ivan Vladimir",
+    booktitle = "Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies",
+    month = jul,
+    year = "2022",
+    address = "Seattle, United States",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2022.naacl-main.272/",
+    doi = "10.18653/v1/2022.naacl-main.272",
+    pages = "3715--3734",
+    abstract = "Neural information retrieval (IR) has greatly advanced search and other knowledge-intensive language tasks. While many neural IR methods encode queries and documents into single-vector representations, late interaction models produce multi-vector representations at the granularity of each token and decompose relevance modeling into scalable token-level computations. This decomposition has been shown to make late interaction more effective, but it inflates the space footprint of these models by an order of magnitude. In this work, we introduce ColBERTv2, a retriever that couples an aggressive residual compression mechanism with a denoised supervision strategy to simultaneously improve the quality and space footprint of late interaction. We evaluate ColBERTv2 across a wide range of benchmarks, establishing state-of-the-art quality within and outside the training domain while reducing the space footprint of late interaction models by 6{--}10x."
+}
+
+@inproceedings{zehle-assenmacher-2026-calibration,
+    title = "Can Calibration of Positional Encodings Enhance Long Context Utilization?",
+    author = "Zehle, Tom  and
+      A{\ss}enmacher, Matthias",
+    editor = "Demberg, Vera  and
+      Inui, Kentaro  and
+      Marquez, Llu{\'i}s",
+    booktitle = "Findings of the {A}ssociation for {C}omputational {L}inguistics: {EACL} 2026",
+    month = mar,
+    year = "2026",
+    address = "Rabat, Morocco",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.findings-eacl.120/",
+    doi = "10.18653/v1/2026.findings-eacl.120",
+    pages = "2268--2280",
+    ISBN = "979-8-89176-386-9",
+    abstract = "Large language models suffer from positional biases like the ``Lost in the Middle'' (LiM) phenomenon and recency bias, which reduce the effective utilization of long contexts. In this work, we investigate the role of Positional Encodings in this context. Our empirical study confirms the persistence of these biases in modern large language models. Drawing on these findings, we introduce Caliope, a training-free framework for calibrating Positional Encodings at inference time. Our calibrators yield substantial improvements on needle-in-a-haystack and cross-chunk reasoning benchmarks, and offer a practical, lightweight method for improving long-context utilization."
+}
+
+@inproceedings{fayyaz-etal-2025-collapse,
+    title = "Collapse of Dense Retrievers: Short, Early, and Literal Biases Outranking Factual Evidence",
+    author = "Fayyaz, Mohsen  and
+      Modarressi, Ali  and
+      Schuetze, Hinrich  and
+      Peng, Nanyun",
+    editor = "Che, Wanxiang  and
+      Nabende, Joyce  and
+      Shutova, Ekaterina  and
+      Pilehvar, Mohammad Taher",
+    booktitle = "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2025",
+    address = "Vienna, Austria",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2025.acl-long.447/",
+    doi = "10.18653/v1/2025.acl-long.447",
+    pages = "9136--9152",
+    ISBN = "979-8-89176-251-0",
+    abstract = "Dense retrieval models are commonly used in Information Retrieval (IR) applications, such as Retrieval-Augmented Generation (RAG). Since they often serve as the first step in these systems, their robustness is critical to avoid downstream failures. In this work, we repurpose a relation extraction dataset (e.g., Re-DocRED) to design controlled experiments that quantify the impact of heuristic biases, such as a preference for shorter documents, on retrievers like Dragon+ and Contriever. We uncover major vulnerabilities, showing retrievers favor shorter documents, early positions, repeated entities, and literal matches, all while ignoring the answer{'}s presence! Notably, when multiple biases combine, models exhibit catastrophic performance degradation, selecting the answer-containing document in less than 10{\%} of cases over a synthetic biased document without the answer. Furthermore, we show that these biases have direct consequences for downstream applications like RAG, where retrieval-preferred documents can mislead LLMs, resulting in a 34{\%} performance drop than providing no documents at all.\url{https://huggingface.co/datasets/mohsenfayyaz/ColDeR}"
+}
+
+@inproceedings{saad-falcon-etal-2024-ares,
+    title = "{ARES}: An Automated Evaluation Framework for Retrieval-Augmented Generation Systems",
+    author = "Saad-Falcon, Jon  and
+      Khattab, Omar  and
+      Potts, Christopher  and
+      Zaharia, Matei",
+    editor = "Duh, Kevin  and
+      Gomez, Helena  and
+      Bethard, Steven",
+    booktitle = "Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)",
+    month = jun,
+    year = "2024",
+    address = "Mexico City, Mexico",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.naacl-long.20/",
+    doi = "10.18653/v1/2024.naacl-long.20",
+    pages = "338--354",
+    abstract = "Evaluating retrieval-augmented generation (RAG) systems traditionally relies on hand annotations for input queries, passages to retrieve, and responses to generate. We introduce ARES, an \textit{Automated RAG Evaluation System}, for evaluating RAG systems along the dimensions of context relevance, answer faithfulness, and answer relevance. By creating its own synthetic training data, ARES finetunes lightweight LM judges to assess the quality of individual RAG components. To mitigate potential prediction errors, ARES utilizes a small set of human-annotated datapoints for prediction-powered inference (PPI). Across eight different knowledge-intensive tasks in KILT, SuperGLUE, and AIS, ARES accurately evaluates RAG systems while using only a few hundred human annotations during evaluation. Furthermore, ARES judges remain effective across domain shifts, proving accurate even after changing the type of queries and/or documents used in the evaluated RAG systems. We make our code and datasets publicly available on Github."
+}
+
+@inproceedings{es-etal-2024-ragas,
+    title = "{RAGA}s: Automated Evaluation of Retrieval Augmented Generation",
+    author = "Es, Shahul  and
+      James, Jithin  and
+      Espinosa Anke, Luis  and
+      Schockaert, Steven",
+    editor = "Aletras, Nikolaos  and
+      De Clercq, Orphee",
+    booktitle = "Proceedings of the 18th Conference of the European Chapter of the Association for Computational Linguistics: System Demonstrations",
+    month = mar,
+    year = "2024",
+    address = "St. Julians, Malta",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.eacl-demo.16/",
+    doi = "10.18653/v1/2024.eacl-demo.16",
+    pages = "150--158",
+    abstract = "We introduce RAGAs (Retrieval Augmented Generation Assessment), a framework for reference-free evaluation of Retrieval Augmented Generation (RAG) pipelines. RAGAs is available at [\url{https://github.com/explodinggradients/ragas}]. RAG systems are composed of a retrieval and an LLM based generation module. They provide LLMs with knowledge from a reference textual database, enabling them to act as a natural language layer between a user and textual databases, thus reducing the risk of hallucinations. Evaluating RAG architectures is challenging due to several dimensions to consider: the ability of the retrieval system to identify relevant and focused context passages, the ability of the LLM to exploit such passages faithfully, and the quality of the generation itself. With RAGAs, we introduce a suite of metrics that can evaluate these different dimensions without relying on ground truth human annotations. We posit that such a framework can contribute crucially to faster evaluation cycles of RAG architectures, which is especially important given the fast adoption of LLMs."
+}
+
+@inproceedings{asai2024self,
+  title={Self-rag: Learning to retrieve, generate, and critique through self-reflection},
+  author={Asai, Akari and Wu, Zeqiu and Wang, Yizhong and Sil, Avi and Hajishirzi, Hannaneh},
+  booktitle={International conference on learning representations},
+  volume={2024},
+  pages={9112--9141},
+  year={2024}
+}
+
+@inproceedings{slobodkin-etal-2024-attribute,
+    title = "Attribute First, then Generate: Locally-attributable Grounded Text Generation",
+    author = "Slobodkin, Aviv  and
+      Hirsch, Eran  and
+      Cattan, Arie  and
+      Schuster, Tal  and
+      Dagan, Ido",
+    editor = "Ku, Lun-Wei  and
+      Martins, Andre  and
+      Srikumar, Vivek",
+    booktitle = "Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = aug,
+    year = "2024",
+    address = "Bangkok, Thailand",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2024.acl-long.182/",
+    doi = "10.18653/v1/2024.acl-long.182",
+    pages = "3309--3344",
+    abstract = "Recent efforts to address hallucinations in Large Language Models (LLMs) have focused on attributed text generation, which supplements generated texts with citations of supporting sources for post-generation fact-checking and corrections. Yet, these citations often point to entire documents or paragraphs, burdening users with extensive verification work. In this paper, we introduce a locally-attributable text generation approach, prioritizing concise attributions. Our method, named ``Attribute First, then Generate{``}, breaks down the conventional end-to-end generation process into three intuitive steps: content selection, sentence planning, and sequential sentence generation. By initially identifying relevant source segments ({``}select first{``}) and then conditioning the generation process on them ({``}then generate{``}), we ensure these segments also act as the output{'}s fine-grained attributions ({``}select{``} becomes ``attribute{``}). Tested on Multi-document Summarization and Long-form Question-answering, our method not only yields more concise citations than the baselines but also maintains - and in some cases enhances - both generation quality and attribution accuracy. Furthermore, it significantly reduces the time required for fact verification by human assessors."
+}
+
+@inproceedings{gao-etal-2023-rarr,
+    title = "{RARR}: Researching and Revising What Language Models Say, Using Language Models",
+    author = "Gao, Luyu  and
+      Dai, Zhuyun  and
+      Pasupat, Panupong  and
+      Chen, Anthony  and
+      Chaganty, Arun Tejasvi  and
+      Fan, Yicheng  and
+      Zhao, Vincent  and
+      Lao, Ni  and
+      Lee, Hongrae  and
+      Juan, Da-Cheng  and
+      Guu, Kelvin",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.910/",
+    doi = "10.18653/v1/2023.acl-long.910",
+    pages = "16477--16508",
+    abstract = "Language models (LMs) now excel at many tasks such as question answering, reasoning, and dialog. However, they sometimes generate unsupported or misleading content. A user cannot easily determine whether their outputs are trustworthy or not, because most LMs do not have any built-in mechanism for attribution to external evidence. To enable attribution while still preserving all the powerful advantages of recent generation models, we propose RARR (Retrofit Attribution using Research and Revision), a system that 1) automatically finds attribution for the output of any text generation model, and 2) post-edits the output to fix unsupported content while preserving the original output as much as possible. When applied to the output of several state-of-the-art LMs on a diverse set of generation tasks, we find that RARR significantly improves attribution while otherwise preserving the original input to a much greater degree than previously explored edit models. Furthermore, the implementation of RARR requires only a handful of training examples, a large language model, and standard web search."
+}
+
+@inproceedings{izacard-grave-2021-leveraging,
+    title = "Leveraging Passage Retrieval with Generative Models for Open Domain Question Answering",
+    author = "Izacard, Gautier  and
+      Grave, Edouard",
+    editor = "Merlo, Paola  and
+      Tiedemann, Jorg  and
+      Tsarfaty, Reut",
+    booktitle = "Proceedings of the 16th Conference of the European Chapter of the Association for Computational Linguistics: Main Volume",
+    month = apr,
+    year = "2021",
+    address = "Online",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2021.eacl-main.74/",
+    doi = "10.18653/v1/2021.eacl-main.74",
+    pages = "874--880",
+    abstract = "Generative models for open domain question answering have proven to be competitive, without resorting to external knowledge. While promising, this approach requires to use models with billions of parameters, which are expensive to train and query. In this paper, we investigate how much these models can benefit from retrieving text passages, potentially containing evidence. We obtain state-of-the-art results on the Natural Questions and TriviaQA open benchmarks. Interestingly, we observe that the performance of this method significantly improves when increasing the number of retrieved passages. This is evidence that sequence-to-sequence models offers a flexible framework to efficiently aggregate and combine evidence from multiple passages."
+}
+
+@inproceedings{yang-etal-2018-hotpotqa,
+    title = "{H}otpot{QA}: A Dataset for Diverse, Explainable Multi-hop Question Answering",
+    author = "Yang, Zhilin  and
+      Qi, Peng  and
+      Zhang, Saizheng  and
+      Bengio, Yoshua  and
+      Cohen, William  and
+      Salakhutdinov, Ruslan  and
+      Manning, Christopher D.",
+    editor = "Riloff, Ellen  and
+      Chiang, David  and
+      Hockenmaier, Julia  and
+      Tsujii, Jun{'}ichi",
+    booktitle = "Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing",
+    month = oct # "-" # nov,
+    year = "2018",
+    address = "Brussels, Belgium",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D18-1259/",
+    doi = "10.18653/v1/D18-1259",
+    pages = "2369--2380",
+    abstract = "Existing question answering (QA) datasets fail to train QA systems to perform complex reasoning and provide explanations for answers. We introduce HotpotQA, a new dataset with 113k Wikipedia-based question-answer pairs with four key features: (1) the questions require finding and reasoning over multiple supporting documents to answer; (2) the questions are diverse and not constrained to any pre-existing knowledge bases or knowledge schemas; (3) we provide sentence-level supporting facts required for reasoning, allowing QA systems to reason with strong supervision and explain the predictions; (4) we offer a new type of factoid comparison questions to test QA systems' ability to extract relevant facts and perform necessary comparison. We show that HotpotQA is challenging for the latest QA systems, and the supporting facts enable models to improve performance and make explainable predictions."
+}
+
+@inproceedings{trivedi-etal-2023-interleaving,
+    title = "Interleaving Retrieval with Chain-of-Thought Reasoning for Knowledge-Intensive Multi-Step Questions",
+    author = "Trivedi, Harsh  and
+      Balasubramanian, Niranjan  and
+      Khot, Tushar  and
+      Sabharwal, Ashish",
+    editor = "Rogers, Anna  and
+      Boyd-Graber, Jordan  and
+      Okazaki, Naoaki",
+    booktitle = "Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    month = jul,
+    year = "2023",
+    address = "Toronto, Canada",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2023.acl-long.557/",
+    doi = "10.18653/v1/2023.acl-long.557",
+    pages = "10014--10037",
+    abstract = "Prompting-based large language models (LLMs) are surprisingly powerful at generating natural language reasoning steps or Chains-of-Thoughts (CoT) for multi-step question answering (QA). They struggle, however, when the necessary knowledge is either unavailable to the LLM or not up-to-date within its parameters. While using the question to retrieve relevant text from an external knowledge source helps LLMs, we observe that this one-step retrieve-and-read approach is insufficient for multi-step QA. Here, \textit{what to retrieve} depends on \textit{what has already been derived}, which in turn may depend on \textit{what was previously retrieved}. To address this, we propose IRCoT, a new approach for multi-step QA that interleaves retrieval with steps (sentences) in a CoT, guiding the retrieval with CoT and in turn using retrieved results to improve CoT. Using IRCoT with GPT3 substantially improves retrieval (up to 21 points) as well as downstream QA (up to 15 points) on four datasets: HotpotQA, 2WikiMultihopQA, MuSiQue, and IIRC. We observe similar substantial gains in out-of-distribution (OOD) settings as well as with much smaller models such as Flan-T5-large without additional training. IRCoT reduces model hallucination, resulting in factually more accurate CoT reasoning."
+}
