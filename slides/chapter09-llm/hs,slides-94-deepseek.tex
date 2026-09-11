@@ -1,0 +1,347 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\usepackage{xspace}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\def\cotpfull{chain-of-thought few-shot prompting\xspace}
+\def\cotp{COT-FS-P\xspace}
+\def\cotpfullcap{Chain-of-thought few-shot prompting\xspace}
+
+\begin{document}
+
+\titlemeta{
+Large Language Models (LLMs)
+}{
+DeepSeek Reasoning
+}{
+figure/reasoning,trace
+}{
+\item understand DeepSeek reasoning as an example
+of state-of-the-art reasoning
+}
+
+
+\input{newway}
+
+
+\begin{frame}{Sources}
+
+\vfill
+
+\begin{itemize}
+    \item First major open
+    reasoning LM (as opposed to proprietary closed):
+    DeepSeek 
+\item \citebutton{DeepSeek-AI, 2025}{https://arxiv.org/abs/2501.12948}
+\item \citebutton{Nature, 2025}{https://www.nature.com/articles/s41586-025-09422-z}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{vbframe}{Data for SFT: 40B tokens!}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm]{figure/deepseekmath.png}
+\end{figure}
+
+\citebutton{DeepSeekMath, 2024}{https://arxiv.org/pdf/2402.03300}
+
+\vfill
+
+\end{vbframe}
+
+
+\input{reinforce}
+
+
+
+\begin{frame}{Reasoning traces: Format}
+
+\vfill
+\begin{itemize}
+\item 
+The User asks a
+question and the Assistant solves it.
+\item The Assistant first
+thinks about the reasoning process ``in its mind'' and then
+provides  the answer to the User.
+\item The reasoning process and
+answer are enclosed within <think>...</think> and
+<answer>...</answer> tags
+\item \texttt{<think> reasoning process here </think>}
+\item \texttt{<answer> answer here </answer>}
+\item ``We intentionally limit our constraints to this
+structural format, avoiding any content-specific biases to
+ensure that we can accurately observe the natural
+progression of the model during the RL process.''
+\item So this is not a few-shot approach!
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{vbframe}{Example of a reasoning trace}
+
+\vfill
+
+\begin{tabular}{lp{2cm}}
+    \includegraphics[width=8cm]{figure/reasoning,trace}&
+\vspace{-5cm} \ques Is this chain of thought few-shot prompting? 
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{frame}{Automatic, non-human rewards\\ for
+    LM-generated reasoning traces}
+
+\vfill
+
+\begin{block}{}
+Accuracy rewards evaluate whether the response is
+correct. For
+example, in the case of maths problems with deterministic
+results,
+the model is required to provide the final answer in a
+specified format
+(for example, within a box), enabling reliable rule-based
+verification of
+correctness. Similarly, for code competition prompts, a
+compiler can
+be used to evaluate the responses of the model against a
+suite of predefined test cases, thereby generating objective feedback on correctness.
+\end{block}
+
+\vfill
+
+\end{frame}
+
+
+
+\begin{vbframe}{Automatic verifier/verifiable rewards: AIME example}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=11.5cm]{figure/aime,example}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{frame}{Inference time scaling}
+
+\vfill
+
+\begin{itemize}
+    \item For a hard problem, it often helps to think for a
+    long time to come up with the solution.
+    \item Inference time scaling: teach the model to think
+    for a while before giving the answer.
+    \item Here, thinking means that the model produces
+    potentially long output, the reasoning trace, that leads
+    to the correct answer.
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
+\begin{frame}{What elements of reasoning are learned?}
+
+\vfill
+
+\begin{itemize}
+\item dynamic strategy adaptation
+    \item self-verification
+    \item reflection
+    \item backtracking
+    \item reasoning traces are getting longer
+\item exploration of alternative approches
+\item diverse and sophisticated reasoning behaviors
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\begin{vbframe}{Aha moment}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/ahamoment}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Another example for Aha moment}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/raspberry,wait}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{The rise of reflective terms}
+
+\vfill
+
+\begin{tabular}{ll}
+    \includegraphics[width=8cm]{figure/reasonling}
+  \begin{minipage}[b]{3cm}
+Frequency of
+ reflective terms
+(‘wait’, ‘mistake’, ‘however’,
+ ‘but’, ‘retry’, ‘error’,
+ ‘verify’, ‘wrong’, ‘evaluate’, ‘check’)
+in model output during
+ training
+\end{minipage}
+\end{tabular}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Accuracy AIME: Above human average}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{figure/accuracy,aime.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{R1 scaling: Without explicit length signal}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=10cm]{figure/r1scaling}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Unfaithfulness of LMs to true reasoning}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm]{figure/sixplusnine,0.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Unfaithfulness of LMs to true reasoning}
+
+\vfill
+
+\begin{figure}
+    \centering
+    \includegraphics[width=9cm]{figure/sixplusnine,1.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{frame}{Things we have not covered}
+
+\vfill
+
+\begin{itemize}
+\item use an eco system of several models:\\
+for distillation, generation, verification
+\item some ``light'' human post-editing of training data
+\item rejection sampling:\\ keep only high-quality,
+    high-confidence training data
+\item apart from math, they also do this for code and other domains
+\item major hardware optimization work
+\item claim: cost of training $<$ 1 000 000 million dollar
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\input{newway}
+
+\endlecture
+\end{document}
+
+
+
+% human-defined reasoning patterns may limit model
+% exploration,
+% unrestricted RL training can better incentivize the
+% emergence
+% of new reasoning capabilities in LLMs
+
+%    •	Cold-start SFT data: collect thousands of long CoT
+%    examples via few-shot prompting, direct prompting for
+%    reflected/verified answers, and cleaned outputs from
+%    R1-Zero, with light human post-processing for
+%    readability.  ￼
+%•	Reasoning-oriented RL with
+%		  rule-based, verifiable rewards (math
+%		  answers in a specified format; code
+%		  checked with tests).  ￼
+%•    Rejection sampling → new SFT
+%			  set (curated prompts; keep only
+%			  correct traces; ~600k reasoning
+%			  samples), then another RL round.
+			  ￼
+
+
+
+
+
+
+
