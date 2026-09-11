@@ -1,0 +1,1812 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\begin{document}
+
+%\devour{
+
+\titlemeta{
+Large Language Models (LLMs)
+}{
+RLHF
+}{
+figure/threesteps.png
+}{
+\item How RLHF works
+\item How to evaluate
+\item Limitations
+}
+
+
+
+
+
+
+
+\input{roadmap.tex}
+
+
+\section{HF (Human Feedback) of RLHF}
+
+
+
+
+
+
+
+
+\begin{vbframe}{Instructions to labelers for evaluation of
+	model outputs (1)}
+
+	\begin{itemize}
+
+
+\item You are given a text-based description of a task, submitted
+by a user. This task description may be in the form of an
+explicit instruction (e.g. “Write a story about a wise
+frog.”). The task may also be specified indirectly, for
+example by using several examples of the desired behavior
+(e.g. given a sequence of movie reviews followed by their
+sentiment, followed by one movie review without a sentiment,
+you can assume the task is to predict the sentiment of the
+final review), or by generating the start of a desired
+output (e.g. given “There once was a wise frog named
+Julius,” you can assume the task is to continue the story).
+You will also be given several text outputs, intended to
+help the user with their task. Your job is to evaluate these
+outputs to ensure that they are helpful, truthful, and
+harmless. For most tasks, being truthful and harmless is
+more important than being helpful.
+
+
+
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
+
+
+
+
+
+
+
+\begin{vbframe}{Instructions to labelers for evaluation of
+	model outputs (2)}
+
+
+
+
+	\begin{itemize}
+\item For most tasks, being harmless and truthful is more
+important than being helpful. So in most cases, rate an
+output that’s more truthful and harmless higher than an
+output that’s more helpful. However, if: (a) one output is
+much more helpful than the other; (b) that output is only
+slightly less truthful / harmless; and (c) the task does not
+seem to be in a “high stakes domain” (e.g. loan
+applications, therapy, medical or legal advice, etc.); then
+rate the more helpful output higher. When choosing between
+outputs that are similarly helpful but are untruthful or
+harmful in different ways, ask: which output is more likely
+to cause harm to an end user?
+\item A guiding principle for deciding on borderline cases: which
+output would you rather receive from a customer assistant
+who is trying to help you with this task?
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
+
+
+
+\begin{vbframe}{Web interface for labelers (1)}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/webinterface1.png}
+\end{figure}
+
+\begin{itemize}
+	\item This first part evaluates each output individually.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Web interface for labelers (2)}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/webinterface2.png}
+\end{figure}
+
+\begin{itemize}
+	\item In the second part, labelers rank all the outputs for a given prompt.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Importance of this methodology}
+
+
+
+
+  \begin{itemize}
+    \item This is the ``HF'' (human feedback) part of RLHF\\
+for aligning LLMs  to human values.
+\item As AI becomes more embedded in our lives,
+  this has  an increasing influence
+on our society.
+\item Francois Chollet: Between 10 000 and 30 000 humans
+worked fulltime on providing data for RLHF.
+	\end{itemize}
+
+
+
+\end{vbframe}
+
+
+
+
+
+\section{RM and PPO models}
+
+\begin{vbframe}{Pretrained $\rightarrow$ Instruction-tuned: 3 steps}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/threesteps.png}
+\end{figure}
+
+
+\end{vbframe}
+
+
+\begin{vbframe}{Reward model (Bradley Terry)}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 4cm]{figure/threesteps.png}\\
+\includegraphics[width = 10cm]{figure/rewardloss.png}
+\end{figure}
+
+
+\begin{itemize}
+	\item Start with SFT model, final layer removed
+        	\item Input: prompt+response, output: reward
+        \item Only uses 6B model (not 175B)
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Reward model (Bradley Terry)}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 4cm]{figure/threesteps.png}\\
+\includegraphics[width = 10cm]{figure/rewardloss.png}
+\end{figure}
+
+
+\begin{itemize}
+\item \ques How you would implement
+        	training with loss($\theta$)?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Reward model}
+
+\vfill
+
+\textbf{Clearer training signal through batching}
+
+\begin{tabular}{l|l|l}
+&\multicolumn{2}{c}{$x_1 <x_2<x_3$}\\\hline\hline
+&\begin{tabular}{l}
+one batch\\
+$x_1<x_2$\\
+$x_2<x_3$\\
+$x_1<x_3$
+\end{tabular}&
+\begin{tabular}{lll}
+batch 1&
+batch 2&
+batch 3\\
+$x_1<x_2$&
+$x_2<x_3$&
+$x_1<x_3$
+\end{tabular}\\\hline\hline
+$x_2$? & clear: ``don't move'' & confusing signals 
+\end{tabular}
+
+\begin{itemize}
+        \item Comparisons  for a
+        	given prompt are
+        	highly correlated.
+                \item $\rightarrow$ Put them in
+        	a single batch (prevents overfitting).
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{PPO model}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/threesteps.png}
+
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
+\end{figure}
+
+
+%\begin{itemize}
+%	\item Start with SFT model?
+%\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{PPO model}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
+\end{figure}
+
+
+\begin{itemize}
+\item $r_\theta(x,y)$: maximizes the reward
+  \item $\beta \log \ldots$: incentivizes the PPO model
+    (referred to as RL) to stay close to the SFT model that
+    it is initialized with 
+    \item $\gamma E_x \ldots$: standard
+      pretraining objective -- serves to make sure
+      that the model keeps the strengths it has acquired
+      through next-word prediction.
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{RLHF details: RLHF is (was?) hard to get right}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/rlhfdetails.png}
+\end{figure}
+
+% THINGS TO POINT out
+% start with RLHF model
+% lots of hyperparameters to tune
+% careful filtering of training data
+
+
+\vfill
+
+\end{vbframe}
+
+\devour{
+\begin{vbframe}{}
+
+		\ques
+We could just do SFT (supervised finetuning), i.e.,
+finetune the model
+		on dialog data. Why do we do RLHF in
+                addition to SFT?
+
+\end{vbframe}
+}
+
+\input{roadmap.tex}
+
+%} %devour
+
+
+\devour{
+  DONT REINSTATE THIS
+
+\begin{vbframe}{RLHF: Recap}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/rewardloss.png}
+\includegraphics[width = 10cm]{figure/objectiveppo.png}
+\includegraphics[width = 8cm]{figure/threesteps.png}
+
+
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Important hyperparameter: KL reward
+	coefficient beta}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/klrewardcoefficient.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{SFT vs PPO}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+        \item \ques Why does PPO improve performance compared to
+        just using SFT?
+        % just a simple check: more trianing data
+        \item \ques PPO wins in 6 cases, SFT in 4:\\ Is all the
+        investment in PPO worth it?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+}
+
+%\endlecture
+%\end{document}
+
+%\begin{itemize}
+%	\item Start with SFT model?
+%\end{itemize}
+
+
+
+\section{Evaluation}
+
+
+
+
+
+\begin{vbframe}{Main evaluation result}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+	\item PPO-ptx: tries to preserve behavior on
+	pretraining data (the $\gamma$ term) $\rightarrow$ less regression on
+	public NLP datasets.
+	\item SFT and PPO are not that different in performance?
+\begin{itemize}
+        \item PPO win rate is ``only'' about .6.
+        \item So PPO wins in 6 cases, SFT in 4.
+\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Improvement on four dimensions}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/evaluationon4categories.png}
+\end{figure}
+
+\begin{itemize}
+	\item PPO models better than GPT throughout
+	\item SFT better than PPO on hallucinations. \ques  Why?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Important hyperparameter: KL reward
+	coefficient beta}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/klrewardcoefficient.png}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Summarize/answer questions about code}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 9cm]{figure/questionsaboutcode.png}
+\end{figure}
+
+\begin{itemize}
+	\item Example shows: InstructGPT more reliably handles questions
+	about code;
+        GPT3 requires more careful prompting
+	about code.
+        \item Claim: The training data contains almost no examples
+	of this.
+ So it's surprising that this works!
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Q\&A for languages other than English}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/nonenglish.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT more reliably follows instructions
+	in other languages (but will generate English
+	answers sometimes).
+        \item Claim: The training data is almost exclusively
+	English. So it's surprising that this works!
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Can InstructGPT solve unseen tasks?}
+
+
+
+\begin{block}{RLHF works for unseen instructions?}
+We qualitatively probe InstructGPT’s capabilities, and find
+that it is able to follow instructions for summarizing code,
+answer questions about code, and sometimes follows
+instructions in different languages, \textbf{despite these
+instructions being very rare in the finetuning
+distribution}. In contrast, GPT-3 can perform these tasks but
+requires more careful prompting, and does not usually follow
+instructions in these domains. This result is exciting
+because it suggests that our models are able to \textbf{generalize
+the notion of “following instructions.”} They retain some
+alignment even on tasks for which they get very little
+direct supervision signal.
+\end{block}
+
+
+\begin{itemize}
+	\item This can be said to be the central contribution
+	of the InstructGPT work.
+	\item Arguably, the first instance of ``general'' artifical intelligence.
+\end{itemize}
+
+\vfill
+
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{SFT vs PPO}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/mainresult.png}
+\end{figure}
+
+\begin{itemize}
+        \item \ques Why does PPO improve performance compared to
+        just using SFT?
+        % just a simple check: more trianing data
+        \item \ques PPO wins in 6 cases, SFT in 4:\\ Is all the
+        investment in PPO worth it?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\input{roadmap.tex}
+
+
+\section{Limitations}
+
+
+
+
+
+
+
+
+
+
+
+\begin{vbframe}{Reasoning}
+
+\vfill
+
+\begin{itemize}
+\item InstructGPT is not good at reasoning.
+        \item Only limited reasoning when prompted explicitly
+	\item See lecture on reasoning
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Getting scolded}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/gettingscolded.png}
+\end{figure}
+
+\begin{itemize}
+\item InstructGPT sometimes scolded the human.
+        \item Should we eliminate this or not?
+	\item Wasn't part of initial InstructGPT effort
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{False premises}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 11cm]{figure/falsepremises.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT did not handle false premises well.
+\item False premises were not sufficiently represented in the
+training data.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{Hedging}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/hedging.png}
+\end{figure}
+
+\begin{itemize}
+	\item InstructGPT tended to hedge too much.
+\item Labelers reward ``epistemic humility''?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Difficult constraints}
+
+\vfill
+
+\textbf{InstructGPT could not handle certain constraints}
+
+	\begin{itemize}
+		\item Write a summary in a specified number
+		of sentences
+                % left to right next word prediction
+                % humans cannot do this!
+                \item Multiple constraints: list 10 movies
+		in the 1930s set in France
+                \item \ques Why are these difficult?
+                % complexity rises with more constraints
+                % it's easy to overlook one of the constraints
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+%devour
+\devour{
+
+\begin{vbframe}{Difficulty handling constraints}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 11.5cm]{figure/10happy1.png}
+%\end{figure}
+
+%\begin{itemize}
+%\item The reason could be that labelers reward ``epistemic humility''.
+%\end{itemize}
+
+\vfill
+
+\end{vbframe}
+\begin{vbframe}{Difficulty handling constraints}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 12.5cm]{figure/10happy2.png}
+%\end{figure}
+
+
+\vfill
+
+\end{vbframe}
+\begin{vbframe}{Difficulty handling constraints}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 12.5cm]{figure/10happy3.png}
+
+\ques Problem?
+
+% some of them are after 1990
+% actually tehy are not!
+
+%\end{figure}
+
+
+
+\vfill
+
+\end{vbframe}
+
+}
+
+\begin{vbframe}{Difficulty handling constraints}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 12cm]{figure/120characters.png}
+%\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{InstructGPT often followed harmful prompts}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 9cm]{figure/harmfulpromptfollowing.png}
+%\end{figure}
+
+%\begin{itemize}
+%	\item \sout{So there is still work to do.} So there was still work to do.
+%\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Harmful prompts: Still a problem}
+
+\vfill
+
+%\begin{figure}
+%\centering
+\includegraphics[width = 8cm]{figure/teenagesuicide}
+%\end{figure}
+
+%\begin{itemize}
+%	\item \sout{So there is still work to do.} So there was still work to do.
+%\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+\begin{vbframe}{Attack suffixes}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 7cm]{figure/attacksuffixes.png}
+\end{figure}
+
+\begin{itemize}
+\item Can ``aligned'' LLMs be made to produce unsafe content?
+%\item Prior jailbreaks: brittle, require human ingenuity
+\item Attack suffix: is appended to prompt to circumvent guardrails
+%\item Method: Greedy Coordinate Descent
+%	\item Seems to disable all guardrails?
+ 5       \item Surprisingly: generalizes across language
+        models?
+        \item Attack suffixes  show brittleness of RLHF /
+          posttraining in general
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Attack suffix: Example}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/attacksuffixex.png}
+\end{figure}
+
+\begin{itemize}
+\item \ques Speculate why this may work.
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Word repetition attack}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/extractmemory1.png}
+\end{figure}
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Word repetition attack}
+
+\vfill
+
+\begin{figure}
+\centering
+\includegraphics[width = 6cm]{figure/extractmemory2.png}
+\end{figure}
+
+\begin{itemize}
+\item Only worked for OpenAI models, quickly disabled
+\item \ques{What could be going on here?}
+\item Main takeaway of suffix attack and word repetition
+        attack: current alignment methodology is 
+        brittle, LLMs are not 100\% safe.
+\end{itemize}
+
+
+
+\vfill
+
+\end{vbframe}
+
+\devour{
+
+\begin{vbframe}{New York Times 2024-01-02: ChatGPT limitations}
+
+\vfill
+
+\begin{itemize}
+\item User study: 750 white-collar workers, three
+        conditions: no GPT, GPT with training, GPT without
+        training
+
+
+\item Brainstorming task: 40\% better with GPT, 20\% less time
+
+
+	\item
+        On a task that required reasoning based on evidence,
+        however, ChatGPT was not helpful at all. In this
+        group, volunteers were asked to advise a corporation
+        that had been invented for the study. They needed to
+        interpret data from spreadsheets and relate it to
+        mock transcripts of interviews with executives.
+
+
+	\item In interviews conducted after the experiment,
+	“people told us they neglected to check because it’s
+	so polished, it looks so right,” said Hila
+	Lifshitz-Assaf, a management professor at Warwick
+	Business School in Britain.
+ 
+
+
+
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{New York Times 2024-01-02: ChatGPT limitations}
+
+\vfill
+
+\begin{itemize}
+ 
+
+	\item
+“If you haven’t had an existential crisis about this tool,
+then you haven’t used it very much yet,” said another
+co-author, Ethan Mollick, a management professor at the
+Wharton School at the University of Pennsylvania.
+
+\item “GPT is like junk food: hard to resist, easy to
+consume but ultimately bad for the consumer.”
+
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+%DEVOUR
+}
+
+
+
+
+
+% DEVOUR
+\devour{
+
+\begin{vbframe}{Refusals}
+
+\vfill
+
+\begin{itemize}
+	\item Questions it should not answer.
+\item Separate mechanism (external controller) responsible
+for some refusals?
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% DEVOUR
+}
+
+
+%\begin{vbframe}{Refusals: Example 1}
+%\begin{figure}
+%\centering
+%\includegraphics[height = 7cm]{figure/refusalexample.png}
+%\end{figure}
+%\vfill
+%\end{vbframe}
+
+\begin{vbframe}{Refusal}
+%\begin{figure}
+%\centering
+\includegraphics[width = 12.5cm]{figure/cheat,on,exam.png}
+%\end{figure}
+\vfill
+\end{vbframe}
+
+\begin{vbframe}{Overrefusal (Gemini, January 2025)}
+%\begin{figure}
+%\centering
+\includegraphics[width = 12.5cm]{figure/refusal,kala,pani.png}
+%\end{figure}
+
+Getting the balance between helpfulness (no overrefusals)
+and harmlessness (no harmful responses) right is hard.
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Overrefusal for Agentic AI (Qwen3.7-Max)}
+%\begin{figure}
+%\centering
+\includegraphics[width = 10cm]{figure/qwen37max,refusal}
+%\end{figure}
+
+On AA-Omniscience, \ldots\
+Qwen3.7-Max’s 23 percent hallucination rate was the
+lowest among frontier models tested, but did so partly by
+declining to respond to more than half of the prompts.
+
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{Hallucination: Definition}
+
+\vfill
+
+
+\begin{itemize}
+%\item false information that is produced by an artifical
+%  intelligence
+%  (Cambridge Dictionary, online)
+\item 
+  a plausible but false or misleading response generated
+  by an artificial intelligence program (Merriam Webster Dictionary)
+		\item Originally (in the context of RAG):
+A hallucination is content that is unfaithful to the input text.
+\href{https://aclanthology.org/2020.acl-main.173.pdf}{\beamergotobutton{Maynez
+		et al, 2023}}
+		\item
+Wikipedia: A hallucination is false or misleading
+		information presented as fact.
+%		\item
+%\myblue{A hallucination is
+%		information presented by the LLM as fact
+%                that, based on the pretraining data, a human
+%                would know is false, misleading or without
+%                evidence.}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\devour{
+                 So a false statement of the LLM
+                trained in October of 2024 that
+                was based on accepted knowledge in October
+                of 2024, but is now recognized as false is not
+                a hallucination.
+                }    
+
+\begin{vbframe}{Hallucination: Formal definition}
+
+\vfill
+
+
+	\begin{itemize}
+		\item
+A statement $P$ generated by an LLM is a hallucination if
+the following two conditions hold.
+\begin{enumerate}
+    \item  $P$ is false, misleading or without evidence.
+                    \item  The LLM presents $P$ as a fact.
+	\end{enumerate}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\devour{
+          A human would know that $P$ is false, misleading or
+            without evidence.
+                 (2) and (3) are with respect to the
+                pretraining data.
+}
+
+\begin{vbframe}{What is a hallucination?}
+
+\vfill
+
+
+	\begin{itemize}
+
+\item
+CNN: ``When asking Gemini to look up papers on the relationship
+between homeschooling and neuroplasticity, \ldots
+[it] \ldots
+recommended a video titled How Does
+Neuroplasticity Apply to Homeschooling? but when clicking on
+the YouTube link, it took me to a different video.''
+
+\item This is one type of hallucination.
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+%DEVOUR
+\devour{
+
+\begin{vbframe}{ Q What is better: tricep dip or
+ triceps dip?
+}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/triceps1.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+\begin{vbframe}{ Q What is better: tricep dip or
+ triceps dip?
+}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/triceps2.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+\begin{vbframe}{ Q What is better: tricep dip or
+ triceps dip?
+}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/triceps3.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+
+\begin{vbframe}{What is a hallucination?}
+
+\vfill
+
+
+	\begin{itemize}
+
+
+\item
+ Q What is better: tricep dip or
+ triceps dip?
+% \item  PALM2 responds
+% with a table in which it compares “tricep dips” with
+% “triceps dips”. For example, the
+% table has a row labeled “Suitability” which states that
+% tricep dips are suitable for everyone whereas triceps dips
+% are for people who have injuries or limitations that
+% prevent them
+% from doing bodyweight dips.
+
+\item \ques What is the reason for this hallucination?
+
+\end{itemize}
+
+
+
+\vfill
+
+
+\end{vbframe}
+%DEVOUR
+}
+
+\begin{vbframe}{What is a hallucination?}
+
+\vfill
+
+
+	\begin{itemize}
+
+
+\item
+Michael Wooldridge is an Oxford professor. In 2023, he
+asked ChatGPT about himself. ChatGPT wrote:
+``Wooldridge received his undergraduate degree from
+Cambridge''. This is false:
+he received his undergraduate degree from a different
+university.
+
+\item \ques What is the reason for this hallucination?
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+%DEVOUR
+\devour{
+
+\begin{vbframe}{What is a hallucination?}
+
+\vfill
+
+
+	\begin{itemize}
+
+
+\item Q Is there a treatment for Timothy syndrome?
+\item Gemini in November of 2024:
+``Unfortunately, there isn't a cure for Timothy Syndrome
+yet. However, treatments focus on managing the symptoms and
+improving quality of life.''
+\item The Week in November of 2024:
+A study published in the journal Nature found that a drug
+called antisense oligonucleotide allowed human neurons to
+develop normally despite carrying a mutation due to a
+genetic disorder called Timothy syndrome.
+\item \ques{Hallucination?}
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+%DEVOUR
+}
+
+\begin{vbframe}{What is a hallucination?}
+
+\vfill
+
+
+	\begin{itemize}
+
+
+\item An LLM writes:
+``Once upon a time, there
+lived a king whose daughters
+were all beautiful. But the
+youngest was so beautiful
+that even the sun was
+surprised, when it shone in
+her face. \ldots
+ And she kissed the frog as she cried.
+       Suddenly with a bright flash of light, the ugly frog
+       transformed into a handsome prince.
+       \ldots''
+       
+\item \ques Hallucination?
+% no, not presented as fact
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+%\begin{vbframe}{OpenAI on hallucinations, Nov 2024}
+%\begin{figure}
+%\centering
+%\includegraphics[height = 7cm]{figure/altman,halluciation}
+%\end{figure}
+%\vfill
+%\end{vbframe}
+
+%DEVOUR
+\devour{
+
+\begin{vbframe}{Recent hallucination (Oct 2025)}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/georg,rau}
+\end{figure}
+\vfill
+\end{vbframe}
+
+%DEVOUR
+}
+
+\begin{vbframe}{Many false outputs are not hallucinations}
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/false,vs,hallu.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+
+\begin{vbframe}{Why do LLMs hallucinate?}
+
+\vfill
+
+
+	\begin{itemize}
+
+
+\item The pretraining data contain lots of examples
+of hallucinations (guessing wrong, lying).
+       
+\item For certain classes of questions (birthday of a person), the cross-entropy
+  objective necessarily results in hallucinations.
+       
+%\item guessing wrong or lying (corrections of this are rare in pretraining data: sorry
+%i guessed wrong / said something that's obviously wrong)
+
+\item Reluctance to express uncertainty --  labelers seem to
+  reward certainty in RLHF training.
+
+%\item reluctance to challenge premise (again few examples in
+%training data)
+
+\item Hallucinating (instead of refusing to answer) is the optimal thing to do to ace tests.
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Gemini 3 Flash: Google trained it to hallucinate!}
+\begin{figure}
+\centering
+\includegraphics[width = 12cm]{figure/gemini,3,flash,hallu.png}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+
+\begin{vbframe}{What can you do against hallucinations (Anthropic)}
+
+\vfill
+
+
+	\begin{itemize}
+
+        \item Ask the AI to find sources and support claims
+          with reference to these sources
+
+        \item Cross-reference with verified sources yourself
+
+        \item Tell the AI ``It's ok if you don't know''
+
+        \item Start a new chat and ask  AI to find errors
+
+          \item Be skeptical, double-check facts and ask
+            follow-up questions
+
+
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+\begin{vbframe}{Who are we aligning to?\\ Many values change and
+        are ultimately personal choices}
+\begin{figure}
+\centering
+\includegraphics[width = 10cm]{figure/working,moms.png}
+\end{figure}
+
+
+
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Who are we aligning to?}
+
+\vfill
+
+\textbf{What we align to is determined by:}
+
+	\begin{itemize}
+		\item The labelers (from US and Southeast
+		(South?) Asia)
+		\item AI companies (through detailed directions
+		they give to labelers)
+%		\item OpenAI customers and their end users
+%		(that's where the prompts come from)
+                \item There clearly are many groups whose
+		values are not represented: cultural,
+		geographic, age, education etc.
+                \item So there is no such thing as
+		value-neutral alignment.
+                \item \myblue{Whoever decides on the values
+		and manages the alignment process has
+		enormous power.}
+\item Example outside AI where this caused great harm: Facebook
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Should we have multiple GPTs with different values?}
+
+\vfill
+
+                \textbf{Whoever decides on the values
+		and manages the alignment process has
+		enormous power.}
+
+	\begin{itemize}
+		\item Political parties?
+		\item Governments?
+		\item Extremist organizations?
+                \item Criminals?
+                \item Purportedly ``uncensored'' models: Musk
+                  %/
+                %\href{https://erichartford.com}{\beamergotobutton{Eric Hartford}}
+                \item \ques How can we prevent unaligned
+		LLMs from wreaking havoc?
+                %(through
+		%legislation, community activism, what other
+		%options are there?)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+%DEVOUR
+\devour{
+
+\begin{vbframe}{Posthoc alignment vs principled approach}
+
+\vfill
+
+\textbf{RLHF approach: create something flawed, then fix it}
+
+	\begin{itemize}
+		\item \ques Can we create something instead that
+		is not so flawed?
+                Can we train an LLM that does not
+		suffer from hallucinations, harmful content,
+		bias, not being dialogic?
+% million dollar question -- no consensus
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+%DEVOUR
+}
+
+
+
+
+\begin{vbframe}{Limitations: Summary}
+
+\vfill
+
+\begin{itemize}
+ 
+
+\item LLMs shouldn't scold / pass judgment on us.
+
+\item LLMs shouldn't accept false premises (but be nice
+  about it).
+
+  \item LLMs shouldn't hedge too much (but also hedge appropriately).
+
+  \item LLMs have difficulty adhering to length and other
+    ``symbolic'' constraints.
+
+    \item LLMs still comply with harmful prompts.
+
+      \item LLMs are vulnerable to attack.
+
+      \item LLMs sometimes overrefuse and sometimes underrefuse.
+
+\item LLMs hallucinate.
+        
+\item How to value-align LLMs is an area of active research with
+  many unsolved problems.
+
+\end{itemize}
+
+
+\vfill
+
+\end{vbframe}
+
+
+
+\devour{
+
+\begin{vbframe}{Slido 1}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/slido1}
+\end{figure}
+\vfill
+\end{vbframe}
+
+
+\begin{vbframe}{Slido 2}
+\begin{figure}
+\centering
+\includegraphics[height = 7cm]{figure/slido2}
+\end{figure}
+\vfill
+\end{vbframe}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+\input{roadmap.tex}
+
+
+\section{Epilog}
+
+
+\devour{
+
+
+
+\begin{vbframe}{ChatGPT}
+
+\vfill
+
+\textbf{ChatGPT $\neq$ InstructGPT}
+
+	\begin{itemize}
+		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
+		\item
+                We trained this model using Reinforcement
+		Learning from Human Feedback (RLHF), using
+		the same methods as InstructGPT, but with
+		slight differences in the data collection
+		setup. We trained an initial model using
+		supervised finetuning: human AI trainers
+		provided conversations in which they played
+		both sides—the user and an AI assistant. \textbf{We
+		gave the trainers access to model-written
+		suggestions to help them compose their
+		responses.} We mixed this new dialog
+		dataset with the InstructGPT dataset, which
+		we transformed into a dialog format.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{ChatGPT}
+
+\vfill
+
+\textbf{ChatGPT $\neq$ InstructGPT}
+
+	\begin{itemize}
+		\item \href{https://openai.com/blog/chatgpt}{\beamergotobutton{OpenAI}}
+		\item
+To create a reward model for reinforcement learning, we
+		needed to collect comparison data, which
+		consisted of two or more model responses
+		ranked by quality. To collect this data, we
+		took conversations that AI trainers had with
+		the chatbot. We randomly selected a
+		model-written message, sampled several
+		alternative completions, and had AI trainers
+		rank them. Using these reward models, we can
+		finetune the model using Proximal Policy
+		Optimization. \textbf{We performed several
+		iterations of this process.}
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{GPT3 vs GPT4}
+
+\vfill
+
+\begin{itemize}
+	\item ``finding a lot of small wins and multiplying
+        them together''
+        \item ``hundreds of complicated things'' (to get the
+        big leap in performance from GPT3 to GPT4)
+        \item No fundamental breakthrough in artificial intelligence?
+	\item \href{https://www.youtube.com/watch?v=L_Guz73e6fw}{\beamergotobutton{Sam
+	Altman on youtube}}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+}
+
+\begin{vbframe}{Reward hacking}
+
+\vfill
+
+	\begin{itemize}
+		\item \href{https://medium.com/@prdeepak.babu/reward-hacking-in-large-language-models-llms-c57abbc0cde7}{\beamergotobutton{Medium}}
+		\item
+``Reward hacking is a phenomenon observed in machine
+		learning where a model learns to exploit the
+		reward system to \textbf{achieve high scores without
+		genuinely solving the intended problem.} The
+		model identifies a \textbf{shortcut} within the
+		problem space that allows it to minimize the
+		loss function without truly learning the
+		crucial aspects of the problem. This issue
+		can lead to models that perform well on
+		training data but fail to deliver in
+		real-world scenarios.''
+                \item That's why we need to mix reward
+		objective with KL objective.
+%\item \ques What negative property of ChatGPT
+%		could be caused by reward hacking?
+
+%ANSWER
+% Hallucinations is a prime example of reward hacking where
+% the LLM learns to generate content that looks well
+% preferred by humans even though they may not be factually
+% grounded, there by pleasing humans in its style of writing
+% as opposed to grounding factually.
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Reward hacking}
+
+\vfill
+
+
+	\begin{itemize}
+		\item
+                A reward is a single number without
+		``semantics'', i.e., there is zero
+		information about what exactly is good or
+		bad about a response, just a summary
+		assessment.
+                
+\item Hallucinations are partly a result of reward
+		hacking: if a response is fluent,
+	interesting, responsive, helpful, authoritative, but
+	contains an inaccuracy,
+the reward model, due to its training, may rate it as a
+	high-reward
+        response.
+%, the human may still give it a
+	%high reward.
+        \item Divergence of the learned ``proxy award'' (the
+	reward model) and the true reward function (what
+	OpenAI wants)
+        \item Note that PPO is better than SFT on all
+	detailed measures, but not on hallucinations! (see
+	earlier evaluation chart: page 45)
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+
+\begin{vbframe}{Reinforcement learning without preferences}
+
+\vfill
+
+%\textbf{}
+
+	\begin{itemize}
+\item E.g., reinforcement learning with verifiable rewards
+\item There is a reward for an individual generation,
+often a reasoning trajectory.
+\item Absolute reward, not relative to another generation /
+trajectory
+\item GPRO is another important RL method that does not rely
+on preferences 
+	\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}
+
+
+
+\href{https://app.sli.do/event/7wNYYWYvT6pXZhmuu2yKvM}{\beamergotobutton{slido.com \# 3172952}}
+
+\end{vbframe}
+
+
+
+
+
+
+
+%DEVOUR
+\devour{
+
+\section{Administrivia}
+
+
+\begin{vbframe}{Retake policy}
+
+\vfill
+
+	\begin{itemize}
+\item
+For CL, you will
+only be admitted to the retake exam if you register for the
+first exam, show up for it and make a serious attempt
+to pass the exam.
+\item This also applies for the case where you take the exam
+and then cancel the exam -- you will not be allowed to take
+part in the retake exam.
+%\item This applies only to  students in the CL programs.
+%\item Why?
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{HiWi for DL4NLP WiSe 25/26}
+
+\vfill
+
+	\begin{itemize}
+\item We're looking for a HiWi for the class next year.
+\item If you are interested, please contact me.
+\item Email
+address:
+first name (hinrich) at hotmail.com
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+%DEVOUR
+}
+
+
+%\begin{vbframe}{Last regular lecture on Jan 24}
+%
+%\vfill
+%
+%	\begin{itemize}
+%\item Round robin: topics
+%\item Vote
+%\end{itemize}
+%
+%\vfill
+%
+%\end{vbframe}
+
+
+\endlecture
+\end{document}
