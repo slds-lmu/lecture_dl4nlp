@@ -1,0 +1,470 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+
+\begin{document}
+
+%\devour{
+
+\titlemeta{
+Training LLMs
+}{
+Memory and compute requirements
+}{
+figure/float.png
+}{
+\item Learn about different contributions to compute requirements
+\item Learn how model size components influence memory requirements
+}
+
+
+
+
+%Notes:
+% Slides: https://jasonwei20.github.io/files/FLAN%20talk%20external.pdf
+% Check out emergence talk: https://www.youtube.com/watch?v=0SuyDLjNR9g
+
+% LLM Survey: https://arxiv.org/pdf/2303.18223.pdf
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Number of Parameters: Notation}
+
+\vfill
+
+\begin{itemize}
+\item In this slide set, we use $P$ for the number of parameters.
+\item (Unfortunately,  we use $N$ for the number of
+  parameters in other slide sets.)
+\end{itemize}
+
+\vfill
+    
+\end{vbframe}
+
+\begin{vbframe}{Compute Requirements}
+\end{vbframe}
+\begin{vbframe}{Compute Requirements}
+
+\vfill
+
+\textbf{Basic equation: Cost to train a transformer (decoder) model:}
+
+\vspace{1.5cm}
+
+$$C \approx \tau T = 6 P D$$ 
+
+\vspace{1.5cm}
+
+\centering \citebutton{Source: Quentin et al., 2023}{https://blog.eleuther.ai/transformer-math/}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Requirements $C \approx \tau T = 6 P D$ }
+
+\textbf{where:}
+
+\begin{itemize}
+	\item $\tau$ is throughput of hardware: (No. GPUs) x (FLOPs/GPU)
+	\item $T$ is the time spent training the model, in seconds
+	\item $P$ is the number of parameters in the model
+	\item $D$ is the dataset size (in tokens)
+    \item $C$: No. of floating-point operations  to train the model:\\
+          $C = C_{forward} + C_{backward}$
+	\item $C_{forward} \approx 2 P D$; $\quad C_{backward} \approx 4 P D$
+	\begin{itemize}
+	    \item $2PD$: \textbf{2} comes from the multiply-accumulate operation used in matrix multiplication
+        \item $4PD$: backward pass is approximately twice the compute of the forward pass
+    \item In the backward pass at each layer, gradients have to be calculated for the weights at that layer and for the previous layers' outputs.
+	\end{itemize}
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Compute Units}
+
+\vfill
+
+$C$ (actually, $C$ per time) can be measured in different units:\newline
+
+\begin{itemize}
+     \item FLOPs = FLOP-seconds which is [Floating Point Ops / Second] 
+ 	\begin{itemize}
+ 	    \item We also use multiples:\\ GFLOP-seconds, TFLOP-seconds etc.
+ 		\item Other multiples like PFLOP-days are used in papers
+ 		\item 1 PFLOP-day = $10^{15} \cdot 24 \cdot 3600$ FLOP-seconds
+            \item Actual FLOPs are always lower than the advertised theoretical FLOPs
+ 	\end{itemize}
+ 	\item GPU-hours
+ 	\begin{itemize}
+ 	    \item GPU model is also required, since they have different compute capacities
+ 	\end{itemize}
+ \end{itemize}
+
+ \vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Parameters vs Dataset}
+
+\vfill
+
+\begin{itemize}
+    \item Model performance depends on number of parameters $P$, but also on number of training tokens $D$
+	\item One proposed optimal tradeoff between $P$ and $D$ is: $D = 20 P$
+	\begin{itemize}
+	    \item This was posited for Chinchilla
+	models \citebutton{Hoffmann et al.,
+	  2022}{https://arxiv.org/abs/2203.15556},\\
+        no longer seen as valid.
+        \item See next lecture
+	\end{itemize}
+      \item
+You need a training set of several 100s of billions of
+tokens at least (e.g., LLM does not
+          become fluent otherwise).
+%	\item One rule of thumb: First determine the uppermost inference cost, and then train the biggest model within that boundary
+        \item
+Two typical ways of determining $P$ (the size of the model)
+in 2026:
+\begin{itemize}
+\item Based on available compute budget: how much data and
+  how many parameters are optimal?
+  \item Based on a desired inference time performance
+    (e.g., generate 100 tokens per second): how much data and how many parameters are optimal?
+
+\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Memory Requirements}
+\end{vbframe}
+\begin{vbframe}{Memory Requirements}
+
+\vfill
+
+Common questions: \newline
+
+\begin{itemize}
+ 	\item How big is this model in bytes?
+	\item Will it fit/train on my GPUs?
+\end{itemize}
+
+\vskip8mm
+
+Model size components: \newline
+
+\begin{itemize}
+ 	\item Model parameters
+	\item Optimizer states
+	\item Gradients
+	\item Activations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Number Representations}
+
+\vfill
+
+\begin{itemize}
+ 	\item fp32: single precision floating point number as defined by \citebutton{IEEE 754}{https://en.wikipedia.org/wiki/IEEE_754} standard, takes 32 bits or 4 bytes
+ 	\item fp16: half precision float number as defined
+          by \citebutton{IEEE 754-2008}{https://en.wikipedia.org/wiki/IEEE_754-2008_revision}, occupying 16 bits or 2 bytes 
+    \item bf16 or brain floating point 16, developed by
+ 	Google Brain project, occupying 16 bits or 2 bytes
+\begin{itemize}
+        \item fewer bits for the ``significand'' than fp16
+          $\rightarrow$ bf16 is less precise
+        \item larger dynamic range than fp16
+ 	(8 exponent bits instead of 5)
+$\rightarrow$ less likely to
+ 	suffer from underflow or overflow 
+\end{itemize}
+	\item INT8: integer (e.g., from -128 to 127), occupying 8 bits or 1 byte
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\def\nocaphack{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}
+
+
+\begin{vbframe}{FP32/FP16 (\citebutton{(Maxime Labonne)}{\nocaphack})}
+
+\hspace{-0.8cm} \includegraphics[width = 12.5cm]{./figure/float.png} 
+
+
+
+You can represent every float like this:
+$(-1)^{\textcolor[RGB]{59,112,254}{S}}\cdot 2^{\textcolor[RGB]{49,195,135}{e}-bias} \cdot 1.\textcolor[RGB]{255,128,237}{m}$
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{INT8 Quantization}
+
+\textit{It's harder (though not impossible) to fit
+  meaningful floats into 8 bits. Alternative:
+ use   integer quantization: INT8.}
+
+\vfill
+
+\begin{itemize}
+    \item Real\_number = stored\_integer * scaling\_factor
+    \item \textbf{Absmax quantization (symmetric)}: 
+        \begin{itemize}
+            \item $X_{quant} = \text{round}\left(\frac{127}{max{|\mathbf{X}|}} \cdot \mathbf{X}\right)$ 
+        \end{itemize}
+    \item \textbf{Zero-point quantization (assymmetric)}: 
+        \begin{itemize}
+            \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
+            \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
+\end{itemize}
+\end{itemize}
+
+
+
+\vfill
+    
+\end{vbframe}
+
+\begin{vbframe}{ABSMAX INT8 (symmetric)}
+
+
+	\includegraphics[width = 10cm]{./figure/absmax,maarten.png} 
+
+        
+        \href{https://www.maartengrootendorst.com/blog/quantization/}{Link:
+          Maarten Grootendorst}
+
+    
+\end{vbframe}
+
+\begin{vbframe}{Zero-point INT8 (asymmetric)}
+
+
+	\includegraphics[width = 9cm]{./figure/zero,point,maarten.png} 
+
+        \href{https://www.maartengrootendorst.com/blog/quantization/}{Link:
+          Maarten Grootendorst}
+    
+\end{vbframe}
+
+
+
+
+\begin{vbframe}{Zero-point quantization}
+
+\vfill
+
+\begin{itemize}
+\item We assume: $min(\mathbf{X}) \leq 0 \leq max(\mathbf{X})$
+            \item $\text{scale} = \frac{255}{max(\mathbf{X}) - min(\mathbf{X})}$
+            \item $\text{zeropoint} = -round(\text{scale}\cdot min(\mathbf{X})) - 128$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$
+            \item $X_{quant}(0) = zeropoint$
+            \item $X_{quant} = round(\text{scale}\cdot \mathbf{X} + \text{zeropoint})$\\
+            = $round(\text{scale}\cdot \mathbf{X} + -round(\text{scale}\cdot min(\mathbf{X}) - 128))$\\
+             $\approx$ $round(\text{scale}\cdot (\mathbf{X}  - min(\mathbf{X}))) - 128$\\
+             = $round(255 \cdot \frac{\mathbf{X} -
+              min(\mathbf{X})}{max(\mathbf{X})  - min(\mathbf{X})}) - 128$
+            \item $X_{quant}(max(\mathbf{X})) = 255-128 = 127$
+            \item $X_{quant}(min(\mathbf{X})) = 0-128 = -128$
+\end{itemize}
+
+
+
+
+\vfill
+    
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+\devour{
+
+\begin{vbframe}{INT8 Quantization (2)}
+
+\textit{How to map a number from float to INT8:}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/intquant.png} \\ 
+	{\footnotesize Source: \href{https://mlabonne.github.io/blog/posts/Introduction_to_Weight_Quantization.html}{Maxime Labonne}}
+\end{figure}
+
+\vfill
+
+%\textit{These quantizations reduce the amount of memory used
+%	by the model.}
+
+%\ques  Additional advantage?
+
+%They further speed up computation by enabling integer computation instead of floating-point math.} 
+    
+\end{vbframe}
+
+}
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Active area of research}
+
+  \includegraphics[width = 11cm]{./figure/nvfp4.png}
+  
+\href{https://arxiv.org/pdf/2509.25149}{Link: Nvidia paper on NVFP4}
+    
+\end{vbframe}
+
+
+
+\begin{vbframe}{Model Parameters}
+
+\vfill
+
+Parameter size depends on chosen representation: \newline
+
+\begin{itemize}
+ 	\item fp32: $Mem_{model} = 4 ~bytes/param \cdot N_{params}$
+ 	\item fp16 or bf16: $Mem_{model} = 2 ~bytes/param \cdot N_{params}$
+	\item INT8: $Mem_{model} = 1 ~byte/param \cdot N_{params}$
+\end{itemize}
+
+\vskip8mm
+
+It is common to use mixed representations: \newline
+
+\begin{itemize}
+ 	\item fp32 + fp16
+	\item fp32 + bf16
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Optimizer States}
+
+\vfill
+
+AdamW: $Mem_{\text{AdamW}} = 8 ~bytes/param \cdot N_{params}$
+\begin{itemize}
+    % \item fp32 copy of parameters: 4 bytes/param
+    \item Momentum: 4 bytes/param
+	\item Variance: 4 bytes/param
+\end{itemize}
+
+\vskip3mm
+
+bitsandbytes (8-bit optimizer): $Mem_{\text{optimizer}} = 2 ~bytes/param \cdot N_{params}$
+\begin{itemize}
+    % \item fp32 copy of parameters: 4 bytes/param
+    \item Momentum: 1 byte/param
+	\item Variance: 1 byte/param
+\end{itemize}
+
+\vskip3mm
+
+
+% SGD-like optimizers with momentum: $Mem_{\text{optimizer}}= 8 \text{ bytes} /(\text{param}\cdot N_{params}$), 
+% \begin{itemize}
+% 	\item fp32 copy of parameters: 4 bytes/param
+% 	\item Momentum: 4 bytes/param
+% \end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Gradients}
+
+\vfill
+
+They are usually stored in the same datatype as the model parameters. \newline
+
+Their memory overhead contribution is: \newline
+
+\begin{itemize}
+ 	\item fp32: $Mem_{grad} = 4 ~bytes/param \cdot N_{params}$
+ 	\item fp16 or bf16: $Mem_{grad} = 2 ~bytes/param \cdot N_{params}$
+	\item INT8: $Mem_{grad} = 1 ~byte/param \cdot N_{params}$
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Activations}
+
+\vfill
+
+\begin{itemize}
+ 	\item GPUs are bottlenecked by memory, not FLOPs
+ 	\item Save GPU memory by recomputing activations of certain layers
+	\item Various schemes for how exactly this is implemented.
+\end{itemize}
+
+\vskip5mm
+
+Total memory when training \textbf{without} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad}$
+
+\vskip5mm
+
+Total memory when training \textbf{with} activations: \newline
+$Mem_{training} = Mem_{params} + Mem_{opt} + Mem_{grad} + Mem_{activ}$
+
+\vskip5mm
+
+% In the latter case, $Mem_{params}$, $Mem_{opt}$ and $Mem_{grad}$ are significantly smaller than in the former.
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

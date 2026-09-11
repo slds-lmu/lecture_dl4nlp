@@ -1,0 +1,428 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{../../style/preamble_new}
+\input{../../latex-math/basic-math.tex}
+\input{../../latex-math/basic-ml.tex}
+
+\title{Deep Learning for NLP}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+\long\def\devour#1{}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+
+\begin{document}
+
+%\devour{
+
+\titlemeta{
+Training LLMs
+}{
+How to reduce compute and memory
+}{
+figure/gpu_mem.png
+}{
+\item Learn about different techniques to reduce compute and memory
+\item Learn about distributed training with data/tensor parallelism
+\item Learn about FlashAttention
+}
+
+
+
+%Notes:
+% Slides: https://jasonwei20.github.io/files/FLAN%20talk%20external.pdf
+% Check out emergence talk: https://www.youtube.com/watch?v=0SuyDLjNR9g
+
+% LLM Survey: https://arxiv.org/pdf/2303.18223.pdf
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Distributed Training}
+
+\vfill
+
+\begin{itemize}
+\item Training LLMs on several GPUs is faster than on one,
+  but we need to figure out how to distribute.
+ 	\item Avoiding OOM (out of memory) issues
+	\item \textbf{Data parallelism:} split the data on different model replicas
+	\item \textbf{Tensor parallellism:} split model parameters accross GPUs
+% 	\item \textbf{Sharded optimizers:} reduce optimizer overhead by No. GPUs
+% 	\begin{itemize}
+% 	 	\item ZeRO (Zero Redundancy Optimizer)
+% 		\item Requires low extra communication between GPUs
+% 	 	\item Decreases optimizer memory requirement
+% 		\item Improves training speed
+% \end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Data Parallelism (1) (Animated GIF!)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/data_parallel.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#distributed-data-parallelism}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Data Parallelism (2)}
+\begin{itemize}
+    \item \textbf{Data Splitting}
+        \begin{itemize}
+            \item Dataset  divided into smaller chunks. Each chunk  assigned to a different GPU.
+            \item Each node processes a different subset of
+              the data in parallel.
+        \end{itemize}
+    \item \textbf{Model Replication}
+        \begin{itemize}
+            \item Each GPU has a replica of the neural network model
+            \item These replicas are trained independently on their respective data subsets
+        \end{itemize}
+    \item \textbf{Gradient Aggregation (All Reduce)}
+        \begin{itemize}
+            \item Gradients are computed locally on each
+              node and then averaged across nodes.
+        \end{itemize}
+    \item \textbf{Parameter Synchronization}
+        \begin{itemize}
+            \item Model parameters are updated synchronously across  nodes.
+            \item This ensures that all model replicas remain consistent with each other after each update step.    
+        \end{itemize}
+\end{itemize}
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Parallelism (1)}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 6cm]{./figure/tensor,parallelism,new.png} \\ 
+	{\footnotesize Source: \href{https://docs.nvidia.com/nemo-framework/user-guide/latest/nemotoolkit/features/parallelisms.html#tensor-parallelism}{Nvidia}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Tensor Parallelism (2)}
+
+\begin{itemize}
+    \item \textbf{Model Partitioning:}
+    \begin{itemize}
+        \item The model's layers or tensors are split across multiple devices
+        \item Different parts of the model are assigned to different devices, enabling them to work on separate portions of the computations simultaneously
+    \end{itemize}
+    
+    \item \textbf{Forward and Backward Passes:}
+    \begin{itemize}
+        \item During the forward pass, each device processes its portion of the tensors with intermediate results passed between devices
+        \item In the backward pass, gradients are computed in the reverse order, again with necessary data transfers between devices
+    \end{itemize}    
+    \item \textbf{Parameter Updates:}
+    \begin{itemize}
+        \item Parameter updates can be performed independently on each device for the parameters they own
+        \item After each update step, the devices synchronize to ensure consistency across the distributed model
+    \end{itemize}
+\end{itemize}
+    
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+
+% \begin{vbframe}{Zero Redundancy Optimizer}
+
+% \vfill
+
+% \begin{figure}
+% 	\centering
+% 	\includegraphics[width = 11cm]{./figure/zero_paralel.png} \\ 
+%  \caption{Comparing the per-device memory consumption of model states, with three stages of ZeRO-DP optimizations.}
+%   \citebutton{Rajbhandari et al., 2020}{https://arxiv.org/pdf/1910.02054.pdf}
+  
+% \end{figure}
+
+% \vfill
+
+% \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{F\MakeLowercase{lash}A\MakeLowercase{ttention}}
+
+\vfill
+
+Fast and Memory-Efficient Exact Attention with IO-Awareness \newline
+
+\begin{itemize}
+%	\item Fast
+%	\begin{itemize}
+%		\item 15\,\% faster than BERT
+%		\item 3x faster than GPT-2 
+%		\item 2.4x faster than Megatron-LM
+%	\end{itemize}
+	\item Memory-efficient
+	\begin{itemize}
+	\item Reducing memory requirements from $O(\MakeLowercase{n}^2)$
+          to $O(\MakeLowercase{n})$ 
+\ques{Why quadratic?}
+	\end{itemize}
+	\item IO aware
+	\begin{itemize}
+		\item Reducing memory load/store operations
+	\end{itemize}
+	\item Therefore: much faster than the regular implementation
+	\begin{itemize}
+		\item The bigger the attention matrices, the
+                  more you gain (until
+                  $O(\MakeLowercase{n})$ no longer fits).
+	\end{itemize}
+	\item Exact
+	\begin{itemize}
+		\item Same as ``vanilla attention'', not an approximation 
+	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{GPU Memory Hierarchy}
+
+\vfill
+\begin{minipage}[c]{.49\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width = 6.3cm]{./figure/gpu_mem.png} \\ 
+\end{figure}
+\end{minipage}
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\makebox[6cm][r]{ 
+			\includegraphics[width = 5cm]{figure/flash-attn.png}
+		}\\ 
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+
+\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+
+\vfill
+
+\end{vbframe}
+
+
+% ------------------------------------------------------------------------------
+
+
+\begin{vbframe}{Computing Considerations}
+
+\vfill
+
+\begin{itemize}
+	\item GPU computations are extremely fast, but data
+          transfer is slow.
+		\item Typical GPU computations are elementwise
+                  operations with a
+huge number of elements, resulting in
+                  high memory access
+	\item $\rightarrow$ GPU has to wait for data.
+	\item $\rightarrow$ Transformer operations are memory-bound.
+	\item IO aware means reducing memory load/store operations
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+
+\begin{vbframe}{Flash Attention}
+
+\vfill
+
+\begin{itemize}
+		\item Tiling or chunking of matrices into blocks
+		\item Operation fusion
+                  \begin{itemize}
+                  \item For example: first matrix
+                    multiplication (query-key), softmax, second matrix
+                    multiplication (weight-value)
+\end{itemize}
+                \item This minimizes redundant
+                  swapping in and out of data
+                  \item General idea: you avoid that the large intermediate
+                    tensors (e.g., pre-softmax)  are
+                    written to HBM and then read back into
+                    SRAM memory
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+
+\begin{vbframe}{SRAM vs HBM / Fused Kernel}
+
+\vfill
+\begin{minipage}[c]{.49\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width = 6.3cm]{./figure/gpu_mem.png} \\ 
+\end{figure}
+\end{minipage}
+\begin{minipage}[c]{.49\textwidth}
+\vfill
+	\begin{figure}
+		\centering
+		\makebox[6cm][r]{ 
+			\includegraphics[width = 5cm]{figure/flash-attn.png}
+		}\\ 
+	\end{figure}
+	\vfill
+\end{minipage}
+\hfill
+
+\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+
+\vfill
+
+\end{vbframe}
+
+
+
+
+
+
+\begin{vbframe}{Tiling}
+
+\vfill
+\begin{minipage}[c]{\textwidth}
+	\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/tiling} \\ 
+\end{figure}
+\end{minipage}
+
+\hfill
+
+%\beamergotobutton{\href{https://arxiv.org/abs/2205.14135}{Source: Dao, 2022}}
+
+\vfill
+
+\end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+
+
+\begin{vbframe}{Operation Fusion}
+
+\vfill
+
+\begin{figure}
+	\centering
+	\includegraphics[width = 11cm]{./figure/op_fusion.png} \\ 
+	{\footnotesize Source: \href{https://horace.io/brrr_intro.html}{\url{https://horace.io/brrr_intro.html}}}
+\end{figure}
+
+\vfill
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+% \begin{vbframe}{Operation Fusion (2)}
+%     \begin{itemize}
+%     \item \textbf{Definition:}
+%     \begin{itemize}
+%         \item Operation Fusion refers to the technique of combining multiple operations into a single operation.
+%         \item This is done to reduce the computational overhead and improve performance.
+%     \end{itemize}
+    
+%     \item \textbf{Purpose:}
+%     \begin{itemize}
+%         \item The primary goal is to enhance the efficiency of the attention mechanism.
+%         \item By fusing operations, it reduces the number of memory accesses and computational steps.
+%     \end{itemize}
+    
+%     \item \textbf{Application in FlashAttention:}
+%     \begin{itemize}
+%         \item Flash Attention uses operation fusion to optimize the attention computation.
+%         \item Key steps in the attention mechanism are fused to streamline the process.
+%     \end{itemize}
+% \end{itemize}
+
+% \end{vbframe}
+
+% ------------------------------------------------------------------------------
+
+\begin{vbframe}{Limitations and Prospects}
+
+\vfill
+
+\begin{itemize}
+	\item FlashAttention requires implementing ``custom'' attention in CUDA
+	\begin{itemize}
+		\item A new CUDA kernel for each new attention implementation
+		\item CUDA is lower-level than PyTorch
+		\item Implementation not  transferable accross GPUs
+	\end{itemize}
+	\item Towards IO-Aware Deep Learning
+	\begin{itemize}
+	\item Extending beyond attention
+          \item DeepSeek
+	\end{itemize}
+%	\item Multi-GPU IO-Aware Methods
+%	\begin{itemize}
+%		\item FlashAttention computation may be parallelizable accross multiple GPUs
+%	\end{itemize}
+\end{itemize}
+
+\vfill
+
+\end{vbframe}
+
+\begin{vbframe}{Teaching evaluation}
+
+  \beamergotobutton{\href{https://www.lehrevaluation.uni-muenchen.de/evasys/public/online/index}{teaching
+evaluation: QAEQ7}}
+
+  	\includegraphics[width = 5cm]{./figure/tmp,qr.png} \\ 
+
+\end{vbframe}
+
+
+
+% ------------------------------------------------------------------------------
+
+\endlecture
+\end{document}
