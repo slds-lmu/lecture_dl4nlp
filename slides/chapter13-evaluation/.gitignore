@@ -1,0 +1,6 @@
+.*
+!.gitignore
+!figure/
+!*.tex
+!*.pdf
+
