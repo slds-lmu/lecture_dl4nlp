@@ -483,6 +483,34 @@ $$\vec {w}_{\mathcal{I}(\text{mary})} + \vec {p}_j \neq \vec{w}_{\mathcal{I}(\te
 \item Option 1 (fixed) \citebutton{Vaswani et al., 2017 \cite{vaswani2017attention}}{https://arxiv.org/abs/1706.03762}\\ 
 (Deterministic) Sinusoidal position embeddings: 
 $$p_{j,i} = \begin{cases} \mathrm{sin}\big(\frac{j}{10000^\frac{i}{d}}\big)  & \text{ if } i \text{ is even} \\ \mathrm{cos}\big(\frac{j}{10000^\frac{i-1}{d}}\big) & \text{ if } i \text{ is odd}  \end{cases}$$
+\item Dimensions form sine/cosine pairs with same (angular) frequency, which describe rotations on a unit circle:
+    \begin{itemize}
+        \item At $i=0$ and $i=1$, frequency is 1 radian per token, wavelength $2\pi \approx 6.28$ tokens
+        \item At $i=d-2$ and $i=d-1$, frequency $\approx 10^{-4}$ radians per token, wavelength $\approx 2\pi \cdot 10^{4} \approx 62{,}800$ tokens
+    \end{itemize}
+\end{itemize}
+ 
+\begin{columns}[c]
+    \column{0.55\textwidth}
+    \centering
+    \includegraphics[width=5.3cm]{fig/positional_encodings.png}
+    \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{fig/Unit_circle.png}
+\end{columns}
+
+\vfill
+
+\end{frame}
+
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Absolute Positional Encodings}
+
+\vfill
+
+\begin{itemize}
 \item Option 2 (learned) \citebutton{Source: Devlin et al., 2019 \cite{devlin-etal-2019-bert}}{https://aclanthology.org/N19-1423.pdf}\\
 Trainable position embeddings: $\vec {P} \in \mathbb{R}^{J^\mathrm{max} \times d}$\\
 (Disadvantage: Cannot deal with sentences longer than $J^\mathrm{max}$)
