@@ -1,0 +1,908 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+
+\input{../../style/preamble_new}
+\usepackage{tcolorbox}
+\usepackage{dsfont}
+\usepackage{tikz}
+
+\definecolor{texblue}{rgb}{0, 0, 1}
+\def\myblue#1{\textcolor{texblue}{#1}}
+
+\newcommand{\vocab}{\mathcal{V}}
+\newcommand{\probs}{\boldsymbol{\phi}}
+
+
+% Run bibliography entries together instead of breaking after each block
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+% Numbered labels [1], [2] instead of the little paper icon
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
+% ToC
+\AtBeginSection[]{
+	\begin{frame}[noframenumbering, plain]
+	\frametitle{Outline}
+	\setcounter{tocdepth}{1}
+	\tableofcontents[currentsection]
+\end{frame}
+}
+
+\title{Deep Learning for NLP II}
+
+\begin{document}
+
+\titlemeta{
+Tokenization
+}{}{
+figure/tokenization-title.png
+}{
+\item Motivation for subword tokenization
+\item Overview of BPE and Unigram
+\item Open questions in tokenization
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+% ==============================================================================
+% MOTIVATION & CONTEXT
+% ==============================================================================
+
+
+\section{Subword Tokenization Basics}
+
+\begin{frame}{Motivation}
+
+\vspace*{\stretch{1}}
+
+\begin{itemize}
+
+\item An LLM cannot simply digest the input text as is (infinite number of possible input texts)
+
+\item We need to map the input text to a sequence of units that the LLM ``knows'' (i.e., that correspond to fixed input representations)
+
+\item This step is commonly referred to as \textbf{tokenization}, and the units known to the LLM as \textbf{tokens}
+
+\end{itemize}
+
+\vspace*{\stretch{1}}
+
+      \centering
+
+      \includegraphics[width=0.6\textwidth]{figure/tokenization-title.png}
+
+
+\vspace*{\stretch{1}}
+
+\end{frame}
+
+
+\begin{frame}{Try It Yourself!}
+
+\vfill
+
+\begin{itemize}
+\item Experiment with different types of input (e.g., different languages)
+\item What do you observe?
+\item How would you characterize the generated tokens?
+\end{itemize}
+
+\vfill
+
+\centering
+
+      \includegraphics[width=0.3\textwidth]{figure/qr_gpt_tok.png}\\
+\url{https://platform.openai.com/tokenizer}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Types of Tokenization}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Word-level} tokenization
+\item \textbf{Character-level} (or \textbf{byte-level}) tokenization
+\item \textbf{Subword-level} tokenization $\leftarrow$ used by most LLMs
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
+\begin{frame}{Word-Level Tokenization}
+
+\vfill
+
+\begin{itemize}
+\item Idea: split the input text into a sequence of \textbf{words}
+\item Widely used in pre-LLM NLP (e.g., static word embeddings)
+\item Pros:
+\begin{itemize}
+\item Relatively simple to implement
+\item Exact lexical representations
+\end{itemize}
+\item Cons:
+\begin{itemize}
+\item Large LLM vocabularies are computationally very expensive
+\item \textbf{Heaps' law}: full coverage of all words impossible $\rightarrow$ many out-of-vocabulary (OOV) words
+
+\end{itemize}
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+
+\begin{frame}{Zipf's Law Recap}
+
+\vfill
+
+\begin{itemize}
+\item Mathematical form (simplified): $p(w_n) \propto 1 / n$
+\begin{itemize}
+\item $p$: relative frequency of a word
+\item $w_n$: word at frequency rank $n$ in a text
+\end{itemize}
+
+\item Intuition: the second most common word occurs about half as often as the first, the third about a third as often, etc.
+\end{itemize}
+
+\vfill
+
+\centering
+
+      \includegraphics[width=\textwidth]{figure/zipf.png}
+\vfill
+
+
+\end{frame}
+
+
+
+\begin{frame}{Heaps' Law}
+
+\vfill
+
+\begin{itemize}
+\item Mathematical form: $V(n) = K n^\beta$
+\begin{itemize}
+\item $V$: vocabulary size (i.e., number of distinct word types)
+\item $n$: corpus size (i.e., number of word tokens)
+\item $K$, $\beta$: parameters (typically $10 < K < 100$, $0.4 < \beta < 0.6$)
+
+\end{itemize}
+\item Intuition: the more text you read, the fewer new words you encounter, but you never stop encountering them
+\end{itemize}
+
+\medskip
+
+\centering
+
+      \includegraphics[width=0.55\textwidth]{figure/heap.png}
+\vfill
+
+
+\end{frame}
+
+\begin{frame}{Character-Level Tokenization}
+
+\vfill
+
+\begin{itemize}
+\item Idea: split the input text into a sequence of \textbf{characters} (or \textbf{bytes})
+\item Pros:
+\begin{itemize}
+\item Simple to implement
+\item Leads to small token vocabularies
+\end{itemize}
+\item Cons:
+\begin{itemize}
+\item Lexical representations become a function of characters
+\item Difficult to train in practice
+
+\end{itemize}
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+
+
+\begin{frame}{Subword-Level Tokenization}
+
+\vfill
+
+\begin{itemize}
+\item Idea: split the input text into a mixed sequence of \textbf{words}, \textbf{subwords}, and \textbf{characters} (or \textbf{bytes})
+\item Pros:
+\begin{itemize}
+\item Relatively small token vocabularies (30K to 100K tokens)
+\item Exact lexical representations for frequent words
+\item Less frequent words represented as a (typically short) sequence of subwords and characters
+\end{itemize}
+\item Cons:
+\begin{itemize}
+\item Most complex tokenization approach
+\end{itemize}
+
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Common Subword-Level Tokenizers}
+
+\vfill
+
+\begin{itemize}
+\item \textbf{Byte-pair encoding (BPE)} \citebutton{Sennrich et al. (2016)\cite{sennrich-etal-2016-neural}}{https://aclanthology.org/P16-1162/}: GPT, Llama, Qwen 
+\item \textbf{Unigram} \citebutton{Kudo (2018)\cite{kudo-2018-subword}}{https://aclanthology.org/P18-1007/}: ALBERT, XLNet, T5
+
+\item Two key questions:
+\begin{itemize}
+\item Training: how to determine the vocabulary of tokens?
+\item Inference: how to segment texts into tokens?
+
+\end{itemize}
+
+\end{itemize}
+
+
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{Notation}
+
+\vfill
+
+
+\begin{itemize}
+\item $\mathbf{s} = \langle s_1, s_2, \dots \rangle$: sequence of characters/bytes, such that $s_t \in \Sigma$ for a base alphabet $\Sigma$
+\item $\mathbf{v} = \langle v_1, v_2, \dots \rangle$: sequence of \textbf{tokens}, such that $v_t \in \vocab$ for a finite set $\vocab$ called \textbf{vocabulary}
+\item $h: \Sigma^* \to \vocab^*$: \textbf{tokenization function}
+\item $\mathbf{s}$ can be reconstructed from $\mathbf{v}$ via a \textbf{detokenization function} $g: \vocab^* \to \Sigma^* $ (simple mapping like string concatenation)
+\item $g$ is generally non-injective: there can be (and often are) multiple valid $\mathbf{v}$ for which $g$ would lead to the same $\mathbf{s}$
+\item $\mathcal{T}_{\vocab}(\mathbf{s}) = g^{-1}(\mathbf{s}) = \{ \mathbf{v} \in \vocab^* : g(\mathbf{v}) = \mathbf{s}\}$: set of all valid token sequences that detokenize to $\mathbf{s}$
+\item $h(\mathbf{s})$ is the \textbf{canonical tokenization}, whereas $\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})$ with $\mathbf{v} \neq h(\mathbf{s})$ are \textbf{non-canonical tokenizations}
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+
+\begin{frame}{Example}
+
+\vfill
+
+\begin{itemize}
+\item $\vocab = \{ \texttt{h},\texttt{a}, \texttt{t}, \texttt{ha}, \texttt{at} \}$
+\item $h(\textit{hat}) = \langle \texttt{ha}, \texttt{t}\rangle$
+\item $g(\langle \texttt{ha}, \texttt{t}\rangle) = \textit{hat} $
+\item $\mathcal{T}_{\vocab}(\textit{hat}) = \{ \langle \texttt{h}, \texttt{a}, \texttt{t}\rangle, \langle \texttt{ha}, \texttt{t}\rangle, \langle \texttt{h}, \texttt{at}\rangle \}$
+\item $\langle \texttt{ha}, \texttt{t}\rangle$ is the canonical tokenization
+\item $\langle \texttt{h}, \texttt{a}, \texttt{t}\rangle$ is a non-canonical tokenization
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
+\section{Overview of BPE}
+
+
+
+\begin{frame}{BPE Training}
+
+\vfill
+
+\begin{itemize}
+\item Originally a \textbf{text compression algorithm}
+\item Initialization: 
+\begin{itemize}
+\item Base vocabulary: $\vocab = \Sigma$
+\item Apply pretokenization (e.g., split on whitespace)
+\item \textbf{Bottom-up} approach: Each $\mathbf{s}$ starts as its character sequence $\mathbf{v} = \langle s_{1}, \dots, s_{|\mathbf{s}|} \rangle$
+\end{itemize}
+\item Repeat until $|\vocab|$ reaches the target size:
+  \begin{itemize}
+  \item Count adjacent token pairs $\langle u, w \rangle$ in the corpus
+  \item Take the most frequent pair $(u^*, w^*)$, add the new token $u^*w^*$ to $\vocab$, and record the merge rule $(u^*, w^*) \to u^*w^*$
+  \item Replace every occurrence of $\langle u^*, w^* \rangle$ in the corpus by $u^*w^*$
+  \end{itemize}
+\item Output: vocabulary $\vocab$ and an ordered list of merge rules
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{BPE Inference}
+
+\vfill
+
+\begin{itemize}
+\item Given a string $\mathbf{s}$, start from its characters: $\mathbf{v} = \langle s_1, \dots, s_{|\mathbf{s}|} \rangle$
+\item Apply the merge rules in the order they were learned: for each rule $(u, w) \to uw$, replace every adjacent pair $\langle u, w \rangle$ in $\mathbf{v}$ by $uw$
+\item The result is the tokenization $h(\mathbf{s})$, with $g(h(\mathbf{s})) = \mathbf{s}$
+\item BPE thus deterministically picks one element of $\mathcal{T}_{\vocab}(\mathbf{s})$
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\foreach \n in {1,...,33} {
+  { % all template changes are local to this group.
+    \setbeamertemplate{navigation symbols}{}
+    \begin{frame}<article:0>
+        \begin{tikzpicture}[remember picture,overlay]
+            \node[at=(current page.center)] {
+                \includegraphics[page=\n,       keepaspectratio,
+                                 width=\paperwidth,
+                                 height=\paperheight]{figure/bpe.pdf}
+            };
+        \end{tikzpicture}
+    \end{frame}
+}
+}
+
+
+
+\begin{frame}{Shortcomings of BPE}
+ 
+\vfill
+ 
+\begin{itemize}
+\item \textbf{Greedy training}: merges are chosen one at a time and never undone, without any global objective
+\item \textbf{Frequency bias}: pairs of high-frequency bytes dominate the merges, since pair counts are not normalized
+\item \textbf{Leftover tokens}: intermediate tokens that were only stepping stones to longer ones stay in $\vocab$, even if they are rarely used
+\item \textbf{Deterministic inference}: exactly one tokenization $h(\mathbf{s})$ per string, with no way to sample other elements of $\mathcal{T}_{\vocab}(\mathbf{s})$
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+
+\section{Overview of Unigram}
+
+
+
+
+
+
+
+\begin{frame}{Introduction}
+
+\vfill
+
+
+\begin{itemize}
+\item Tokenization treated as inference in a \textbf{latent variable model}
+\item Observed variable: $\mathbf{S}$, a random variable taking values in the space of character/byte sequences $\mathbf{s} \in \Sigma^*$
+\item Latent variable: $\mathbf{V}$, a random variable taking values in the space of token sequences  $\mathbf{v} \in\vocab^*$
+\item Parameters: token probabilities $\probs \in \mathbb{R}^{|\vocab|}_{\geq0}$ with $\sum_{v \in \vocab} \phi_v = 1$, where $\phi_v$ is the token probability for token $v$
+\item Training: Unigram learns both $\vocab$ and $\probs$ that (approximately) \textbf{maximize corpus log-likelihood}
+\item Inference: given $\mathbf{s}$, Unigram chooses $\mathbf{v}$ that has the \textbf{highest posterior probability under the learned model}
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+
+
+
+
+\begin{frame}{Generative Model}
+
+\vfill
+
+\begin{itemize}
+%\item $V$: categorical random variable on $\vocab$ with $\sum_{v \in V} P(V=v; \probs) = 1$
+%\item Shorthand: 
+\item We assume token sequences $\mathbf{v} = \langle v_1, \dots, v_m\rangle$ are generated as
+\begin{equation*}
+v_t \overset{\text{i.i.d.}}{\sim} \mathrm{Categorical}(\probs) \quad (t = 1, \dots, m)
+\end{equation*}
+\item We can then define the distribution of $\mathbf{V}$ as 
+\begin{equation*}
+P(\mathbf{V} = \mathbf{v}; \probs) \overset{\text{def}}{=} \prod_{t=1}^{|\mathbf{v}|} \phi_{v_t}
+\end{equation*}
+\item Given the deterministic mapping $g$ from tokens to strings, the distribution of $\mathbf{S}$ is a \textbf{pushforward} of the distribution of $\mathbf{V}$:
+\begin{equation*}
+P(\mathbf{S} = \mathbf{s}; \probs) \overset{\text{def}}{=} \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(s)} P(\mathbf{V} = \mathbf{v}; \probs)
+\end{equation*}
+
+\item NB: for the distribution of $\mathbf{V}$ to be a valid probability distribution on $\vocab^*$, we would have to specify a \textbf{length prior}, but this is rarely done in practice, so we will not consider it here
+
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+
+\begin{frame}{Useful Relationships Between $\mathbf{V}$ and $\mathbf{S}$}
+
+\vfill
+
+\begin{itemize}
+\item Joint distribution of $\mathbf{V}$ and $\mathbf{S}$:
+\begin{align*}
+P(\mathbf{V}=\mathbf{v}, \mathbf{S}=\mathbf{s}; \probs) &= P(\mathbf{V}=\mathbf{v}; \probs)\; P(\mathbf{S}=\mathbf{s} \mid \mathbf{V}=\mathbf{v}; \probs)\\&= P(\mathbf{V}=\mathbf{v}; \probs)\;\mathds{1}[g(\mathbf{v}) = \mathbf{s}]
+\end{align*}
+\item Marginalizing $\mathbf{V}$ out of the joint gives the distribution of $\mathbf{S}$, identical to our pushforward definition:
+\begin{align*}
+P(\mathbf{S}=\mathbf{s}; \probs) &= \sum_{\mathbf{v} \in \vocab^*} P(\mathbf{V}=\mathbf{v}; \probs)\;\mathds{1}[g(\mathbf{v}) = \mathbf{s}]\\
+&= \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} P(\mathbf{V}=\mathbf{v}; \probs)
+\end{align*}
+\item Applying Bayes' rule, we can easily derive the posterior probability over segmentations:
+\begin{equation*}
+P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \mathbf{s}; \probs) =
+\begin{cases}
+  \dfrac{P(\mathbf{V} = \mathbf{v}; \probs)}{P(\mathbf{S} = \mathbf{s}; \probs)} & \text{if } \mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}) \\[1ex]
+  0 & \text{otherwise.}
+\end{cases}
+\end{equation*}
+\end{itemize}
+
+\vfill
+
+
+\end{frame}
+
+\begin{frame}{Example (Continued)}
+
+\vfill
+
+\begin{itemize}
+\item Continuing the example, suppose the token probabilities are
+\begin{equation*}
+\phi_{\texttt{h}} = 0.3, \quad \phi_{\texttt{a}} = 0.1, \quad \phi_{\texttt{t}} = 0.25, \quad \phi_{\texttt{ha}} = 0.2, \quad \phi_{\texttt{at}} = 0.15
+\end{equation*}
+\item Probability of each valid segmentation of \textit{hat}:
+\begin{align*}
+P(\mathbf{V} = \langle \texttt{h}, \texttt{a}, \texttt{t} \rangle; \probs) &= 0.3 \times 0.1 \times 0.25 = 0.0075\\
+P(\mathbf{V} = \langle \texttt{ha}, \texttt{t} \rangle; \probs) &= 0.2 \times 0.25 = 0.05\\
+P(\mathbf{V} = \langle \texttt{h}, \texttt{at} \rangle; \probs) &= 0.3 \times 0.15 = 0.045
+\end{align*}
+\item Marginal probability of the string:
+\begin{equation*}
+P(\mathbf{S} = \textit{hat}; \probs) = 0.0075 + 0.05 + 0.045 = 0.1025
+\end{equation*}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{Example (Continued)}
+
+\vfill
+
+\begin{itemize}
+\item Dividing by $P(\mathbf{S} = \textit{hat}; \probs)$ gives the posterior:
+\begin{align*}
+P(\mathbf{V} = \langle \texttt{h}, \texttt{a}, \texttt{t} \rangle \mid \mathbf{S} = \textit{hat}; \probs) &= 0.0075 / 0.1025 \approx 0.073\\
+P(\mathbf{V} = \langle \texttt{ha}, \texttt{t} \rangle \mid \mathbf{S} = \textit{hat}; \probs) &= 0.05 / 0.1025 \approx 0.488\\
+P(\mathbf{V} = \langle \texttt{h}, \texttt{at} \rangle \mid \mathbf{S} = \textit{hat}; \probs) &= 0.045 / 0.1025 \approx 0.439
+\end{align*}
+\item $\langle \texttt{h}, \texttt{a}, \texttt{t} \rangle$ gets little posterior mass, even though $\texttt{h}$ and $\texttt{t}$ are the two most probable tokens (a product of three probabilities is penalized relative to a product of two)
+\item The ranking of the two-token segmentations comes down to $\phi_{\texttt{ha}}\phi_{\texttt{t}}$ vs.\ $\phi_{\texttt{h}}\phi_{\texttt{at}}$: increasing $\phi_{\texttt{at}}$ enough relative to $\phi_{\texttt{ha}}$ would flip it
+\item The highest-posterior segmentation $\langle \texttt{ha}, \texttt{t} \rangle$ is the canonical tokenization $h(\textit{hat})$ from before
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{Unigram Inference}
+
+\vfill
+
+\begin{itemize}
+\item For now, assume we know $\probs$ (or at least have estimates for it)
+\item At inference time, Unigram tokenizes $\mathbf{s}$ by choosing the segmentation with the \textbf{highest posterior probability}:
+\begin{align*}
+h_{\probs}(\mathbf{s}) &= \operatorname*{arg\,max}_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \mathbf{s}; \probs)\\
+&= \operatorname*{arg\,max}_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} \frac{P(\mathbf{V} = \mathbf{v}; \probs)}{P(\mathbf{S} = \mathbf{s}; \probs)}\\
+&= \operatorname*{arg\,max}_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} P(\mathbf{V} = \mathbf{v}; \probs)\\
+&= \operatorname*{arg\,max}_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} \prod_{t=1}^{|\mathbf{v}|} \phi_{v_t}
+\end{align*}
+\item Computed efficiently by a dynamic program (\textbf{Viterbi})
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{Example (Continued)}
+
+\vfill
+
+\begin{itemize}
+\item With $\probs$ from before, $\langle \texttt{ha}, \texttt{t} \rangle$ has the highest probability ($0.05$ vs.\ $0.045$ and $0.0075$), so $h_{\probs}(\textit{hat}) = \langle \texttt{ha}, \texttt{t} \rangle$
+\item Now swap the probabilities of $\texttt{t}$ and $\texttt{at}$: $\phi'_{\texttt{t}} = 0.15$, $\phi'_{\texttt{at}} = 0.25$, everything else unchanged
+\begin{align*}
+P(\mathbf{V} = \langle \texttt{h}, \texttt{a}, \texttt{t} \rangle; \probs') &= 0.3 \times 0.1 \times 0.15 = 0.0045\\
+P(\mathbf{V} = \langle \texttt{ha}, \texttt{t} \rangle; \probs') &= 0.2 \times 0.15 = 0.03\\
+P(\mathbf{V} = \langle \texttt{h}, \texttt{at} \rangle; \probs') &= 0.3 \times 0.25 = 0.075
+\end{align*}
+\item The Viterbi segmentation flips: $h_{\probs'}(\textit{hat}) = \langle \texttt{h}, \texttt{at} \rangle$
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Unigram Training Basics}
+
+\vfill
+
+\begin{itemize}
+\item Given a training corpus, we need to find $\vocab$ and $\probs$
+\item \textbf{Top-down} approach: 
+\begin{itemize}
+\item We start with a large $\vocab$ (around 1M tokens, typically bytes/characters and all substrings up to some length)
+\item $\probs$ initialized proportional to frequency in training corpus
+\item Choice matters: if token is not in initial vocabulary, it will never be part of the tokenizer vocabulary!
+\item We iteratively prune tokens until we reach the desired vocabulary size, while at the same time learning $\probs$
+\end{itemize}
+\item Core algorithm: \textbf{expectation-maximization (EM)}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+
+
+
+\begin{frame}{Expectation-Maximization for Unigram}
+ 
+\vfill
+ 
+\begin{itemize}
+\item Training Unigram is a chicken-and-egg problem:
+  \begin{itemize}
+  \item If we knew the segmentations, estimating $\probs$ would be easy
+  \item If we knew $\probs$, we could infer the segmentations
+  \end{itemize}
+\item Expectation-maximization (EM) alternates between the two, starting from an initial guess $\probs^{(0)}$ (e.g., uniform):
+  \begin{itemize}
+  \item \textbf{E-step}: use the current $\probs^{(n)}$ to compute the posterior over segmentations of each string (``soft'' segmentations)
+  \item \textbf{M-step}: re-estimate $\probs^{(n+1)}$ from these soft segmentations (count tokens weighted by their posterior, then normalize)
+  \end{itemize}
+\item Repeat until $\probs$ converges
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+ 
+
+
+\begin{frame}{Observed Data Log-Likelihood}
+\begin{itemize}
+\item We want to find the parameters $\probs$ that maximize the log-likelihood of our data (maximum likelihood estimation)
+\item For a corpus $\mathcal{C} = \{ \mathbf{s}_i \}_{i=1}^K$, we compute the log-likelihood of the \textbf{observed data} as
+\begin{align*}
+\mathcal{L}(\mathcal{C}; \probs) &\overset{\text{def}}{=} \log \prod_{i=1}^{K} P(\mathbf{S} = \mathbf{s}_i; \probs)\\
+&= \log \prod_{i=1}^{K} \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)} P(\mathbf{V} = \mathbf{v}; \probs)\\
+&= \sum_{i=1}^{K} \log \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)} P(\mathbf{V} = \mathbf{v}; \probs)
+\end{align*}
+\item Optimizing $\mathcal{L}(\mathcal{C}; \probs)$ is difficult due to the log-sum structure
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Expected Complete Data Log-Likelihood}
+
+\vfill
+
+\begin{itemize}
+\item If we include the latent segmentations $\mathbf{v}_i$, we have the \textbf{complete data} $\mathcal{X} = \{(\mathbf{s}_i, \mathbf{v}_i)\}_{i=1}^K$, whose log-likelihood is
+\begin{align*}
+\mathcal{L}(\mathcal{X}; \probs) &\overset{\text{def}}{=} \log \prod_{i=1}^{K} P(\mathbf{S} = \mathbf{s}_i, \mathbf{V} = \mathbf{v}_i; \probs)\\
+&= \sum_{i=1}^{K} \log P(\mathbf{S} = \mathbf{s}_i, \mathbf{V} = \mathbf{v}_i; \probs)
+\end{align*}
+\item We cannot compute $\mathcal{L}(\mathcal{X}; \probs)$ ($\mathbf{v}_i$ is unknown), but we \emph{can} compute its expectation under the posterior with current parameters $\probs^{(n)}$:
+\begin{align*}
+&Q(\probs; \probs^{(n)}) \overset{\text{def}}{=} \sum_{i=1}^{K} \mathbb{E}_{\mathbf{v} \sim P(\mathbf{V} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)})}\big[\log P(\mathbf{S} = \mathbf{s}_i, \mathbf{V} = \mathbf{v}; \probs)\big]\\
+&\quad = \sum_{i=1}^{K} \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)} \underbrace{P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)})}_{\text{weights from current } \probs^{(n)}} \, \underbrace{\log P(\mathbf{V} = \mathbf{v}; \probs)}_{\text{increase by adjusting } \probs}
+\end{align*}
+\end{itemize}
+
+\vfill
+
+\end{frame}
+
+\begin{frame}{Quick Recap}
+
+\vfill 
+
+\begin{itemize}
+\item We want to optimize the observed data log-likelihood:
+\begin{equation*}
+\mathcal{L}(\mathcal{C}; \probs)= \sum_{i=1}^{K} \log \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)} P(\mathbf{V} = \mathbf{v}; \probs)
+\end{equation*}
+\item Intuition: make \emph{corpus strings} more probable (where string probability is computed by marginalizing over valid segmentations)
+\item We actually optimize the expected complete data log-likelihood:
+\begin{equation*}
+Q(\probs; \probs^{(n)}) = \sum_{i=1}^{K} \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)} P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)}) \log P(\mathbf{V} = \mathbf{v}; \probs)
+\end{equation*}
+\item Intuition: make \emph{valid segmentations} more probable, weighted by string frequency and current posterior
+\end{itemize}
+
+\vfill 
+
+\end{frame}
+
+
+\begin{frame}{How $Q$ Relates to $\mathcal{L}$}
+ 
+\vfill
+ 
+\begin{itemize}
+\item It can be shown that $\mathcal{L}(\mathcal{C}; \probs)$ decomposes as follows:
+\begin{align*}
+\mathcal{L}(\mathcal{C}; \probs) &= Q(\probs; \probs^{(n)}) + \underbrace{\sum_{i=1}^{K} H(\mathbf{V} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)})}_{\text{entropy: constant w.r.t.\ } \probs}\\
+&\quad + \underbrace{\sum_{i=1}^{K} \operatorname{KL}\big(P(\mathbf{V} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)}) \,\big\|\, P(\mathbf{V} \mid \mathbf{S} = \mathbf{s}_i; \probs)\big)}_{\geq 0;\ 0 \text{ at } \probs = \probs^{(n)}}
+\end{align*}
+\item The KL term is $0$ at $\probs^{(n)}$ and never negative, so pushing $Q$ up from $\probs^{(n)}$ also pushes $\mathcal{L}(\mathcal{C}; \probs)$ up, by at least as much
+\item $Q$ plus the entropy term is known as the \textbf{evidence lower bound}
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+ 
+ 
+\begin{frame}{Intuition}
+ 
+\vfill
+ 
+\begin{center}
+\begin{tikzpicture}[xscale=1.1, yscale=0.85]
+  % axes
+  \draw[->] (0,0) -- (5.8,0) node[right] {$\probs$};
+  \draw[->] (0,0) -- (0,3.2);
+  % observed-data log-likelihood
+  \draw[thick, blue, domain=0:5.5, samples=80]
+    plot (\x, {2.9 - 0.15*(\x-4)^2}) node[right] {$\mathcal{L}(\mathcal{C}; \probs)$};
+  % Q = L - entropy - KL, built at phi^(n) = 1
+  \draw[thick, red, domain=0.3:3.7, samples=80]
+    plot (\x, {2.3 - 0.15*(\x-4)^2 - 0.3*(\x-1)^2});
+  \node[red, anchor=west] at (3.35, 1.0) {$Q(\probs; \probs^{(n)})$};
+  % current and next parameters
+  \draw[dashed] (1,0) node[below] {$\probs^{(n)}$} -- (1,1.55);
+  \draw[dashed] (2,0) node[below] {$\probs^{(n+1)}$} -- (2,2.3);
+  \fill[red] (1,0.95) circle (1.5pt);
+  \fill[blue] (1,1.55) circle (1.5pt);
+  \fill[red] (2,1.4) circle (1.5pt);
+  \fill[blue] (2,2.3) circle (1.5pt);
+  % improvements
+  \draw[dotted] (1,0.95) -- (2.15,0.95);
+  \draw[dotted] (1,1.55) -- (2.15,1.55);
+  \draw[->, red] (2.1,0.95) -- (2.1,1.4) node[pos=0, below right, inner sep=1pt] {$\Delta Q$};
+  \draw[->, blue] (2.1,1.55) -- (2.1,2.3) node[midway, right] {$\Delta \mathcal{L}$};
+\end{tikzpicture}
+\end{center}
+ 
+\begin{itemize}
+\item The vertical gap between $\mathcal{L}$ and $Q$ at $\probs^{(n)}$ is the entropy term
+\item Maximizing $Q$ moves us from $\probs^{(n)}$ to $\probs^{(n+1)}$
+\item $\mathcal{L}(\mathcal{C}; \probs)$ rises by at least as much as $Q$: $\Delta\mathcal{L} \geq \Delta Q$
+\item The difference between $\Delta \mathcal{L}$ and $\Delta Q$ is the KL term at $\probs^{(n+1)}$, which is $\geq 0$
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+
+
+\begin{frame}{E-Step}
+ 
+\vfill
+ 
+\begin{itemize}
+\item Goal: compute the expected complete data log-likelihood under our current parameters, $Q(\probs; \probs^{(n)}) $
+\item Defining a count function $c_v(\mathbf{v}) \overset{\text{def}}{=} \sum_{t=1}^{|\mathbf{v}|} \mathds{1}[v_t = v]$, we can write
+\begin{equation*}
+\log P(\mathbf{V} = \mathbf{v}; \probs)= \sum_{t=1}^{|\mathbf{v}|} \log \phi_{v_t} = \sum_{v \in \vocab} c_v(\mathbf{v}) \log \phi_v
+\end{equation*}
+\item Plugging this into $Q$ gives
+\begin{equation*}
+Q(\probs; \probs^{(n)}) = \sum_{v \in \vocab} \underbrace{\sum_{i=1}^{K} \smashoperator[r]{\sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s}_i)}} P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \mathbf{s}_i; \probs^{(n)})\, c_v(\mathbf{v})}_{\hat{c}_v(\mathcal{C}; \probs^{(n)}):\ \text{expected count of } v \text{ in the corpus}} \log \phi_v
+\end{equation*}
+\item The E-step thus reduces to collecting these expected counts for all tokens in $\vocab$, which can be computed efficiently with the \textbf{forward-backward algorithm}
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+ 
+ 
+\begin{frame}{M-Step}
+ 
+\vfill
+ 
+\begin{itemize}
+\item Goal: find the parameters that maximize $Q(\probs; \probs^{(n)})$, subject to the token probabilities summing to 1
+\item Same as MLE for a categorical distribution, but with expected instead of observed counts:
+\begin{equation*}
+\phi^{(n+1)}_v = \frac{\hat{c}_v(\mathcal{C}; \probs^{(n)})}{\sum_{v' \in \vocab} \hat{c}_{v'}(\mathcal{C}; \probs^{(n)})}
+\end{equation*}
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+
+\begin{frame}{Example (Continued)}
+ 
+\vfill
+ 
+\begin{itemize}
+\item Corpus $\mathcal{C} = \{\textit{hat}\}$, uniform initialization $\phi^{(0)}_v = 0.2$ for all $v \in \vocab$
+\item Segmentation probabilities and posteriors, where we use $P(\mathbf{S} = \textit{hat}; \probs^{(0)}) = 0.088$:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcc}
+$\mathbf{v}$ & $P(\mathbf{V} = \mathbf{v}; \probs^{(0)})$ & $P(\mathbf{V} = \mathbf{v} \mid \mathbf{S} = \textit{hat}; \probs^{(0)})$ \\
+\hline
+\rule{0pt}{2.8ex}$\langle \texttt{h}, \texttt{a}, \texttt{t} \rangle$ & $0.2^3 = 0.008$ & $1/11 \approx 0.091$ \\
+$\langle \texttt{ha}, \texttt{t} \rangle$ & $0.2^2 = 0.04$ & $5/11 \approx 0.455$ \\
+$\langle \texttt{h}, \texttt{at} \rangle$ & $0.2^2 = 0.04$ & $5/11 \approx 0.455$
+\end{tabular}
+\end{center}
+\item For the expected counts, we weight each segmentation's token counts by its posterior, e.g.,
+\begin{equation*}
+\hat{c}_{\texttt{h}}(\mathcal{C}; \probs^{(0)}) = 1 \cdot \tfrac{1}{11} + 1 \cdot \tfrac{5}{11} = \tfrac{6}{11} \approx 0.545
+\end{equation*}
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+ 
+ 
+\begin{frame}{Example (Continued)}
+ 
+\vfill
+ 
+\begin{itemize}
+\item Normalizing the expected counts gives the new parameters:
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lccccc}
+ & \texttt{h} & \texttt{a} & \texttt{t} & \texttt{ha} & \texttt{at} \\
+\hline
+\rule{0pt}{2.8ex}$\phi^{(0)}_v$ & 0.2 & 0.2 & 0.2 & 0.2 & 0.2 \\
+$\hat{c}_v(\mathcal{C}; \probs^{(0)})$ & 0.545 & 0.091 & 0.545 & 0.455 & 0.455 \\
+$\phi^{(1)}_v$ & 0.261 & 0.043 & 0.261 & 0.217 & 0.217
+\end{tabular}
+\end{center}
+\item $\texttt{a}$ only appears in the low-posterior segmentation $\langle \texttt{h}, \texttt{a}, \texttt{t} \rangle$, so its probability drops sharply
+\item $\texttt{h}$ and $\texttt{t}$ gain the most: each appears in two segmentations, including a high-posterior one
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+ 
+\begin{frame}{Pruning}
+ 
+\vfill
+ 
+\begin{itemize}
+\item EM alone does not change the vocabulary (it only re-estimates token probabilities over a fixed $\vocab$)
+\item Every few EM iterations, remove a fraction of tokens (e.g., 20\%) and renormalize $\probs$, until the target size is reached
+\item Remove the tokens whose removal lowers the expected complete data log-likelihood  the least ($\probs_{-v}$: $\probs$ without $v$, renormalized):
+\begin{equation*}
+L(v) = Q(\probs^{(n+1)}; \probs^{(n)}) - Q(\probs_{-v}^{(n+1)}; \probs^{(n)}_{-v})
+\end{equation*}
+\item Exact computation of $L(v)$ needs a forward-backward pass per token, so it is approximated: replace every use of $v$ by the best segmentation of its string without $v$
+\end{itemize}
+ 
+\vfill
+ 
+\end{frame}
+
+
+\begin{frame}{Empirical Comparison of BPE and Unigram}
+
+\vfill
+
+\begin{itemize}
+\item Unigram results in segmentations that \textbf{align more closely with morphology} than BPE \citebutton{Hofmann et al.\ (2022)\cite{hofmann-etal-2022-embarrassingly}}{https://aclanthology.org/2022.acl-short.43/} 
+\item This can lead to better performance \citebutton{Bostrom and Durrett (2020)\cite{bostrom-durrett-2020-byte}}{https://aclanthology.org/2020.findings-emnlp.414/} 
+\end{itemize}
+
+\medskip
+\medskip
+
+\centering
+
+      \includegraphics[width=0.9\textwidth]{figure/bostrom.png}
+
+\vfill
+
+\end{frame}
+
+
+\section{Current Issues in Tokenization Research}
+
+\begin{frame}{Multilingual Unfairness}
+
+\vfill
+
+\begin{itemize}
+\item Tokenizers trained mostly on English data split the \emph{same} text into many more tokens in other languages, especially \textbf{low-resource languages} and \textbf{non-Latin scripts}
+\item Longer sequences mean \textbf{higher costs}, \textbf{slower inference}, and less text fitting into the context window, which can \textbf{hurt downstream performance} \citebutton{Ahia et al.\ (2023)\cite{ahia-etal-2023-languages}}{https://aclanthology.org/2023.emnlp-main.614/} 
+\end{itemize}
+
+\medskip
+
+\centering
+
+      \includegraphics[width=0.9\textwidth]{figure/ahia.png}
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}{Tokenization and Interpretability}
+
+
+\end{frame}
+
+
+\begin{frame}{Pixel Tokenization}
+
+\end{frame}
+
+
+
+
+% ==============================================================================
+
+\begin{frame}[allowframebreaks,noframenumbering,plain]{References}
+        \tiny
+        \bibliographystyle{plain} %apalike
+        \bibliography{refs-tokenization}
+\end{frame}
+
+\endlecture
+\end{document}
