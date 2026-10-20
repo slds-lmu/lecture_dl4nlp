@@ -11,6 +11,17 @@
 \newcommand{\vocab}{\mathcal{V}}
 \newcommand{\probs}{\boldsymbol{\phi}}
 
+\tikzset{
+  invisible/.style={opacity=0, text opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{\alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+  pf pt/.style={circle, fill=#1, inner sep=1.6pt},
+  pf seq/.style={font=\footnotesize, text=#1, anchor=south, inner sep=2pt},
+  pf num/.style={font=\scriptsize, text=#1, inner sep=1pt},
+  pf map/.style={->, thick, draw=#1, shorten <=2pt, shorten >=2pt},
+  pf fibre/.style={rounded corners=4pt, fill=#1!7, draw=#1!40},
+}
+
 
 % Run bibliography entries together instead of breaking after each block
 \setbeamertemplate{bibliography entry title}{}
@@ -322,7 +333,7 @@ figure/tokenization-title.png
 \item Initialization: 
 \begin{itemize}
 \item Base vocabulary: $\vocab = \Sigma$
-\item Apply pretokenization (e.g., split on whitespace)
+\item Apply \textbf{normalization} and \textbf{pretokenization} (e.g., split on whitespace)
 \item \textbf{Bottom-up} approach: Each $\mathbf{s}$ starts as its character sequence $\mathbf{v} = \langle s_{1}, \dots, s_{|\mathbf{s}|} \rangle$
 \end{itemize}
 \item Repeat until $|\vocab|$ reaches the target size:
@@ -500,6 +511,95 @@ P(\mathbf{S} = \textit{hat}; \probs) = 0.0075 + 0.05 + 0.045 = 0.1025
 
 \vfill
 
+\end{frame}
+
+
+\begin{frame}{Visualizing the Pushforward}
+ 
+\vfill
+ 
+\begin{center}
+\begin{tikzpicture}[x=0.93cm]
+  \colorlet{main}{blue}
+  \colorlet{other}{black!50}
+ 
+  % ---- preimages T_V(s) (drawn first so they sit behind) --------------------
+  \draw[pf fibre=other, visible on=<2->] (0.15,1.55) rectangle (2.65,2.7);
+  \draw[pf fibre=main,  visible on=<2->] (3.15,1.55) rectangle (7.45,2.7);
+  \draw[pf fibre=other, visible on=<2->] (8.05,1.55) rectangle (8.95,2.7);
+  \node[pf num=other, anchor=south, visible on=<2->] at (1.4,2.7)  {$\mathcal{T}_{\vocab}(\textit{ha})$};
+  \node[pf num=main,  anchor=south, visible on=<2->] at (5.3,2.7)  {$\mathcal{T}_{\vocab}(\textit{hat})$};
+  \node[pf num=other, anchor=south, visible on=<2->] at (8.5,2.7)  {$\mathcal{T}_{\vocab}(\textit{t})$};
+ 
+  % ---- the two spaces -------------------------------------------------------
+  \node (Vs) at (-0.55,1.8) {$\vocab^*$};
+  \node (Ss) at (-0.55,0)   {$\Sigma^*$};
+  \draw[->, thick] (Vs.south) -- node[left] {$g$} (Ss.north);
+ 
+  \draw[thick, black!30] (0,1.8) -- (9.3,1.8) node[right, black!50, font=\small] {$\cdots$};
+  \draw[thick, black!30] (0,0)   -- (9.3,0)   node[right, black!50, font=\small] {$\cdots$};
+ 
+  % ---- token sequences with P(V = v; phi) -----------------------------------
+  \node[pf pt=other] (v1) at (0.7,1.8) {};
+  \node[pf seq=other] (v1l) at (v1.north) {$\langle \texttt{h}, \texttt{a} \rangle$};
+  \node[pf num=other, anchor=south] at (v1l.north) {$0.03$};
+ 
+  \node[pf pt=other] (v2) at (2.1,1.8) {};
+  \node[pf seq=other] (v2l) at (v2.north) {$\langle \texttt{ha} \rangle$};
+  \node[pf num=other, anchor=south] at (v2l.north) {$0.2$};
+ 
+  \node[pf pt=main] (v3) at (3.8,1.8) {};
+  \node[pf seq=main] (v3l) at (v3.north) {$\langle \texttt{h}, \texttt{a}, \texttt{t} \rangle$};
+  \node[pf num=main, anchor=south] at (v3l.north) {$0.0075$};
+ 
+  \node[pf pt=main] (v4) at (5.3,1.8) {};
+  \node[pf seq=main] (v4l) at (v4.north) {$\langle \texttt{ha}, \texttt{t} \rangle$};
+  \node[pf num=main, anchor=south] at (v4l.north) {$0.05$};
+ 
+  \node[pf pt=main] (v5) at (6.8,1.8) {};
+  \node[pf seq=main] (v5l) at (v5.north) {$\langle \texttt{h}, \texttt{at} \rangle$};
+  \node[pf num=main, anchor=south] at (v5l.north) {$0.045$};
+ 
+  \node[pf pt=other] (v6) at (8.5,1.8) {};
+  \node[pf seq=other] (v6l) at (v6.north) {$\langle \texttt{t} \rangle$};
+  \node[pf num=other, anchor=south] at (v6l.north) {$0.25$};
+ 
+  % ---- strings --------------------------------------------------------------
+  \node[pf pt=other] (s1) at (1.4,0) {};
+  \node[font=\footnotesize, text=other, anchor=north] (s1l) at (s1.south) {\textit{ha}};
+  \node[pf pt=main] (s2) at (5.3,0) {};
+  \node[font=\footnotesize, text=main, anchor=north] (s2l) at (s2.south) {\textit{hat}};
+  \node[pf pt=other] (s3) at (8.5,0) {};
+  \node[font=\footnotesize, text=other, anchor=north] (s3l) at (s3.south) {\textit{t}};
+ 
+  % ---- g: every token sequence goes to exactly one string -------------------
+  \draw[pf map=other, visible on=<2->] (v1) -- (s1);
+  \draw[pf map=other, visible on=<2->] (v2) -- (s1);
+  \draw[pf map=main,  visible on=<2->] (v3) -- (s2);
+  \draw[pf map=main,  visible on=<2->] (v4) -- (s2);
+  \draw[pf map=main,  visible on=<2->] (v5) -- (s2);
+  \draw[pf map=other, visible on=<2->] (v6) -- (s3);
+ 
+  % ---- P(S = s; phi): mass collected from the preimage ----------------------
+  \node[pf num=other, anchor=north, visible on=<3->] at (s1l.south) {$0.03 + 0.2 = 0.23$};
+  \node[pf num=main,  anchor=north, visible on=<3->] at (s2l.south) {$0.0075 + 0.05 + 0.045 = 0.1025$};
+  \node[pf num=other, anchor=north, visible on=<3->] at (s3l.south) {$0.25$};
+\end{tikzpicture}
+\end{center}
+ 
+\vfill
+ 
+\begin{itemize}
+\item<2-> $g$ maps each token sequence to exactly one string
+\item<2-> However, many token sequences can map to the same string $\mathbf{s}$: its preimage $\mathcal{T}_{\vocab}(\mathbf{s}) = g^{-1}(\mathbf{s})$
+\item<3-> Each string collects the probability mass of its preimage:
+\begin{equation*}
+P(\mathbf{S} = \mathbf{s}; \probs) = \sum_{\mathbf{v} \in \mathcal{T}_{\vocab}(\mathbf{s})} P(\mathbf{V} = \mathbf{v}; \probs)
+\end{equation*}
+\end{itemize}
+ 
+\vfill
+ 
 \end{frame}
 
 
@@ -863,6 +963,28 @@ L(v) = Q(\probs^{(n+1)}; \probs^{(n)}) - Q(\probs_{-v}^{(n+1)}; \probs^{(n)}_{-v
 
 \section{Current Issues in Tokenization Research}
 
+\begin{frame}{Tokenization and Interpretability}
+
+\vfill
+
+\begin{itemize}
+\item Morphologically complex words (e.g., \textit{unhappiness}) tend to be segmented into several tokens by BPE and Unigram, but LLMs still ``understand'' their meaning as a whole
+\item LLMs possess a \textbf{soft lexicon} encoded by the model weights that is much bigger than the \textbf{hard lexicon} defined by $\mathcal{V}$ 
+\item The mapping between the hard and the soft lexicon is still poorly understood \citebutton{Kaplan et al.\ (2025)\cite{kaplan2025from}}{https://openreview.net/forum?id=328vch6tRs} 
+\end{itemize}
+
+\medskip
+\medskip
+
+\centering
+
+      \includegraphics[width=0.5\textwidth]{figure/kaplan.png}
+
+\vfill
+
+\end{frame}
+
+
 \begin{frame}{Multilingual Unfairness}
 
 \vfill
@@ -883,18 +1005,40 @@ L(v) = Q(\probs^{(n+1)}; \probs^{(n)}) - Q(\probs_{-v}^{(n+1)}; \probs^{(n)}_{-v
 \end{frame}
 
 
-\begin{frame}{Tokenization and Interpretability}
+
+\begin{frame}{Glitch Tokens}
+
+\vfill
+
+\begin{itemize}
+\item The tokenizer training data can differ from the LLM training data
+\item This can lead to undertrained tokens with unwanted behavior, so-called \textbf{glitch tokens} \citebutton{Land and Bartolo (2024)\cite{land-bartolo-2024-fishing}}{https://aclanthology.org/2024.emnlp-main.649/} 
+\end{itemize}
+
+\medskip
+\medskip
+\medskip
 
 
+\centering
+
+      \includegraphics[width=0.5\textwidth]{figure/glitch.png}
+
+\vfill
 \end{frame}
 
 
-\begin{frame}{Pixel Tokenization}
+\begin{frame}
 
+\vfill
+
+\centering \Large \bf Can we dispense with the tokenizer altogether?\\
+\medskip
+\medskip
+Stay tuned for week 5!
+
+\vfill
 \end{frame}
-
-
-
 
 % ==============================================================================
 
