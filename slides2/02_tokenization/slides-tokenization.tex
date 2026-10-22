@@ -161,9 +161,9 @@ figure/tokenization-title.png
 \vfill
 
 \begin{itemize}
-\item Mathematical form (simplified): $p(w_n) \propto 1 / n$
+\item Mathematical form (simplified): $f(w_n) \propto 1 / n$
 \begin{itemize}
-\item $p$: relative frequency of a word
+\item $f$: relative frequency of a word
 \item $w_n$: word at frequency rank $n$ in a text
 \end{itemize}
 
@@ -263,6 +263,7 @@ figure/tokenization-title.png
 \begin{itemize}
 \item \textbf{Byte-pair encoding (BPE)} \citebutton{Sennrich et al. (2016)\cite{sennrich-etal-2016-neural}}{https://aclanthology.org/P16-1162/}: GPT, Llama, Qwen 
 \item \textbf{Unigram} \citebutton{Kudo (2018)\cite{kudo-2018-subword}}{https://aclanthology.org/P18-1007/}: ALBERT, XLNet, T5
+\item \textbf{WordPiece} \citebutton{Schuster and Nakajima (2012)\cite{schuster2012}}{https://ieeexplore.ieee.org/document/6289079}: BERT
 
 \item Two key questions:
 \begin{itemize}
@@ -697,7 +698,7 @@ P(\mathbf{V} = \langle \texttt{h}, \texttt{at} \rangle; \probs') &= 0.3 \times 0
   \item If we knew the segmentations, estimating $\probs$ would be easy
   \item If we knew $\probs$, we could infer the segmentations
   \end{itemize}
-\item Expectation-maximization (EM) alternates between the two, starting from an initial guess $\probs^{(0)}$ (e.g., uniform):
+\item Expectation-maximization (EM) alternates between the two, starting from an initial guess $\probs^{(0)}$:
   \begin{itemize}
   \item \textbf{E-step}: use the current $\probs^{(n)}$ to compute the posterior over segmentations of each string (``soft'' segmentations)
   \item \textbf{M-step}: re-estimate $\probs^{(n+1)}$ from these soft segmentations (count tokens weighted by their posterior, then normalize)
