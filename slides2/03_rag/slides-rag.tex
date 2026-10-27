@@ -3,6 +3,14 @@
 \input{../../style/preamble_new}
 \usepackage{tcolorbox}
 
+% Run bibliography entries together instead of breaking after each block
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+% Numbered labels [1], [2] instead of the little paper icon
+\setbeamertemplate{bibliography item}{\insertbiblabel}
+
 % ToC
 \AtBeginSection[]{
 	\begin{frame}[noframenumbering, plain]
@@ -106,9 +114,12 @@ Training & \textbf{End-to-end, no retrieval supervision} \\
 
 \begin{frame}{Retrieval-Augmented Generation}
 
+\vfill
+
 \textbf{Core idea/design choices:}
+
 \begin{itemize}
-    \item Retrieve relevant documents ("`\textit{evidence}"'), then generate answers grounded in this evidence
+    \item Retrieve relevant documents ("\textit{evidence}"), then generate answers grounded in this evidence
     \item Use increasingly strong (and expensive) models at each stage
     \item Example of typical 2-stage retrieval (retriever + reranker)
 \end{itemize}
@@ -138,7 +149,7 @@ Training & \textbf{End-to-end, no retrieval supervision} \\
 \end{tikzpicture}
 \end{center}
 
-\vfill
+\vspace{0.1cm}
 
 \begin{center}
 \footnotesize
@@ -152,6 +163,8 @@ Generator (LLM) & 1000+ms & Quality \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\vfill
 
 \end{frame}
 
@@ -443,15 +456,15 @@ Interpretable & No semantic understanding \\
 \begin{frame}{Sentence-BERT (SBERT)}
     \centering
     \includegraphics[width=9cm]{figure/sbert-architecture} \\
-    {\hfill \scriptsize  Training (Shared weights) \hfill \hfill  Inference (Individual Encoders) \hfill }\\
-		\citebutton{Source: \cite{reimers-gurevych-2019-sentence}}{https://aclanthology.org/D19-1410/}
+    {\quad \scriptsize  Training (Shared weights) \qquad\qquad\qquad\qquad  Inference (Individual Encoders)}\\
+		\citebutton{Source: Reimers \& Gurevych (2019) \cite{reimers-gurevych-2019-sentence}}{https://aclanthology.org/D19-1410/}
 
     \vspace{1em}
     \textbf{Key Insight:} Shared BERT weights $\rightarrow$ comparable embedding space.
 
     \begin{itemize}
         \item \textbf{Symmetric search:} Find text that \textit{means the same thing}.
-        \item \textbf{Training:} On NLI and Sentence Similarity Tasks
+        \item \textbf{Training} nn NLI and Sentence Similarity Tasks
     \end{itemize}
 
     \textbf{Impact:} 10K comparisons reduced from 65 hours $\rightarrow$ \textbf{5 seconds}
@@ -1178,8 +1191,7 @@ Example dataset & Natural Questions & HotpotQA \citebutton{Yang et al. (2018) \c
           $\rightarrow$ Scales to many passages without quadratic attention cost
     \vspace{0.4em}
     \item \textbf{Iterative design:}\\
-          Generate intermediate reasoning steps; each step can trigger a new retrieval\\
-          $\rightarrow$ cf. \textit{Multi-hop RAG problems}
+          Generate intermediate reasoning steps; each step can trigger a new retrieval $\rightarrow$ cf. \textit{Multi-hop RAG problems}
 \end{enumerate}
 
 \vfill
