@@ -1,0 +1,468 @@
+\documentclass[11pt,compress,t,notes=noshow, xcolor=table]{beamer}
+\input{preamble-slides}
+\input{basic-math}
+\input{basic-ml}
+\usepackage{movie15}
+\usepackage{animate}
+
+
+\begin{document}
+
+\titlemeta{
+Text-to-Text Transfer Transformer
+}{
+figure/sesamestreet.jpeg
+}{
+\item Shortcomings of BERT \& Co.
+\item Everything as text-to-text
+}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Revisiting text-to-text tasks}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/62-t5.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\textbf{Ingredients:}
+	
+\begin{itemize}
+	\item \texttt{<task prefix>} for each task
+	\item[] $\to$ Concatenation with the input
+	\item Output label / score formatted as string
+\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Text-to-Text Transfer Transformer}
+
+\vfill
+
+	\textbf{Short summary:}
+
+	\begin{itemize}
+		\item In short: T5 (bc of the five Ts)
+		\item A complete encoder-decoder Transformer architecture
+		\item[] \ques Why is this important?
+		\item Relative positional embeddings
+		\item All tasks reformulated as text-to-text tasks
+		\item[] $\to$ Probably the most important innovation of this work
+		\item From BERT-size $\times2$ (since enc-dec) up to 11B parameters
+		\item Paradigm shift from \textit{Sequential Transfer Learning} towards true \textit{Multi-Task Learning}
+	\end{itemize}
+	
+	\vspace{.5cm}
+
+	\begin{center}
+		\href{https://1.bp.blogspot.com/-o4oiOExxq1s/Xk26XPC3haI/AAAAAAAAFU8/NBlvOWB84L0PTYy9TzZBaLf6fwPGJTR0QCLcBGAsYHQ/s1600/image3.gif}{\textbf{\beamergotobutton{Nice Animation (similar to figure before)}}}
+	\end{center}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{input and output format}
+
+\vfill
+
+	\textbf{Input Side:}
+
+	\begin{itemize}
+		\item SentencePiece framework w/ WordPiece tokens
+		\item Add task-specific (text) prefix to the original input
+		\item Choice of the prefix: Hyperparameter!! 
+		\item[$\to$] Changing this had limited impact
+		\item[$\to$] No extensive experiments performed by the authors
+	\end{itemize}
+	
+	\vspace{.5cm}
+
+	\textbf{Output Side:}
+
+	\begin{itemize}
+		\item Output as a word or a piece of text (also numerical similarity scores)
+		\item If output not present in set of potential alternatives, prediction considered as wrong (many other possible ways; this is not trivial)
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{task prefix vs. prompting}
+
+\vfill
+
+	\textbf{Adding task-specific (text) prefix:}
+
+	\begin{itemize}
+		\item Add task-specific (text) prefix to the original input
+		\item Model is fine-tuned on samples prepended with this prefix
+		\item[$\to$] It learns to recognize what it is expected to do when encountering a specific prefix at test time
+		\item[$\to$] Probably because of this: limited impact found by the authors
+	\end{itemize}
+	
+	\vspace{.5cm}
+
+	\textbf{Prompting:}
+
+	\begin{itemize}
+		\item Refers to just querying a trained w/o fine-tuning it (cf. next chapter)
+		\item Paradigm of Few-/Zero-Shot Learning
+		\item This is found to have a \textit{huge} impact on model performance
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{architectural differences}
+
+\vfill
+	
+	\textbf{Attention patterns (top) and Schematics of considered architectures (bottom)}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 7.5cm]{figure/63-mask-patterns.png}\\ 
+		\includegraphics[width = 7.5cm]{figure/63-schematics.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{pre-training objective}
+
+\vfill
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/63-t5-span-pred.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+	\begin{enumerate}
+		\item Mark spans in input sequence for corruptions
+		\item Replace tokens with sentinel tokens
+		\item Predict sentinel tokens and replaced tokens
+	\end{enumerate}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pre-training objectives}
+
+\vfill
+
+	\begin{itemize}
+		\item Authors experimented with different objectives
+		\item Most of them rely in some way on MLM
+	\end{itemize}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/63-t5-objectives1.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Pre-training objectives}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 11cm]{figure/63-t5-objectives2.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{The \textbf{C}olossal \textbf{C}lean \textbf{C}rawled \textbf{C}orpus (C4)}
+
+\vfill
+
+	\begin{itemize}
+		\item Effort to measure the effect of quality, characteristics \& size of the pre-training resources
+		\item Common Crawl as basis, careful cleaning and filtering for English language
+		\item Orders of magnitude larger (750GB) compared to commonly used corpora 
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{The \textbf{C}olossal \textbf{C}lean \textbf{C}rawled \textbf{C}orpus (C4)}
+
+\vfill
+	
+	\textbf{Experiments (with respect to C4)}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/63-c4-characteristics.png}\\ 
+		\includegraphics[width = 9cm]{figure/63-c4-size.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{T5 - Exhaustive Experiments}
+
+\vfill
+
+	\textbf{Performed experiments with respect to ..}
+	
+	\begin{itemize}
+		\item \textit{.. architecture, size \& objective}
+		\item[$\to$] enc, dec, enc-dec
+		\item[$\to$] Between 60M and 11B parameters
+		\item \textit{.. details of the Denoising objective (which was found to work best)}
+		\item \textit{.. fine-tuning methods}
+		\item[$\to$] Adapter layers
+		\item[$\to$] Gradual Unfreezing (cf. ULMFiT)
+		\item \textit{.. Multi-task learning strategies}
+		\item[$\to$] Examples-proportional mixing
+		\item[$\to$] Temperature-scaled mixing
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Benchmark results}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/63-t5-glue.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Benchmark results}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/63-t5-squad-sglue.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Benchmark results}
+
+\vfill
+
+	\begin{figure}
+		\centering
+		\includegraphics[width = 9cm]{figure/63-t5-mt.png}\\ 
+		\citebutton{Source: Raffel et al., 2020}{https://jmlr.org/papers/v21/20-074.html}
+	\end{figure}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{T5 - Exhaustive Experiments}
+
+\vfill
+	
+	\textbf{Conclusions}
+	
+	\begin{itemize}
+		\item Encoder-decoder architecture works best in this "text-to-text" setting
+		\item More data, larger models \& ensembling all boost the performance
+			\begin{itemize}
+				\item Larger models trained for fewer steps better than smaller models on more data
+				\item Ensembling: Using same base pre-trained models worse than complete separate model ensembles
+			\end{itemize}
+		\item Different denoising objectives work similarly well
+		\item Updating \textit{all} model parameters during fine-tuning works best (but expensive)
+	\end{itemize}
+	
+\vfill
+
+\end{frame}
+
+% ------------------------------------------------------------------------------
+
+\begin{frame}{Different T5 versions}
+\textit{Similar to BERT T5 has different versions, which all have a different parameter count} \citebutton{Raffel et al., 2020}{https://arxiv.org/abs/1910.10683}
+
+\begin{table}[h!]
+\centering
+\small % Reduce font size
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Parameters} & $\bm{n_{layers}}$ & $\bm{d_{model}}$ & $\bm{d_{FFN}}$ & $\bm{d_{qkv}}$ & $\bm{n_{heads}}$ \\ \hline
+small  & 60M  & 6  & 512  & 2048 & 64 & 8 \\ \hline
+base   & 220M & 12 & 768  & 3072 & 64 & 12 \\ \hline
+large  & 770M & 24 & 1024 & 4096 & 64 & 16 \\ \hline
+3B     & 3B   & 24 & 1024 & 16384 & 128 & 32 \\ \hline
+11B    & 11B  & 24 & 1024 & 65536 & 128 & 128 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{itemize}
+    \item For T5 small, base and large we have the following parameter count per encoder/decoder layer:
+    \begin{itemize}
+        \item $N_{Encoder} = 12\cdot d_{model}^2$
+        \item $N_{Decoder} = 16\cdot d_{model}^2$
+    \end{itemize}
+		\item \textit{For T5 3B and 11B $N_{Encoder}$ and $N_{Decoder}$ are different!}
+\end{itemize}
+    
+\end{frame}
+
+
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Approximate Parameter Count (1)}
+\textit{The general formula is:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
+
+\begin{itemize}
+    \item Let $V = 32000$ be the size of the vocabulary, we then have: $$N_{Embedding} = 32000 \times d_{model}$$
+
+    \item \textbf{T5 small}:
+        $$N_{small} = 6\cdot (12\cdot 512^2 + 16\cdot 512^2) + 32000\times 512 = 60,424,192$$
+    \item \textbf{T5 base}:
+        $$N_{base} = 12\cdot (12\cdot 768^2 + 16\cdot 768^2) + 32000\times 768 = 222,756,864$$
+    \item \textbf{T5 large}:
+        $$N_{large} = 24\cdot (12\cdot 1024^2 + 16\cdot 1024^2) + 32000\times 1024 = 737,411,072$$
+    
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Revisiting: MHA and FFN (1)}
+
+\begin{itemize}
+    \item In the transformer chapter we derived the FFN parameter count to be $\bm{8\cdot d_{model}}$
+    \item We also derived the MHA parameter count to be $\bm{4\cdot d_{model^2}}$ 
+    \item But this is only the case if we choose $d_{FFN} = 4\cdot d_{model}$ and $d_{qkv} = \frac{d_{model}}{n_{heads}}$, with $d_{FFN}$ being the hidden dimension of the FFN and $d_{qkv}$ being the embedding dimension of each head in MHA 
+    \item For the two bigger model variants we have the following relations:
+    \begin{itemize}
+        \item \textbf{T5 3B}: $d_{FFN} = 16\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$
+        \item \textbf{T5 11B}: $d_{FFN} = 64\cdot d_{model}$ and $d_{qkv} \neq \frac{d_{model}}{n_{heads}}$ 
+    \end{itemize}
+    \item Thats why we can't use the same formulas as for the three previous variants
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Revisiting: MHA and FFN (2)}
+
+\begin{itemize}
+    \item In MHA $n_{heads} \cdot d_{qkv}$ is no longer $d_{model}$:
+		
+					\begin{align*}
+					N_{attention} &= n_{heads} \cdot d_{qkv} \times d_{model} + (d_{model} \times d_{qkv}) \times n_{heads} \cdot 3 \\
+					&= 4\cdot n_{heads}\cdot d_{qkv} \times d_{model}\text{;}\quad \text{instead of:}\quad 4\cdot d_{model}^2
+					\end{align*}
+    
+    \item For the FFN $d_{FFN}$ is no longer $4\cdot d_{model}$:
+
+					\begin{align*}
+					N_{FFN} &= d_{model} \times d_{FFN} + d_{FFN} \times d_{model} \\
+					&= 2\cdot d_{model} \times d_{FFN}\text{;}\quad \text{instead of:}\quad 8\cdot d_{model}^2
+					\end{align*}
+
+    \item For the Encoder and Decoder that means:
+    \begin{itemize}
+        \item $N_{Encoder} = 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN}$
+        \item $N_{Decoder} = 2\cdot 4\cdot n_{heads}\cdot d_{qkv} \times d_{model} + 2\cdot d_{model} \times d_{FFN} $
+    \end{itemize}
+
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\begin{frame}{Approximate Parameter Count (2)}
+
+\textit{The general formula is still:} $$N_{Total} = n_{layers}\cdot (N_{Encoder} + N_{Decoder}) + N_{Embedding}$$
+
+\begin{itemize}
+    \item \textbf{T5 3B}: 
+
+					\begin{align*}
+							N_{3B} &= 24\cdot ([4\cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384] \\
+							&+ [2\cdot 4 \cdot 32\cdot 128 \times 1024 + 2\cdot 1024 \times 16384]) + 32000\cdot 1024 \\
+							&= 2,851,340,288 \approx 3B
+					\end{align*}
+
+    \item \textbf{T5 11B}:
+
+					\begin{align*}
+							N_{11B} &= 24\cdot ([4\cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536] \\
+							&+ [2\cdot 4 \cdot 128\cdot 128 \times 1024 + 2\cdot 1024 \times 65536]) + 32000\cdot 1024 \\
+							&= 11,307,057,152 \approx 11B
+					\end{align*}
+
+\end{itemize}
+    
+\end{frame}
+
+%-------------------------------------------------------------------------------
+
+\endlecture
+\end{document}

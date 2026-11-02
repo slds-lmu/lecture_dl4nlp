@@ -27,3 +27,6 @@ tut_*.tex
 *.xoj
 # Files created by code demo
 NAMESPACE
+
+# slidemk build output
+build/
